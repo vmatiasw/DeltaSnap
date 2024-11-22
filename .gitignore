@@ -1,1 +1,5 @@
 /.obsidian
+/.venv
+/.mypy_cache
+__pycache__/
+*.db

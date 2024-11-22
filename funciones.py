@@ -1,11 +1,10 @@
 import re
 from sqlalchemy import inspect
-from db.database import Base
-from sqlalchemy.orm import Session, DeclarativeBase
+from sqlalchemy.orm import Session
 from collections import Counter
 
-class Base(DeclarativeBase):
-    pass
+from DB.SqlAlchemyDB.db_setup import Base
+
 
 def get_all_tables(session: Session) -> list:
     '''
@@ -13,19 +12,20 @@ def get_all_tables(session: Session) -> list:
     Se puede pasar directo a capturar_metadata, capturar_str o capturar_metadata_str para capturar toda la db.
     '''
     all_instances = []
-    
-    for mapper in Base.registry.mappers: # Iterar sobre las clases mapeadas en la metadata de Base
+
+    for mapper in Base.registry.mappers:  # Iterar sobre las clases mapeadas en la metadata de Base
         instances = session.query(mapper.class_).all()
         all_instances.extend(instances)
-    
+
     return all_instances
+
 
 def capturar_metadata(objetos: list) -> dict:
     '''
     Devuelve un diccionario donde una clave es una tupla (__tablename__, id)
     y su valor es un diccionario con la metadata de la tabla, donde las claves
     son los nombres de las columnas y los valores son sus valores en el objeto.
-    
+
     Obs: Quizas deban hacer commit de la db.
     '''
     validar_entrada_a_capturar(objetos)
@@ -44,7 +44,8 @@ def capturar_metadata(objetos: list) -> dict:
             # Verifica si la columna es una clave foránea
             if column.foreign_keys:
                 # Si es una ForeignKey, maneja de manera especial si es necesario
-                metadata[obj.__tablename__, obj.id][f'{column_name} (FK)'] = column_value
+                metadata[obj.__tablename__, obj.id][f'{
+                    column_name} (FK)'] = column_value
             else:
                 # Agrega la columna y su valor al diccionario de metadata
                 metadata[obj.__tablename__, obj.id][column_name] = column_value
@@ -55,12 +56,13 @@ def capturar_metadata(objetos: list) -> dict:
 
     return metadata
 
+
 def capturar_str(objetos: list) -> dict:
     '''
     Devuelve un diccionario donde una clave es una tupla (__tablename__, id)
     y su valor es un diccionario con el __str__ del models de la tabla, donde las claves
     son los nombres de las columnas y los valores son sus valores en el objeto.
-    
+
     Obs: Quizas deban hacer commit de la db.
     '''
     validar_entrada_a_capturar(objetos)
@@ -72,8 +74,9 @@ def capturar_str(objetos: list) -> dict:
         captura = __limpiar_y_convertir(str(obj))
 
         capturas[obj.__tablename__, obj.id] = captura
-    
+
     return capturas
+
 
 def comparar_capturas(metadata_inicial: dict, metadata_final: dict):
     '''
@@ -82,7 +85,7 @@ def comparar_capturas(metadata_inicial: dict, metadata_final: dict):
     tablas eliminadas y creadas. Todas las listas se devuelven ordenadas.
 
     Return: modificaciones, eliminadas, creadas
-    
+
     Por ejemplo, si recibie:
     metadata_inicial ={
         ('tabla1', id1): {
@@ -128,21 +131,26 @@ def comparar_capturas(metadata_inicial: dict, metadata_final: dict):
 
     for clave_tabla, tabla_inicial in metadata_inicial.items():
         tabla_final = metadata_final.get(clave_tabla, None)
-        if tabla_final is None :
+        if tabla_final is None:
             eliminadas.append(clave_tabla)
             continue
-        
-        assert len(tabla_inicial) == len(tabla_final), 'La cantidad de columnas debe ser la misma'
-        assert isinstance(clave_tabla, tuple), f'La clave de la tabla debe ser una tupla en vez de {type(clave_tabla)}'
-        assert isinstance(clave_tabla[0], str), f'El primer elemento de la clave de la tabla debe ser un string en vez de {type(clave_tabla[0])}'
-        assert isinstance(clave_tabla[1], int), f'El segundo elemento de la clave de la tabla debe ser un entero en vez de {type(clave_tabla[1])}'
+
+        assert len(tabla_inicial) == len(
+            tabla_final), 'La cantidad de columnas debe ser la misma'
+        assert isinstance(clave_tabla, tuple), f'La clave de la tabla debe ser una tupla en vez de {
+            type(clave_tabla)}'
+        assert isinstance(clave_tabla[0], str), f'El primer elemento de la clave de la tabla debe ser un string en vez de {
+            type(clave_tabla[0])}'
+        assert isinstance(clave_tabla[1], int), f'El segundo elemento de la clave de la tabla debe ser un entero en vez de {
+            type(clave_tabla[1])}'
 
         # Lista de cambios detectados para esta tabla
         cambios_actuales = []
 
         for clave, valor_inicial in tabla_inicial.items():
             valor_final = tabla_final.get(clave, None)
-            assert valor_final is not None, f'La columna {clave} de la tabla {clave_tabla} no está en la metadata final'
+            assert valor_final is not None, f'La columna {
+                clave} de la tabla {clave_tabla} no está en la metadata final'
 
             if valor_inicial != valor_final:
                 cambios_actuales.append((clave, valor_inicial, valor_final))
@@ -154,7 +162,7 @@ def comparar_capturas(metadata_inicial: dict, metadata_final: dict):
     for clave_tabla, tabla_final in metadata_final.items():
         if metadata_inicial.get(clave_tabla, None) is None:
             creadas.append(clave_tabla)
-    
+
     # Ordenamos las listas
     eliminadas.sort()
     creadas.sort()
@@ -163,12 +171,16 @@ def comparar_capturas(metadata_inicial: dict, metadata_final: dict):
 
     return modificaciones, eliminadas, creadas
 
+
 def __limpiar_y_convertir(cadena: str) -> dict:
     assert isinstance(cadena, str), 'La captura debe ser una cadena'
-    assert cadena.startswith('<') and cadena.endswith('>'), 'La captura debe estar entre < y >'
-    assert cadena.count('(') == 1 and cadena.count(')') == 1, 'La captura debe tener un solo paréntesis'
+    assert cadena.startswith('<') and cadena.endswith(
+        '>'), 'La captura debe estar entre < y >'
+    assert cadena.count('(') == 1 and cadena.count(
+        ')') == 1, 'La captura debe tener un solo paréntesis'
     assert cadena.count('ñ@') == 0, 'La cadena no puede contener ñ@'
-    assert cadena.count('[') == cadena.count(']'), 'La cantidad de corchetes debe ser par'
+    assert cadena.count('[') == cadena.count(
+        ']'), 'La cantidad de corchetes debe ser par'
 
     # Encuentra todos los contenidos dentro de los paréntesis
     contenido = re.findall(r'\((.*?)\)', cadena)
@@ -177,7 +189,8 @@ def __limpiar_y_convertir(cadena: str) -> dict:
     contenido = contenido[0].replace("'", "")
 
     # Cambio las comas por ñ@
-    contenido = re.sub(r'\[(.*?)\]', lambda m: '[' + m.group(1).replace(',', 'ñ@') + ']', contenido)
+    contenido = re.sub(r'\[(.*?)\]', lambda m: '[' +
+                       m.group(1).replace(',', 'ñ@') + ']', contenido)
     contenido = contenido.replace('], [', ']ñ@ [')
 
     # Divide el contenido por comas para obtener pares clave=valor
@@ -203,9 +216,11 @@ def __limpiar_y_convertir(cadena: str) -> dict:
         try:
             valor_float = float(valor)
             if valor_float.is_integer():
-                diccionario[clave] = int(valor_float)  # Convertimos a entero si no tiene parte decimal
+                # Convertimos a entero si no tiene parte decimal
+                diccionario[clave] = int(valor_float)
             else:
-                diccionario[clave] = valor_float  # Dejamos como flotante si tiene decimales
+                # Dejamos como flotante si tiene decimales
+                diccionario[clave] = valor_float
         except ValueError:
             # Verificamos si es un booleano
             if valor == 'True':
@@ -218,11 +233,12 @@ def __limpiar_y_convertir(cadena: str) -> dict:
 
     return diccionario
 
+
 def validar_entrada_a_capturar(objetos: list):
     '''
     Valida que todos los objetos en la lista sean instancias de Base, 
     tengan el atributo __tablename__ y el atributo id.
-    
+
     Lanza una ValueError si alguna de las condiciones no se cumple.
     '''
     if not all(isinstance(obj, Base) for obj in objetos):
@@ -234,7 +250,8 @@ def validar_entrada_a_capturar(objetos: list):
     if not all(hasattr(obj, 'id') for obj in objetos):
         raise ValueError('Todos los objetos deben tener id')
 
-def verificar_tuplas(entrada:list, validos:list)->bool:
+
+def verificar_tuplas(entrada: list, validos: list) -> bool:
     '''
     Recibe un array de entrada del estilo [(str, ?), (str, ?, ?), ...]
     y un array de strings validos del estilo ['str', 'str', ...]
@@ -249,7 +266,8 @@ def verificar_tuplas(entrada:list, validos:list)->bool:
         return False
     return True
 
-def verificar_cantidad_tuplas(entrada:list, validos:list)->bool:
+
+def verificar_cantidad_tuplas(entrada: list, validos: list) -> bool:
     """
     Recibe un array de entrada del estilo [(str, ?), (str, ?, ?), ...]
     y un array de strings validos del estilo [('str',cantidad), ('str',cantidad), ...]
@@ -265,15 +283,17 @@ def verificar_cantidad_tuplas(entrada:list, validos:list)->bool:
         diferencia = set_validos - set(contador_entrada.keys())
         print(f'Error: Las claves {diferencia} no son válidas.')
         return False
-    
+
     # Verificar si la cantidad de claves en entrada coincide con la cantidad esperada
     for clave, cantidad in validos:
         if contador_entrada[clave] != cantidad:
-            print(f'Error: La cantidad de claves {clave} es {contador_entrada[clave]}, se esperaba {cantidad}.')
+            print(f'Error: La cantidad de claves {clave} es {
+                  contador_entrada[clave]}, se esperaba {cantidad}.')
             return False
-            
+
     return True
-    
+
+
 def ignorar_valores_de_campos_laxos(modificaciones: dict, campos_laxos: dict):
     '''
     Marca con 'ignoradas' los cambios en los campos especificados en 'campos_laxos' de las tablas especificadas en 
@@ -293,6 +313,7 @@ def ignorar_valores_de_campos_laxos(modificaciones: dict, campos_laxos: dict):
                         cambios[i] = (cambio[0], 'ignorado')
                         break
 
+
 def eliminar_tablas_laxas(modificaciones: dict, tablas_laxas: list):
     '''
     Elimina las tablas especificadas en 'tablas_laxas' de 'modificaciones'.
@@ -302,13 +323,16 @@ def eliminar_tablas_laxas(modificaciones: dict, tablas_laxas: list):
     > eliminar_tablas_laxas(modificaciones, tablas_laxas)
     > modificaciones == {}
     '''
-    claves_a_eliminar = [tabla_id for tabla_id in modificaciones if tabla_id[0] in tablas_laxas]
+    claves_a_eliminar = [
+        tabla_id for tabla_id in modificaciones if tabla_id[0] in tablas_laxas]
     for tabla_id in claves_a_eliminar:
         modificaciones.pop(tabla_id)
-        
-#TODO: Agregar en las de especificar que se pueda pasar para cada str un numero de veces que
+
+# TODO: Agregar en las de especificar que se pueda pasar para cada str un numero de veces que
 # se debe repetir (incluyendo 0). Usar from collections import Counter
-def verificar_diccionarios(entrada:dict, validos:dict)->bool:
+
+
+def verificar_diccionarios(entrada: dict, validos: dict) -> bool:
     '''
     Verifica que toda clave (str,?) en entrada tenga el str en validos y que el str en validos
     tenga un str en entrada.
@@ -321,9 +345,10 @@ def verificar_diccionarios(entrada:dict, validos:dict)->bool:
         diferencia = set_entrada - set_validos
         print(f'Error: Las claves {diferencia} no son válidas.')
         return False
-    
+
     for clave, valor in entrada.items():
         if not verificar_tuplas(valor, validos[clave[0]]):
-            print(f'Error: Los valores de la clave {clave} no son validos segun verificar_tuplas()')
+            print(f'Error: Los valores de la clave {
+                  clave} no son validos segun verificar_tuplas()')
             return False
     return True
