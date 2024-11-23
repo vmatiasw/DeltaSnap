@@ -62,5 +62,5 @@ class ValidateInstance(Validation):
         Raises:
             ValueError: If any object is not an instance of BaseModel.
         """
-        if not all(isinstance(obj, BaseModel) for obj in objects):
+        if not all(isinstance(obj, BaseModel.__bound__) for obj in objects):
             raise ValueError("All objects must be instances of the specified BaseModel.")
