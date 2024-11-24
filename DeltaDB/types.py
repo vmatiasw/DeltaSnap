@@ -1,9 +1,9 @@
 from typing import Any, List, Tuple, Dict, TypeVar, Literal
-from sqlalchemy.ext.declarative import DeclarativeMeta
+from DB.SqlAlchemyDB.models import Base
 
 # Generic types
 T = TypeVar('T')
-BaseModel = TypeVar('BaseModel', bound=DeclarativeMeta)  # SQLAlchemy models
+BaseModel = TypeVar('BaseModel', bound=Base)  # SQLAlchemy models
 
 UniqueTable = Tuple[str, int]  # (table_name, id)
 

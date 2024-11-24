@@ -38,8 +38,7 @@ class Jugador(Base):
 
     def __str__(self):  # pragma: no cover
         return (f"<Jugador(id={self.id}, nombre={self.nombre}, "
-                f"es_creador={self.es_creador}, id_partida={
-                    self.id_partida}, orden={self.orden}, "
+                f"es_creador={self.es_creador}, id_partida={self.id_partida}, orden={self.orden}, "
                 f"numero_de_cartas={len(self.mazo_cartas)}")
 # PARTIDA ------------------------------------------------------
 
@@ -101,8 +100,7 @@ class Partida(Base):
 
     def __str__(self):  # pragma: no cover
         return (f"<Partida(id={self.id}, nombre_partida='{self.nombre_partida}', "
-                f"nombre_creador='{self.nombre_creador}', iniciada={
-                    self.iniciada}, "
+                f"nombre_creador='{self.nombre_creador}', iniciada={self.iniciada}, "
                 f"numero_de_jugadores={len(self.jugadores)}, tablero='{self.tablero}')>")
 
 # Carta --------------------------------------------------
@@ -127,5 +125,6 @@ class Carta(Base):
     def __str__(self):  # pragma: no cover
         return (f"<Carta(id={self.id}, carta='{self.carta}', "
                 f"revelada={self.revelada}, id_jugador={self.id_jugador})>")
+
 
 Base.metadata.create_all(engine)
