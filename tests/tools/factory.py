@@ -6,6 +6,7 @@ MOCK_GMT_TIME_ZT = "2021-10-10T10:00:00Z"
 SEGUNDOS_TEMPORIZADOR_TURNO = 60
 N_CARTAS_FIGURA_TOTALES = 6
 
+
 def crear_partida(db: Session, password: str = "") -> Partida:
     '''
     Función para crear una partida.
@@ -36,6 +37,7 @@ def crear_partida(db: Session, password: str = "") -> Partida:
     db.commit()
     return partida
 
+
 def unir_jugadores(db: Session, partida: Partida, numero_de_jugadores: int = 1) -> list[Jugador]:
     '''
     Función para unir jugadores a una partida.
@@ -58,7 +60,8 @@ def unir_jugadores(db: Session, partida: Partida, numero_de_jugadores: int = 1) 
 
     nuevos_jugadores = []
     for i in range(numero_de_jugadores):
-        nuevo_jugador = Jugador(nombre=f"Jugador{i+2}", partidas=partida, es_creador=False, orden=len(partida.jugadores))
+        nuevo_jugador = Jugador(
+            nombre=f"Jugador{i+2}", partidas=partida, es_creador=False, orden=len(partida.jugadores))
         db.add(nuevo_jugador)
         partida.jugadores.append(nuevo_jugador)
         nuevos_jugadores.append(nuevo_jugador)
@@ -66,6 +69,7 @@ def unir_jugadores(db: Session, partida: Partida, numero_de_jugadores: int = 1) 
 
     db.commit()
     return nuevos_jugadores
+
 
 def iniciar_partida(db: Session, partida: Partida) -> Partida:
     '''
@@ -115,7 +119,7 @@ def __repartir_cartas(db: Session, partida: Partida, n_cartas_reveladas, n_carta
     for jugador in partida.jugadores:
         for i in range(n_cartas_por_jugador - len(jugador.mazo_cartas)):
             carta = Carta(poseida_por=jugador,
-                                revelada=(i < n_cartas_reveladas))
+                          revelada=(i < n_cartas_reveladas))
             db.add(carta)
             jugador.mazo_cartas.append(carta)
 
