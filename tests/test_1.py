@@ -1,7 +1,7 @@
-
-from tests.tools.factory import crear_partida, unir_jugadores, iniciar_partida
 import DeltaDB.data_processing.analysis.comparator as comp
 import DeltaDB.data_processing.ingestion.ingester as ing
+
+from tests.tools.factory import crear_partida, unir_jugadores, iniciar_partida
 
 def test_iniciar_partida(test_db):
     '''Test para iniciar una partida con suficientes jugadores'''

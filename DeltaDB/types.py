@@ -1,5 +1,6 @@
-from typing import Any, List, Tuple, Dict, TypeVar, Literal, Union
-from DB.SqlAlchemyDB.models import Base
+from typing import Any, List, Tuple, Dict, TypeVar
+
+from tests.tools.DB.SqlAlchemyDB.models import Base # FIXME: Change this import
 
 # Generic types
 T = TypeVar('T')

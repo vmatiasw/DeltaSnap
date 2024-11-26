@@ -1,4 +1,3 @@
-from DB.SqlAlchemyDB.db_setup import Base, engine
 from sqlalchemy import Integer, Boolean, String, ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped, mapped_column
@@ -6,6 +5,8 @@ from sqlalchemy.ext.orderinglist import ordering_list
 import random
 from random import shuffle
 import json
+
+from tests.tools.DB.SqlAlchemyDB.db_setup import Base, engine
 
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 

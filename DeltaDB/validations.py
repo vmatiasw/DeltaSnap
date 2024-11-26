@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
+
 from DeltaDB.types import ObjectsList, BaseModel
 
 # Abstract base class for validations

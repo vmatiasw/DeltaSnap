@@ -1,6 +1,6 @@
 import pytest
 
-from DB.SqlAlchemyDB.db_setup import localSession
+from tests.tools.DB.SqlAlchemyDB.db_setup import localSession
 
 # Configurar logging para que muestre solo los errores
 import logging
