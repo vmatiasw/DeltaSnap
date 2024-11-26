@@ -1,6 +1,5 @@
 
-from DB.SqlAlchemyDB.models import Partida
-from tests.tools.factory import crear_partida, unir_jugadores, iniciar_partida, MOCK_GMT_TIME_ZT, SEGUNDOS_TEMPORIZADOR_TURNO, N_CARTAS_FIGURA_TOTALES
+from tests.tools.factory import crear_partida, unir_jugadores, iniciar_partida
 import DeltaDB.data_processing.analysis.comparator as comp
 import DeltaDB.data_processing.ingestion.ingester as ing
 
@@ -19,6 +18,7 @@ def test_iniciar_partida(test_db):
     
     captura_final = ing.capture_all_tables(test_db)
 
-    modificaciones, eliminadas, creadas = comp.compare_captures(captura_inicial, captura_final)
-    print(modificaciones, eliminadas, creadas)
-    assert False
+    captureDiff = comp.diff_captures(captura_inicial, captura_final)
+
+    print(captureDiff.changes.sort())
+    assert captureDiff.created.remove_tables(['partids']).sort().data == {('partidas', 1): [('duracion_turno', 0, 60), ('iniciada', False, True), ('inicio_turno', '0', '2021-10-10T10:00:00Z')]}

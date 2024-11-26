@@ -10,13 +10,11 @@ UniqueTable = Tuple[str, int]  # (table_name, id)
 # Capture
 Capture = Dict[UniqueTable, Dict[str, Tuple[Any,bool]]] # { (table_name, id): {column_name: (value, is_FK)} }
 
-# Changes
-ChangePatch = Tuple[str, Literal['ignored']]
-Change = Tuple[str, Any, Any] # (column, previous value, new value)
-ChangesProcessed = Dict[UniqueTable, List[Union[Change, ChangePatch]]]
-Changes = Dict[UniqueTable, List[Change]]
-Deleted = List[UniqueTable]
-Created = List[UniqueTable]
+# Changes Deleted Created
+RawChange = Tuple[str, Any, Any] # (column, previous value, new value)
+RawChanges = Dict[UniqueTable, List[RawChange]]
+DeletedTables = List[UniqueTable]
+CreatedTables = List[UniqueTable]
 
 # Generic object and model lists
 ObjectsList = List[T]

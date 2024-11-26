@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from collections import defaultdict
 
 from DB.SqlAlchemyDB.db_setup import Base
-from DeltaDB.types import Capture, ObjectsList, ModelsList
+from DeltaDB.types import Capture, ObjectsList
 from DeltaDB.validations import validate_data, ValidateId, ValidateInstance, ValidateTablename
 
 # List of validation rules to apply to objects
