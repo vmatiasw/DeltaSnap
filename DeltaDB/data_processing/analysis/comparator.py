@@ -1,46 +1,47 @@
-from typing import Dict, Tuple, List
-from DeltaDB.types import Capture, Changes, Deleted, Created
+from typing import Tuple, List
+from DeltaDB.types import Capture, Changes, Deleted, Created, Change
 
-def compare_captures(initial_metadata: Capture, final_metadata: Capture) -> Tuple[Changes, Deleted, Created]:
+def diff_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Changes, Deleted, Created]:
     """
-    Compares two capture dictionaries and returns:
-        - A dictionary with changes detected between tables in both captures.
-        - A list of deleted tables present in the initial metadata but not in the final.
-        - A list of newly created tables present in the final metadata but not in the initial.
+    Compares two capture dictionaries and identifies differences between them, including:
+        - Changes within tables present in both captures.
+        - Tables deleted from the initial capture.
+        - Tables newly created in the final capture.
 
     Args:
-        initial_metadata (Capture): The metadata dictionary from the initial capture.
-        final_metadata (Capture): The metadata dictionary from the final capture.
+        initial_capture (Capture): A dictionary representing the initial state of captures.
+        final_capture (Capture): A dictionary representing the final state of captures.
 
     Returns:
-        Tuple[Changes, Deleted, Created]: 
-            - Changes: A dictionary with table keys and a list of changes per table.
-            - Deleted: A sorted list of deleted tables.
-            - Created: A sorted list of newly created tables.
+        Tuple(Tuple[Changes, Deleted, Created]):
+            - Changes: A dictionary where each key is a table identifier and each value is a list of 
+                       column-level changes in the format (column, old_value, new_value).
+            - Deleted: A sorted list of table identifiers present in the initial capture but absent in the final.
+            - Created: A sorted list of table identifiers present in the final capture but absent in the initial.
 
     Example:
-        initial_metadata = {
+        initial_capture = {
             ('table1', id1): {'key1': value1, 'key2': value2},
             ('table2', id2): {'key1': value1, 'key2': value2}
         }
         
-        final_metadata = {
+        final_capture = {
             ('table1', id1): {'key1': modified_value1, 'key2': value2},
             ('table3', id3): {'key1': value1, 'key2': value2}
         }
         
-        Returns:
-        - Changes: {('table1', id1): [('key1', value1, modified_value1)]}
-        - Deleted: [('table2', id2)]
-        - Created: [('table3', id3)]
+        Output:
+            Changes: {('table1', id1): [('key1', value1, modified_value1)]}
+            Deleted: [('table2', id2)]
+            Created: [('table3', id3)]
     """
     changes: Changes = {}
     deleted: Deleted = []
     created: Created = []
 
     # Detect deleted tables and analyze changes
-    for table_key, initial_table in initial_metadata.items():
-        final_table = final_metadata.get(table_key)
+    for table_key, initial_table in initial_capture.items():
+        final_table = final_capture.get(table_key)
         
         if final_table is None:
             # Table was deleted
@@ -49,13 +50,9 @@ def compare_captures(initial_metadata: Capture, final_metadata: Capture) -> Tupl
         
         # Ensure consistency in structure
         assert len(initial_table) == len(final_table), "Column count mismatch between captures."
-        assert isinstance(table_key, tuple) and len(table_key) == 2, \
-            f"Table key must be a tuple (table_name, id). Found: {type(table_key)}"
-        assert isinstance(table_key[0], str), "First element of table key must be a string (table_name)."
-        assert isinstance(table_key[1], int), "Second element of table key must be an integer (id)."
 
         # Track changes within the table
-        current_changes = []
+        current_changes : List[Change] = []
 
         for column, initial_value in initial_table.items():
             final_value = final_table.get(column)
@@ -69,8 +66,8 @@ def compare_captures(initial_metadata: Capture, final_metadata: Capture) -> Tupl
             changes[table_key] = current_changes
 
     # Detect newly created tables
-    for table_key in final_metadata.keys():
-        if table_key not in initial_metadata:
+    for table_key in final_capture.keys():
+        if table_key not in initial_capture:
             created.append(table_key)
 
     # Sort the results

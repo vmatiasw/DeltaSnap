@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, Dict, TypeVar, Literal
+from typing import Any, List, Tuple, Dict, TypeVar, Literal, Union
 from DB.SqlAlchemyDB.models import Base
 
 # Generic types
@@ -11,8 +11,9 @@ UniqueTable = Tuple[str, int]  # (table_name, id)
 Capture = Dict[UniqueTable, Dict[str, Tuple[Any,bool]]] # { (table_name, id): {column_name: (value, is_FK)} }
 
 # Changes
-ChangePatch = Literal['ignored']
-Change = Tuple[str, Any, Any] | Tuple[str, ChangePatch ] # (column, previous value, new value) or (column, patch)
+ChangePatch = Tuple[str, Literal['ignored']]
+Change = Tuple[str, Any, Any] # (column, previous value, new value)
+ChangesProcessed = Dict[UniqueTable, List[Union[Change, ChangePatch]]]
 Changes = Dict[UniqueTable, List[Change]]
 Deleted = List[UniqueTable]
 Created = List[UniqueTable]
