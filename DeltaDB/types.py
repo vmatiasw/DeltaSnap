@@ -1,6 +1,6 @@
 from typing import Any, List, Tuple, Dict, TypeVar
 
-from tests.tools.DB.models import Base # FIXME: Change this import
+from tests.tools.db.models import Base # FIXME: Change this import
 
 # Generic types
 T = TypeVar('T')

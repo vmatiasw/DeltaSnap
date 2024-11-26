@@ -6,7 +6,7 @@ import random
 from random import shuffle
 import json
 
-from tests.tools.DB.db_setup import Base, engine
+from tests.tools.db.db_setup import Base, engine
 
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 

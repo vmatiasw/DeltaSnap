@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from tests.tools.DB.models import Partida, Jugador, Carta
+from tests.tools.db.models import Partida, Jugador, Carta
 
 MOCK_GMT_TIME_ZT = "2021-10-10T10:00:00Z"
 SEGUNDOS_TEMPORIZADOR_TURNO = 60

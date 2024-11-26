@@ -1,4 +1,4 @@
-from tests.tools.DB.db_setup import localSession
+from tests.tools.db.db_setup import localSession
 from tests.tools.factory import crear_partida, unir_jugadores
 
 session = localSession()

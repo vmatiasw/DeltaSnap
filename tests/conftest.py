@@ -1,6 +1,7 @@
 import pytest
+import os
 
-from tests.tools.DB.db_setup import localSession
+from tests.tools.db.db_setup import localSession
 
 # Configurar logging para que muestre solo los errores
 import logging
@@ -11,10 +12,11 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_db():
-    from tests.tools.DB.db_setup import Base, engine
-    from tests.tools.test_db import setup_test_db
-    Base.metadata.create_all(engine)
-    setup_test_db()
+    if not os.path.exists('tests.tools.db.test.db'):
+        from tests.tools.db.db_setup import Base, engine
+        from tests.tools.test_db import setup_test_db
+        Base.metadata.create_all(engine)
+        setup_test_db()
     yield
 
 @pytest.fixture(scope='function')
