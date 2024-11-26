@@ -2,7 +2,7 @@ from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 from collections import defaultdict
 
-from tests.tools.DB.SqlAlchemyDB.db_setup import Base # FIXME: Change this import
+from tests.tools.DB.db_setup import Base # FIXME: Change this import
 from DeltaDB.types import Capture, ObjectsList
 from DeltaDB.validations import validate_data, ValidateId, ValidateInstance, ValidateTablename
 

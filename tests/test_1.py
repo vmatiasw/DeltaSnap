@@ -3,20 +3,13 @@ import DeltaDB.data_processing.ingestion.ingester as ing
 
 from tests.tools.factory import crear_partida, unir_jugadores, iniciar_partida
 
-def test_iniciar_partida(test_db):
+def test_iniciar_partida(test_session):
     '''Test para iniciar una partida con suficientes jugadores'''
-
-    partida = crear_partida(test_db, password="1234")
-    unir_jugadores(test_db, partida, numero_de_jugadores=2)
+    captura_inicial = ing.capture_all_tables(test_session)
     
-    partida2 = crear_partida(test_db)
-    unir_jugadores(test_db, partida2, numero_de_jugadores=2)
-
-    captura_inicial = ing.capture_all_tables(test_db)
+    iniciar_partida(db=test_session, id_partida='1')
     
-    iniciar_partida(db=test_db, partida=partida)
-    
-    captura_final = ing.capture_all_tables(test_db)
+    captura_final = ing.capture_all_tables(test_session)
 
     captureDiff = comp.diff_captures(captura_inicial, captura_final)
 

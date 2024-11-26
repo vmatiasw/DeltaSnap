@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from tests.tools.DB.SqlAlchemyDB.models import Partida, Jugador, Carta
+from tests.tools.DB.models import Partida, Jugador, Carta
 
 MOCK_GMT_TIME_ZT = "2021-10-10T10:00:00Z"
 SEGUNDOS_TEMPORIZADOR_TURNO = 60
@@ -34,7 +34,7 @@ def crear_partida(db: Session, password: str = "") -> Partida:
     db.add(creador)
     db.add(partida)
 
-    db.commit()
+    db.flush()
     return partida
 
 
@@ -67,11 +67,11 @@ def unir_jugadores(db: Session, partida: Partida, numero_de_jugadores: int = 1) 
         nuevos_jugadores.append(nuevo_jugador)
         db.commit()
 
-    db.commit()
+    db.flush()
     return nuevos_jugadores
 
 
-def iniciar_partida(db: Session, partida: Partida) -> Partida:
+def iniciar_partida(db: Session, id_partida: Partida) -> Partida:
     '''
     Función para iniciar una partida. (y reparte cartas de figura y movimiento)
 
@@ -82,6 +82,7 @@ def iniciar_partida(db: Session, partida: Partida) -> Partida:
     - repartir_cartas_figura = 3 cartas por jugador, 3 cartas reveladas
     - repartir_cartas_movimiento = 3 cartas por jugador
     '''
+    partida = db.get(Partida, id_partida)
     assert partida.iniciada == False, "La partida ya ha sido iniciada"
     assert len(
         partida.jugadores) > 1, "La partida debe tener al menos 2 jugadores para poder iniciarla"
@@ -96,7 +97,7 @@ def iniciar_partida(db: Session, partida: Partida) -> Partida:
         N_CARTAS_FIGURA_TOTALES/len(partida.jugadores))
     __repartir_cartas(db, partida, 3, numero_de_cartas_por_jugador)
 
-    db.commit()
+    db.flush()
     return partida
 
 
@@ -123,5 +124,5 @@ def __repartir_cartas(db: Session, partida: Partida, n_cartas_reveladas, n_carta
             db.add(carta)
             jugador.mazo_cartas.append(carta)
 
-    db.commit()
+    db.flush()
     return partida

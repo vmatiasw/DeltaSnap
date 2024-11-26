@@ -6,7 +6,7 @@ import random
 from random import shuffle
 import json
 
-from tests.tools.DB.SqlAlchemyDB.db_setup import Base, engine
+from tests.tools.DB.db_setup import Base, engine
 
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 
@@ -126,6 +126,3 @@ class Carta(Base):
     def __str__(self):  # pragma: no cover
         return (f"<Carta(id={self.id}, carta='{self.carta}', "
                 f"revelada={self.revelada}, id_jugador={self.id_jugador})>")
-
-
-Base.metadata.create_all(engine)
