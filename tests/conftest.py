@@ -12,7 +12,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_db():
-    if not os.path.exists('tests.tools.db.test.db'):
+    if not os.path.exists('tests/tools/db/test.db'):
         from tests.tools.db.db_setup import Base, engine
         from tests.tools.test_db import setup_test_db
         Base.metadata.create_all(engine)
