@@ -67,7 +67,7 @@ class Partida(Base):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, index=True, autoincrement=True)
     nombre_partida = mapped_column(String(255), nullable=False)
-    nombre_creador = mapped_column(String(200), nullable=False)
+    nombre_creador = mapped_column(String(255), nullable=False)
     iniciada = mapped_column(Boolean, default=False)
     jugadores: Mapped[list[Jugador]] = relationship(
         'Jugador', back_populates='partidas', cascade="all", order_by='Jugador.orden', collection_class=ordering_list('orden'))
@@ -94,9 +94,9 @@ class Partida(Base):
     def jugador_del_turno(self) -> Jugador:
         return self.jugadores[0]
 
-    inicio_turno = mapped_column(String, nullable=False, default='0')
+    inicio_turno = mapped_column(String(255), nullable=False, default='0')
     duracion_turno = mapped_column(Integer, nullable=False, default=0)
-    tablero = mapped_column(String, nullable=False, default=tablero_random)
+    tablero = mapped_column(String(255), nullable=False, default=tablero_random)
     color_prohibido = mapped_column(Integer, nullable=False, default=0)
 
     def __str__(self):  # pragma: no cover
@@ -114,7 +114,7 @@ class Carta(Base):
         Integer, primary_key=True, index=True, autoincrement=True)
 
     carta: Mapped[str] = mapped_column(
-        String, nullable=False, default=lambda: random.choice(SET_DE_CARTAS))
+        String(255), nullable=False, default=lambda: random.choice(SET_DE_CARTAS))
     revelada: Mapped[Boolean] = mapped_column(Boolean, default=True)
     bloqueada: Mapped[Boolean] = mapped_column(Boolean, default=False)
 
