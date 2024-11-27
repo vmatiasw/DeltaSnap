@@ -19,6 +19,7 @@ def setup_db():
     if os.path.exists(DB_PATH):
         logging.info(f"DB {DB_PATH} already exists")
         return
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     setup_test_db()
     yield

@@ -7,7 +7,7 @@ def setup_test_db():
     '''
     Función para crear una base de datos de prueba representativa de una real.
     '''
-    partida = crear_partida(session, password="1234")
+    partida = crear_partida(session)
     unir_jugadores(session, partida, numero_de_jugadores=2)
     
     partida2 = crear_partida(session)
