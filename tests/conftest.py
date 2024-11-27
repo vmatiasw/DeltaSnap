@@ -1,7 +1,8 @@
 import pytest
 import os
 
-from tests.tools.db.db_setup import localSession
+from tests.tools.db.db_setup import localSession, Base, engine
+from tests.tools.test_db import setup_test_db
 
 # Configurar logging para que muestre solo los errores
 import logging
@@ -15,21 +16,20 @@ DB_PATH = os.path.join('tests/tools/db/test.db')
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_db():
-    if not os.path.exists(DB_PATH):
-        from tests.tools.db.db_setup import Base, engine
-        from tests.tools.test_db import setup_test_db
-        Base.metadata.create_all(engine)
-        setup_test_db()
-        os.chmod(DB_PATH, 0o444)  # Permisos de solo lectura (r-- r-- r--)
+    if os.path.exists(DB_PATH):
+        logging.info(f"DB {DB_PATH} already exists")
+        return
+    Base.metadata.create_all(engine)
+    setup_test_db()
     yield
+    if os.path.exists(DB_PATH):
+        os.remove(DB_PATH)
 
 
 @pytest.fixture(scope='function')
 def test_session():
-    os.chmod(DB_PATH, 0o644)  # Volver a permisos de escritura (rw- rw- rw-)
     session = localSession()
     session.begin()
     yield session
     session.rollback()
     session.close()
-    os.chmod(DB_PATH, 0o444)  # Permisos de solo lectura (r-- r-- r--)

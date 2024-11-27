@@ -3,7 +3,6 @@ from tests.tools.factory import crear_partida, unir_jugadores
 
 session = localSession()
 
-# NOTE: si se cambia esta función, se debe eliminar la base de datos de prueba.
 def setup_test_db():
     '''
     Función para crear una base de datos de prueba representativa de una real.
