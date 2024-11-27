@@ -1,6 +1,9 @@
 from collections import Counter
 from typing import Any, Dict, List, Tuple
 
+# TODO: agregar estas funciones a CaptureDiff
+# luego, borrar las carpetas y dejar solo los archivos de las fases
+
 # Type aliases for readability
 TupleList = List[Tuple[str, ...]]
 StringDict = Dict[str, Any]
