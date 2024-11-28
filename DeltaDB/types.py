@@ -1,6 +1,6 @@
 from typing import Any, List, Tuple, Dict, TypeVar, Set
 
-from tests.tools.db.models import Base # FIXME: Change this import
+from tests.tools.db.models.sql_alchemy import Base # FIXME: Change this import
 
 BaseModel = TypeVar('BaseModel', bound=Base)  # SQLAlchemy models
 
