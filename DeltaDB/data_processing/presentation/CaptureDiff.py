@@ -1,7 +1,6 @@
-from typing import Dict, List, Set, Tuple
-from collections import defaultdict
+from typing import Dict, List, Set
 
-from DeltaDB.types import CreatedTables, DeletedTables, RawChanges
+from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges
 
 # TODO:
 # - Agregar invertir el diccionario de cambios
@@ -38,33 +37,27 @@ class _Changes(__Data):
     Clase que maneja los cambios entre tablas.
     """
 
-    def __init__(self, changes: RawChanges):
+    def __init__(self, changes: TablesChanges):
         super().__init__(changes)
 
     def ignore_diff_fields(self, fields: Dict[str, Set[str]]) -> "_Changes":
         """
-        Marks specified fields in the difference dictionary as 'ignored'. This method checks
-        the changes and updates the specified fields to 'ignored', indicating that they should
-        not be considered when comparing differences.
-
+        Marks specified fields in the changes as 'ignored', ensuring they are not 
+        considered during comparisons.
+        
         Args:
-            fields (Dict[str, Set[str]]): A dictionary where the key is the table name, and the value
-                                        is a set of field names to be marked as 'ignored'. The fields
-                                        in the set will have their values replaced by ('ignored', 'ignored')
-                                        in the changes.
-
+            fields (Dict[str, Set[str]]): A mapping of table names to sets of field names 
+                                        that should be marked as 'ignored'.
+                                        
         Returns:
-            RawChanges: The updated dictionary with the ignored fields marked as 'ignored'.
+            _Changes: The updated instance with the specified fields ignored.
         """
         for table_id, table_changes in self.data.items():
             table_name = table_id[0]
             if table_name in fields:
-                for i, change in enumerate(table_changes):
-                    for field in fields[table_name]:
-                        if change[0] == field:
-                            table_changes[i] = (
-                                change[0], 'ignored', 'ignored')
-                            break
+                for field, change in table_changes.items():
+                    if field in fields[table_name]:
+                        table_changes[field] = ('ignored', 'ignored')
         return self
 
 class _Deleted(__Data):
@@ -88,7 +81,7 @@ class CaptureDiff:
     Compara dos capturas y devuelve las diferencias: cambios, eliminados y creados.
     """
 
-    def __init__(self, changes: RawChanges, deleted: DeletedTables, created: CreatedTables):
+    def __init__(self, changes: TablesChanges, deleted: DeletedTables, created: CreatedTables):
         self.changes = _Changes(changes)
         self.deleted = _Deleted(deleted)
         self.created = _Created(created)

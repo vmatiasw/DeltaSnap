@@ -1,5 +1,4 @@
-from typing import List
-from DeltaDB.types import Capture, CreatedTables, DeletedTables, RawChanges, RawChange
+from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges, ValueChange
 from DeltaDB.data_processing.presentation.CaptureDiff import CaptureDiff
 
 
@@ -48,7 +47,7 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
         - This function assumes that the column structure is consistent across the tables in both captures.
         - If the column structure between captures differs, an AssertionError will be raised.
     """
-    changes: RawChanges = {}
+    changes: TablesChanges = {}
     deleted: DeletedTables = set()
     created: CreatedTables = set()
 
@@ -65,7 +64,7 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
             final_table), "Column count mismatch between captures."
 
         # Track changes within the table
-        current_changes: List[RawChange] = []
+        current_changes: FieldsChanges = {}
 
         for column, initial_value in initial_table.items():
             final_value = final_table.get(column)
@@ -74,7 +73,7 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
                     f"Column '{column}' in table {table_key} not found in the final metadata.")
 
             if initial_value != final_value:
-                current_changes.append((column, initial_value, final_value))
+                current_changes[column] = (initial_value, final_value)
 
         if current_changes:
             changes[table_key] = current_changes
