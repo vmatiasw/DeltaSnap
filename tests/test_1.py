@@ -16,4 +16,11 @@ def test_iniciar_partida(test_session):
     print(captureDiff.created)
     print(captureDiff.deleted)
     print(captureDiff.changes)
+    print(captureDiff.created.get_frecuency())
+    print(captureDiff.deleted.get_frecuency())
+    print(captureDiff.changes.get_frecuency())
+    print(captureDiff.changes.ignore_diff_fields({'partidas': ['iniciada']}))
+    print(captureDiff.created.remove_tables(['cartas']))
+    print(captureDiff.deleted.remove_tables(['cartas']))
+    print(captureDiff.changes.remove_tables(['partidas']))
     assert False
