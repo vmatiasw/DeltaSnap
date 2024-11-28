@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Set, Tuple
 from collections import defaultdict
 
 from DeltaDB.types import CreatedTables, DeletedTables, RawChanges
@@ -41,16 +41,16 @@ class _Changes(__Data):
     def __init__(self, changes: RawChanges):
         super().__init__(changes)
 
-    def ignore_diff_fields(self, fields: Dict[str, List[str]]) -> "_Changes":
+    def ignore_diff_fields(self, fields: Dict[str, Set[str]]) -> "_Changes":
         """
         Marks specified fields in the difference dictionary as 'ignored'. This method checks
         the changes and updates the specified fields to 'ignored', indicating that they should
         not be considered when comparing differences.
 
         Args:
-            fields (Dict[str, List[str]]): A dictionary where the key is the table name, and the value
-                                        is a list of field names to be marked as 'ignored'. The fields
-                                        in the list will have their values replaced by ('ignored', 'ignored')
+            fields (Dict[str, Set[str]]): A dictionary where the key is the table name, and the value
+                                        is a set of field names to be marked as 'ignored'. The fields
+                                        in the set will have their values replaced by ('ignored', 'ignored')
                                         in the changes.
 
         Returns:
