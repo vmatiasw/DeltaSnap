@@ -49,15 +49,15 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
         - If the column structure between captures differs, an AssertionError will be raised.
     """
     changes: RawChanges = {}
-    deleted: DeletedTables = []
-    created: CreatedTables = []
+    deleted: DeletedTables = set()
+    created: CreatedTables = set()
 
     # Detect deleted tables and analyze changes
     for table_key, initial_table in initial_capture.items():
         final_table = final_capture.get(table_key)
         if final_table is None:
             # Table was deleted
-            deleted.append(table_key)
+            deleted.add(table_key)
             continue
 
         # Ensure consistency in structure
@@ -82,6 +82,6 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
     # Detect newly created tables
     for table_key in final_capture.keys():
         if table_key not in initial_capture:
-            created.append(table_key)
+            created.add(table_key)
 
     return CaptureDiff(changes, deleted, created)

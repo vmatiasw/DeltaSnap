@@ -13,5 +13,7 @@ def test_iniciar_partida(test_session):
 
     captureDiff = comp.diff_captures(captura_inicial, captura_final)
 
-    print(captureDiff.changes.sort())
-    assert captureDiff.created.remove_tables(['partids']).sort().data == {('partidas', 1): [('duracion_turno', 0, 60), ('iniciada', False, True), ('inicio_turno', '0', '2021-10-10T10:00:00Z')]}
+    print(captureDiff.created)
+    print(captureDiff.deleted)
+    print(captureDiff.changes)
+    assert False

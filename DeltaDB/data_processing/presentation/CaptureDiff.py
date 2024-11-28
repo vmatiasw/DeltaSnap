@@ -1,6 +1,10 @@
 from typing import Dict, List
+from collections import defaultdict
 
 from DeltaDB.types import CreatedTables, DeletedTables, RawChanges
+
+# TODO:
+# - Agregar invertir el diccionario de cambios
 
 
 class __Data():
@@ -14,15 +18,6 @@ class __Data():
     def __str__(self) -> str:
         return f"{self.data}"
     
-    def sort(self) -> "__Data":
-        """Sorts the data in place."""
-        if isinstance(self.data, dict):
-            for key in self.data:
-                self.data[key].sort()
-        elif isinstance(self.data, list):
-            self.data.sort()
-        return self
-    
     def remove_tables(self, table_names: List[str]) -> "__Data":
         """
         Removes the specified tables from the data structure. This operation is done in-place.
@@ -30,8 +25,12 @@ class __Data():
         table_names_set = set(table_names)
         if isinstance(self.data, dict):
             self.data = {key: value for key, value in self.data.items() if key[0] not in table_names_set}
-        elif isinstance(self.data, list):
-            self.data = [item for item in self.data if item[0] not in table_names_set]
+        elif isinstance(self.data, set):
+            self.data = {key for key in self.data if key[0] not in table_names_set}
+        return self
+    
+    def reduce_to_frecuency(self) -> "__Data":
+        pass # TODO: Esto se hace mas facil si en vez de listas se usan diccionarios para _Changes y conjuntos para _Deleted y _Created
         return self
 
 class _Changes(__Data):
@@ -93,13 +92,6 @@ class CaptureDiff:
         self.changes = _Changes(changes)
         self.deleted = _Deleted(deleted)
         self.created = _Created(created)
-
-    def sort(self) -> "CaptureDiff":
-        """Ordena las tablas creadas, eliminadas y los cambios."""
-        self.changes.sort()
-        self.deleted.sort()
-        self.created.sort()
-        return self
     
     def remove_tables(self, table_names: List[str]) -> "CaptureDiff":
         """
