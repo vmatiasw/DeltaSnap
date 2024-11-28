@@ -1,11 +1,12 @@
-from typing import Dict, List, Set, Any
+from typing import Dict, List, Set, Any, Tuple
 from collections import Counter, defaultdict
 from abc import ABC, abstractmethod
 
 from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges
 
-# TODO:
-# - Agregar invertir el diccionario de cambios
+# TODO: agregar funciones para:
+# - Devolver el diccionario de cambios invertido
+# - Funciones para conocer el schema de los datos
 
 
 class __Data(ABC):
@@ -20,7 +21,11 @@ class __Data(ABC):
         pass
 
     @abstractmethod
-    def get_frecuency(self) -> Dict[str, Any]:
+    def get_frequency(self) -> Dict[str, Any]:
+        pass
+
+    @abstractmethod
+    def matches_schema(self, schema) -> bool:
         pass
 
 
@@ -33,8 +38,12 @@ class __DataSet(__Data):
         self.data = {key for key in self.data if key[0] not in table_names_set}
         return self
 
-    def get_frecuency(self) -> Dict[str, int]:
+    def get_frequency(self) -> Dict[str, int]:
         return dict(Counter([key[0] for key in self.data]))
+
+    def matches_schema(self, schema: Set[str]) -> bool:
+        data_tables = {tup[0] for tup in self.data}
+        return data_tables == schema
 
 
 class _Deleted(__DataSet):
@@ -66,15 +75,27 @@ class _Changes(__Data):
                      if key[0] not in table_names_set}
         return self
 
-    def get_frecuency(self) -> Dict[str, Dict[str, int]]:
-        result : Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    def get_frequency(self) -> Dict[str, Dict[str, int]]:
+        result: Dict[str, Dict[str, int]] = defaultdict(
+            lambda: defaultdict(int))
         for (table_name, _), table_changes in self.data.items():
-            result[table_name]['#table frecuency'] += 1
+            result[table_name]['#table frequency'] += 1
             for field, _ in table_changes.items():
                 result[table_name][field] += 1
         for defdict in result:
             result[defdict] = dict(result[defdict])
         return dict(result)
+
+    def matches_schema(self, schema: Dict[str, List[str]]) -> bool:
+        if set(self.data.keys()) != set(schema.keys()):
+            return False
+
+        for key, dict in self.data.items():
+            fields = dict.keys()
+            if fields != schema[key]:
+                return False
+
+        return True
 
 
 class CaptureDiff:
