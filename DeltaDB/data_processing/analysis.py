@@ -6,46 +6,6 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
     """
     Compares two capture dictionaries and identifies the differences between them, 
     categorizing them into changes, deletions, and creations.
-
-    The function performs the following:
-        - Identifies changes in tables present in both captures (column-level changes).
-        - Identifies tables deleted in the initial capture but not present in the final capture.
-        - Identifies tables newly created in the final capture that are absent in the initial capture.
-
-    Args:
-        initial_capture (Capture): A dictionary representing the initial state of captures, 
-                                    where the keys are table identifiers and the values are dictionaries of column data.
-        final_capture (Capture): A dictionary representing the final state of captures, 
-                                  with the same structure as `initial_capture`.
-
-    Returns:
-        CaptureDiff: An object encapsulating the differences:
-        - changes: A dictionary where each key is a unique table identifier (tuple of table name and ID),
-                    and each value is a list of changes (tuples of column name, old value, and new value).
-        - deleted: A list of table identifiers (tuples of table name and ID) that were present in the 
-                    initial capture but are absent in the final.
-        - created: A list of table identifiers (tuples of table name and ID) that are present in the final 
-                    capture but were absent in the initial.
-
-    Example:
-        initial_capture = {
-            ('table1', id1): {'key1': value1, 'key2': value2},
-            ('table2', id2): {'key1': value1, 'key2': value2}
-        }
-        
-        final_capture = {
-            ('table1', id1): {'key1': modified_value1, 'key2': value2},
-            ('table3', id3): {'key1': value1, 'key2': value2}
-        }
-        
-        Output:
-            changes: {('table1', id1): [('key1', value1, modified_value1)]}
-            deleted: [('table2', id2)]
-            created: [('table3', id3)]
-
-    Notes:
-        - This function assumes that the column structure is consistent across the tables in both captures.
-        - If the column structure between captures differs, an AssertionError will be raised.
     """
     changes: TablesChanges = {}
     deleted: DeletedTables = set()
@@ -59,9 +19,8 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
             deleted.add(table_key)
             continue
 
-        # Ensure consistency in structure
-        assert len(initial_table) == len(
-            final_table), "Column count mismatch between captures."
+        # Ensure consistency in structure FIXME: Eliminar asserts (cuando podria suceder este escenario?)
+        assert len(initial_table) == len(final_table), "Column count mismatch between captures."
 
         # Track changes within the table
         current_changes: FieldsChanges = {}
