@@ -1,5 +1,5 @@
-import DeltaDB.data_processing.analysis.comparator as comp
-import DeltaDB.data_processing.ingestion.ingester as ing
+import DeltaDB.data_processing.analysis as comp
+import DeltaDB.data_processing.ingestion as ing
 
 from tests.tools.factory import iniciar_partida
 

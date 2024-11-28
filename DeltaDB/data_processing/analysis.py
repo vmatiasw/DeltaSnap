@@ -1,5 +1,5 @@
 from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges, ValueChange
-from DeltaDB.data_processing.presentation.CaptureDiff import CaptureDiff
+from DeltaDB.data_processing.CaptureDiff import CaptureDiff
 
 
 def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDiff:
