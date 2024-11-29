@@ -1,4 +1,4 @@
-ORM = "sqlalchemy" # "django" | "sqlalchemy"
+ORM = "django" # "django" | "sqlalchemy"
 
 def __get_db_manager():
     match ORM:
@@ -6,9 +6,8 @@ def __get_db_manager():
             from tests.tools.db.DBManajers.SQLAlchamyDBManager import SqlAlchemyDBManager
             return SqlAlchemyDBManager()
         case "django":
-            pass
-            # from tests.tools.db.DBManajers.DjangoDBManager import DjangoDBManager
-            # return DjangoDBManager(DATABASE_NAME)
+            from tests.tools.db.DBManajers.DjangoDBManager import DjangoDBManager
+            return DjangoDBManager()
         case _:
             raise Exception(f"ORM {ORM} not supported")
 
@@ -20,7 +19,8 @@ def __get_orm_adapter():
             from tests.tools.db.ORMAdapters.SQLAlchemyAdapter import SQLAlchemyAdapter
             return SQLAlchemyAdapter()
         case "django":
-            pass
+            from tests.tools.db.ORMAdapters.DjangoAdapter import DjangoAdapter
+            return DjangoAdapter()
         case _:
             raise Exception(f"ORM {ORM} not supported")
 
