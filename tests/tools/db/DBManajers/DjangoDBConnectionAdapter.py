@@ -3,9 +3,9 @@ from django.db import models, transaction
 from django.conf import settings
 from django.core.management import call_command
 
-from tests.tools.db.DBManajers.DBManajer import DBManager
+from tests.tools.db.DBManajers.DBConnectionAdapter import DBConnectionAdapter
 
-class DjangoDBManager(DBManager):
+class DjangoDBConnectionAdapter(DBConnectionAdapter):
     def __init__(self):
         super().__init__()
         self._setup_django()

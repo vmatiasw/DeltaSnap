@@ -9,7 +9,7 @@ DATABASE = "mysql" # sqlite | mysql | postgresql
 DATABASE_NAME = "test_db"
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), "test.db")
 
-class DBManager(ABC):
+class DBConnectionAdapter(ABC):
     def __init__(self):
         self.host = HOST
         self.port = PORT

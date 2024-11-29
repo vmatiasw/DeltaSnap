@@ -1,7 +1,7 @@
-from tests.tools.db.database_connector import db_manajer
+from tests.tools.db.database_connector import db_connection_adapter as db_connection
 from tests.tools.factory import crear_partida, unir_jugadores
 
-session = db_manajer.get_new_session()
+session = db_connection.get_new_session()
 
 def setup_test_db():
     '''

@@ -3,15 +3,15 @@ ORM = "sqlalchemy" # "django" | "sqlalchemy"
 def __get_db_manager():
     match ORM:
         case "sqlalchemy":
-            from tests.tools.db.DBManajers.SQLAlchamyDBManager import SqlAlchemyDBManager
-            return SqlAlchemyDBManager()
+            from tests.tools.db.DBManajers.SqlAlchemyDBConnectionAdapter import SqlAlchemyDBConnectionAdapter
+            return SqlAlchemyDBConnectionAdapter()
         case "django":
-            from tests.tools.db.DBManajers.DjangoDBManager import DjangoDBManager
-            return DjangoDBManager()
+            from tests.tools.db.DBManajers.DjangoDBConnectionAdapter import DjangoDBConnectionAdapter
+            return DjangoDBConnectionAdapter()
         case _:
             raise Exception(f"ORM {ORM} not supported")
 
-db_manajer = __get_db_manager()
+db_connection_adapter= __get_db_manager()
 
 def __get_db_metedata_adapter():
     match ORM:
