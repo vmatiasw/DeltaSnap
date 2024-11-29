@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from tests.tools.db.db_setup import localSession, Base, engine
+from tests.tools.db.database_connector import db_manajer
 from tests.tools.test_db import setup_test_db
 
 # Configurar logging para que muestre solo los errores
@@ -19,8 +19,8 @@ def setup_db():
     if os.path.exists(DB_PATH):
         logging.info(f"DB {DB_PATH} already exists")
         return
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
+    db_manajer.drop_tables()
+    db_manajer.create_tables()
     setup_test_db()
     yield
     if os.path.exists(DB_PATH):
@@ -29,7 +29,7 @@ def setup_db():
 
 @pytest.fixture(scope='function')
 def test_session():
-    session = localSession()
+    session = db_manajer.get_newSession()
     session.begin()
     yield session
     session.rollback()
