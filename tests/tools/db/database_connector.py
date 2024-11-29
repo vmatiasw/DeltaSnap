@@ -3,10 +3,10 @@ ORM = "sqlalchemy" # "django" | "sqlalchemy"
 def __get_db_manager():
     match ORM:
         case "sqlalchemy":
-            from tests.tools.db.DBManajers.SqlAlchemyDBConnectionAdapter import SqlAlchemyDBConnectionAdapter
+            from tests.tools.db.DBConnectionAdapters.SqlAlchemyDBConnectionAdapter import SqlAlchemyDBConnectionAdapter
             return SqlAlchemyDBConnectionAdapter()
         case "django":
-            from tests.tools.db.DBManajers.DjangoDBConnectionAdapter import DjangoDBConnectionAdapter
+            from tests.tools.db.DBConnectionAdapters.DjangoDBConnectionAdapter import DjangoDBConnectionAdapter
             return DjangoDBConnectionAdapter()
         case _:
             raise Exception(f"ORM {ORM} not supported")

@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
 from typing import Type
 
-from tests.tools.db.DBManajers.DBConnectionAdapter import DBConnectionAdapter
+from tests.tools.db.DBConnectionAdapters.DBConnectionAdapter import DBConnectionAdapter
 
 class _Base(DeclarativeBase):
     pass

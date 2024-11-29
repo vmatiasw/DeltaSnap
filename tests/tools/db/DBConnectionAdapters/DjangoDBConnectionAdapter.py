@@ -3,7 +3,7 @@ from django.db import models, transaction
 from django.conf import settings
 from django.core.management import call_command
 
-from tests.tools.db.DBManajers.DBConnectionAdapter import DBConnectionAdapter
+from tests.tools.db.DBConnectionAdapters.DBConnectionAdapter import DBConnectionAdapter
 
 class DjangoDBConnectionAdapter(DBConnectionAdapter):
     def __init__(self):
