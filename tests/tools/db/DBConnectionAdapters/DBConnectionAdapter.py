@@ -34,13 +34,13 @@ class DBConnectionAdapter(ABC):
                 raise Exception(f"Database {DATABASE} not supported")
     
     @abstractmethod
-    def get_base(self): ...
+    def get_base(self): pass
     
     @abstractmethod
-    def get_new_session(self): ...
+    def get_new_session(self): pass
 
     @abstractmethod
-    def create_tables(self) -> None: ...
+    def create_tables(self) -> None: pass
 
     @abstractmethod
-    def drop_tables(self) -> None: ...
+    def drop_tables(self) -> None: pass
