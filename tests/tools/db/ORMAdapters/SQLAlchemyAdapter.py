@@ -1,5 +1,6 @@
-
 from typing import Any, List
+from sqlalchemy.orm import Mapper
+from sqlalchemy import Column
 
 from tests.tools.db.ORMAdapters.ORMAdapter import ORMAdapter
 
@@ -7,34 +8,41 @@ class SQLAlchemyAdapter(ORMAdapter):
     def __init__(self):
         super().__init__()
     
-    def get_tables(self) -> List:
+    def get_tables(self) -> List[Mapper]:
+        """Devuelve todos los mappers de las tablas en la base de datos."""
         return self.base.registry.mappers
     
     @staticmethod
-    def get_columns(table) -> List:
+    def get_columns(table: Any) -> List[Column]:
+        """Devuelve las columnas de una tabla."""
         return table.columns
     
     @staticmethod
-    def get_instances(session, table, offset: int, page_size: int) -> List:
+    def get_instances(session: Any, table: Any, offset: int, page_size: int) -> List[Any]:
+        """Devuelve las instancias de la tabla en un rango determinado."""
         return session.query(table.class_).limit(page_size).offset(offset).all()
     
     @staticmethod
-    def get_column_key(column) -> str:
+    def get_column_key(column: Column) -> str:
+        """Devuelve la clave de la columna."""
         return column.key 
     
     @staticmethod
-    def get_column_value(column_key, record) -> Any:
+    def get_column_value(column_key: str, record: Any) -> Any:
+        """Devuelve el valor de una columna en un registro."""
         return getattr(record, column_key)
     
     @staticmethod
-    def column_is_foreign_key(column) -> bool:
+    def column_is_foreign_key(column: Column) -> bool:
+        """Devuelve True si la columna es una clave foránea."""
         return bool(column.foreign_keys)
     
     @staticmethod
-    def get_table_name(table) -> str:
+    def get_table_name(table: Any) -> str:
+        """Devuelve el nombre de la tabla para el modelo dado."""
         return str(table.persist_selectable.name)
     
     @staticmethod
-    def get_record_id(record) -> int:
+    def get_record_id(record: Any) -> int:
+        """Devuelve el ID de un registro."""
         return record.id
-        
