@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from tests.tools.db.database_connector import orm_adapter
+from tests.tools.db.database_connector import db_metedata_adapter
 from DeltaDB.types import Capture#, ObjectsList
 # from DeltaDB.validations import validate_data, ValidateId, ValidateInstance, ValidateTablename
 #
@@ -25,20 +25,20 @@ from DeltaDB.types import Capture#, ObjectsList
 #     return dict(metadata)
 
 def capture_all_tables(session, page_size: int = 1) -> Capture:
-    tables = orm_adapter.get_tables()
+    tables = db_metedata_adapter.get_tables()
     metadata: Capture = defaultdict(dict)
 
     for table in tables:
         offset = 0
-        columns = orm_adapter.get_columns(table)
-        table_name = orm_adapter.get_table_name(table)
-        while instances := orm_adapter.get_instances(session, table, offset, page_size):
+        columns = db_metedata_adapter.get_columns(table)
+        table_name = db_metedata_adapter.get_table_name(table)
+        while instances := db_metedata_adapter.get_instances(session, table, offset, page_size):
             for record in instances:
-                record_id = orm_adapter.get_record_id(record)
+                record_id = db_metedata_adapter.get_record_id(record)
                 for column in columns:
-                    column_name = orm_adapter.get_column_key(column)
-                    column_value = orm_adapter.get_column_value(column_name, record)
-                    column_is_foreign_key = orm_adapter.column_is_foreign_key(column)
+                    column_name = db_metedata_adapter.get_column_key(column)
+                    column_value = db_metedata_adapter.get_column_value(column_name, record)
+                    column_is_foreign_key = db_metedata_adapter.column_is_foreign_key(column)
 
                     key = f'{column_name} (FK)' if column_is_foreign_key else column_name
                     metadata[table_name, record_id][key] = column_value

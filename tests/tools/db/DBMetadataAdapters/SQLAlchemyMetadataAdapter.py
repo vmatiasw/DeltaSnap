@@ -2,9 +2,9 @@ from typing import Any, List
 from sqlalchemy.orm import Mapper
 from sqlalchemy import Column
 
-from tests.tools.db.ORMAdapters.ORMAdapter import ORMAdapter
+from tests.tools.db.DBMetadataAdapters.DBMetadataAdapter import DBMetadataAdapter
 
-class SQLAlchemyAdapter(ORMAdapter):
+class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
     def __init__(self):
         super().__init__()
     

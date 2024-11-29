@@ -3,7 +3,7 @@ from typing import List, Any
 
 from tests.tools.db.database_connector import db_manajer
 
-class ORMAdapter(ABC):
+class DBMetadataAdapter(ABC):
     def __init__(self) -> None:
         self.base = db_manajer.get_base()
         

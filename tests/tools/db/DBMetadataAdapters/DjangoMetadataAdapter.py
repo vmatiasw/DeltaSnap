@@ -2,9 +2,9 @@ from typing import Any, List
 from django.db import models
 from django.apps import apps
 
-from tests.tools.db.ORMAdapters.ORMAdapter import ORMAdapter
+from tests.tools.db.DBMetadataAdapters.DBMetadataAdapter import DBMetadataAdapter
 
-class DjangoAdapter(ORMAdapter):
+class DjangoMetadataAdapter(DBMetadataAdapter):
     def __init__(self):
         super().__init__()
 
