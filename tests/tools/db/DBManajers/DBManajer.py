@@ -5,7 +5,7 @@ HOST = "localhost"
 PORT = ''
 PASSWORD = "test_password"
 USERNAME = "test_user"
-DATABASE = "mysql" # con sqlalchemy: sqlite | mysql | postgresql
+DATABASE = "mysql" # sqlite | mysql | postgresql
 DATABASE_NAME = "test_db"
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), "test.db")
 
@@ -37,7 +37,7 @@ class DBManager(ABC):
     def get_base(self): ...
     
     @abstractmethod
-    def get_newSession(self): ...
+    def get_new_session(self): ...
 
     @abstractmethod
     def create_tables(self) -> None: ...

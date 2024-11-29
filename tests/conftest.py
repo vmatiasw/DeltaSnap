@@ -29,7 +29,7 @@ def setup_db():
 
 @pytest.fixture(scope='function')
 def test_session():
-    session = db_manajer.get_newSession()
+    session = db_manajer.get_new_session()
     session.begin()
     yield session
     session.rollback()

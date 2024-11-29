@@ -5,9 +5,7 @@ import random
 from random import shuffle
 import json
 
-from tests.tools.db.database_connector import db_manajer
-
-Base = db_manajer.get_base()
+from tests.tools.db.DBManajers.SQLAlchamyDBManager import _Base as Base
 
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 

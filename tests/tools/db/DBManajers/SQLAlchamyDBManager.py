@@ -18,7 +18,7 @@ class SqlAlchemyDBManager(DBManager):
         """Devuelve la clase Base de SQLAlchemy."""
         return self.Base
     
-    def get_newSession(self) -> Session:
+    def get_new_session(self) -> Session:
         """Devuelve una nueva sesión de SQLAlchemy."""
         return self.sessionMaker()
 
