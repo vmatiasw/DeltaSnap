@@ -1,4 +1,4 @@
-from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges, ValueChange
+from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges
 from DeltaDB.data_processing.CaptureDiff import CaptureDiff
 
 

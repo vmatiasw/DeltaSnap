@@ -2,7 +2,7 @@ from typing import Any, List
 from django.db import models
 from django.apps import apps
 
-from tests.tools.db.DBMetadataAdapters.DBMetadataAdapter import DBMetadataAdapter
+from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
 
 class DjangoMetadataAdapter(DBMetadataAdapter):
     def __init__(self):

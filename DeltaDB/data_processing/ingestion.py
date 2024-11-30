@@ -1,27 +1,27 @@
 from collections import defaultdict
 
-from tests.tools.db.database_connector import db_metedata_adapter as db_metedata
+from DeltaDB.DBMetadata.db_metadata_manajer import db_metadata
 from DeltaDB.types import Capture
 
 
 def capture_all_tables(session, page_size: int = 1) -> Capture:
-    tables = db_metedata.get_tables()
+    tables = db_metadata.get_tables()
     metadata: Capture = defaultdict(dict)
 
     for table in tables:
         offset = 0
-        columns = db_metedata.get_columns(table)
-        table_name = db_metedata.get_table_name(table)
+        columns = db_metadata.get_columns(table)
+        table_name = db_metadata.get_table_name(table)
         
-        while instances := db_metedata.get_instances(session, table, offset, page_size):
+        while instances := db_metadata.get_instances(session, table, offset, page_size):
             
             for record in instances:
-                record_id = db_metedata.get_record_id(record)
+                record_id = db_metadata.get_record_id(record)
                 
                 for column in columns:
-                    column_name = db_metedata.get_column_key(column)
-                    column_value = db_metedata.get_column_value(column_name, record)
-                    column_is_foreign_key = db_metedata.column_is_foreign_key(column)
+                    column_name = db_metadata.get_column_key(column)
+                    column_value = db_metadata.get_column_value(column_name, record)
+                    column_is_foreign_key = db_metadata.column_is_foreign_key(column)
 
                     key = f'{column_name} (FK)' if column_is_foreign_key else column_name
                     metadata[table_name, record_id][key] = column_value

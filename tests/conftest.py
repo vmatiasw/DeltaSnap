@@ -1,8 +1,9 @@
 import pytest
 import os
 
-from tests.tools.db.database_connector import db_connection_adapter as db_connection
-from tests.tools.test_db import setup_test_db
+from tests.db.DBContextManager import DBTestContextManager
+from tests.db.DBConnection.db_connection_manajer import db_connection
+from tests.db.TestDB import TestDB
 
 # Configurar logging para que muestre solo los errores
 import logging
@@ -21,7 +22,7 @@ def setup_db():
         return
     db_connection.drop_tables()
     db_connection.create_tables()
-    setup_test_db()
+    TestDB().setup_data()
     yield
     if os.path.exists(DB_PATH):
         os.remove(DB_PATH)
@@ -29,8 +30,8 @@ def setup_db():
 
 @pytest.fixture(scope='function')
 def test_session():
-    session = db_connection.get_new_session()
-    session.begin()
-    yield session
-    session.rollback()
-    session.close()
+    """
+    Fixture que proporciona una sesión de base de datos gestionada con 'with'.
+    """
+    with DBTestContextManager() as session:
+        yield session

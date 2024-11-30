@@ -2,7 +2,7 @@ from typing import Any, List
 from sqlalchemy.orm import Mapper
 from sqlalchemy import Column
 
-from tests.tools.db.DBMetadataAdapters.DBMetadataAdapter import DBMetadataAdapter
+from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
 
 class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
     def __init__(self):
@@ -11,6 +11,14 @@ class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
     def get_tables(self) -> List[Mapper]:
         """Devuelve todos los mappers de las tablas en la base de datos."""
         return self.base.registry.mappers
+    
+    def get_model_by_name(self, model_name: str) -> Any:
+        """Obtiene un modelo de base de datos por su nombre."""
+        for mapper in self.base.registry.mappers:
+            if model_name == mapper.class_.__name__:
+                return mapper.class_
+
+        raise ValueError(f"El modelo {model_name} no se encuentra definido.")
     
     @staticmethod
     def get_columns(table: Any) -> List[Column]:

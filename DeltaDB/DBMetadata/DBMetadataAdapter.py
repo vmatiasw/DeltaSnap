@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Any
 
-from tests.tools.db.database_connector import db_connection_adapter as db_connection
+from tests.db.DBConnection.db_connection_manajer import db_connection
 
 class DBMetadataAdapter(ABC):
     def __init__(self) -> None:
@@ -9,6 +9,9 @@ class DBMetadataAdapter(ABC):
         
     @abstractmethod
     def get_tables(self) -> List: pass
+    
+    @abstractmethod
+    def get_model_by_name(self, model_name: str) -> Any: pass
 
     @staticmethod
     @abstractmethod

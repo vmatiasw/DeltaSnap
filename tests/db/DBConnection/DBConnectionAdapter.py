@@ -1,13 +1,9 @@
 import os
 from abc import ABC, abstractmethod
 
-HOST = "localhost"
-PORT = ''
-PASSWORD = "test_password"
-USERNAME = "test_user"
-DATABASE = "mysql" # sqlite | mysql | postgresql
-DATABASE_NAME = "test_db"
-DATABASE_PATH = os.path.join(os.path.dirname(__file__), "test.db")
+from DeltaDB.config import DATABASE, DATABASE_NAME, HOST, PASSWORD, PORT, USERNAME
+
+DATABASE_PATH = os.path.join(os.path.dirname(__file__), f"{DATABASE_NAME}.db")
 
 class DBConnectionAdapter(ABC):
     def __init__(self):
