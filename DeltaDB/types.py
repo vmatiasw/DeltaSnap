@@ -6,9 +6,9 @@ BaseModel = TypeVar('BaseModel', bound=Base)  # SQLAlchemy models
 
 UniqueTableId = Tuple[str, int]  # (table_name, id)
 
-Message = NewType('Message', str)
-def message(value: str) -> Message:
-    return Message('#'+value)
+Info = NewType('Info', str)
+def info(value: str) -> Info:
+    return Info('#'+value)
 
 # Capture
 Field = str

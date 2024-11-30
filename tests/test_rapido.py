@@ -32,8 +32,8 @@ def test_iniciar_partida(test_session):
     assert changes.data == {('partidas', 1): {'iniciada': (False, True), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}, ('jugadores', 1): {'es_creador': ("#column don't exist", True), 'nombre': ('Creador', "#column don't exist")}}
     assert created.remove_tables(['jugadores']).data == {('cartas', 1), ('cartas', 2), ('cartas', 3), ('cartas', 4), ('cartas', 5), ('cartas', 6)}
     assert not deleted.remove_tables(['jugadores']).data
-    assert changes.ignore_diff_fields({'partidas': ['iniciada']}).remove_tables(['jugadores']).data == {('partidas', 1): {'duracion_turno': (0, 60), 'iniciada': ('#ignored', '#ignored'), 'inicio_turno': ('0', '2021-10-10T10:00:00Z')}}
-    assert changes.ignore_diff_fields({'partidas': ['iniciada']}).data == {('partidas', 1): {'iniciada': ('#ignored', '#ignored'), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}}
+    assert changes.ignore_diff_fields({'partidas': ['iniciada']}).remove_tables(['jugadores']).data == {('partidas', 1): {'duracion_turno': (0, 60), 'iniciada': ('#change ignored', '#change ignored'), 'inicio_turno': ('0', '2021-10-10T10:00:00Z')}}
+    assert changes.ignore_diff_fields({'partidas': ['iniciada']}).data == {('partidas', 1): {'iniciada': ('#change ignored', '#change ignored'), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}}
     assert created.matches_schema({'cartas'})
     assert deleted.matches_schema(set())
     assert changes.matches_schema({('partidas', 1): {'iniciada', 'inicio_turno', 'duracion_turno'}})

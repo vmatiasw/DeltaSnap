@@ -2,7 +2,7 @@ from typing import Dict, List, Set, Any
 from collections import Counter, defaultdict
 from abc import ABC, abstractmethod
 
-from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges, message
+from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges, info
 
 # TODO: agregar funciones para:
 # - Devolver el diccionario de cambios invertido
@@ -66,7 +66,7 @@ class Changes(__Data):
             if table_name in fields:
                 for field, _ in table_changes.items():
                     if field in fields[table_name]:
-                        table_changes[field] = (message('ignored'), message('ignored'))
+                        table_changes[field] = (info('change ignored'), info('change ignored'))
         return self
 
     def remove_tables(self, table_names: List[str]) -> "Changes":
@@ -79,7 +79,7 @@ class Changes(__Data):
         result: Dict[str, Dict[str, int]] = defaultdict(
             lambda: defaultdict(int))
         for (table_name, _), table_changes in self.data.items():
-            result[table_name][message('table frequency')] += 1
+            result[table_name][info('table frequency')] += 1
             for field, _ in table_changes.items():
                 result[table_name][field] += 1
         for defdict in result:
