@@ -1,9 +1,12 @@
 from typing import Any, Type
+from sqlalchemy.orm import Session
 
 from tests.db.DBTransaction.DBTransactionAdapter import DBTransactionAdapter
 from DeltaDB.DBMetadata.db_metadata_manajer import db_metadata
 
 class SqlAlchemyDBTransactionAdapter(DBTransactionAdapter):
+    def __init__(self, db_session: Session) -> None:
+        super().__init__(db_session)
     
     def instance_model(self, model_name: str, **kwargs: Any) -> Any:
         """

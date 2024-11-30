@@ -6,11 +6,12 @@ from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
 
 class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
     def __init__(self, base: DeclarativeBase) -> None:
-        super().__init__(base)
+        super().__init__()
+        self.base = base
     
     def get_tables(self) -> List[Mapper]:
         """Devuelve todos los mappers de las tablas en la base de datos."""
-        return self.base.registry.mappers
+        return list(self.base.registry.mappers)
     
     def get_model_by_name(self, model_name: str) -> Any:
         """Obtiene un modelo de base de datos por su nombre."""
@@ -23,7 +24,7 @@ class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
     @staticmethod
     def get_columns(table: Any) -> List[Column]:
         """Devuelve las columnas de una tabla."""
-        return table.columns
+        return list(table.columns)
     
     @staticmethod
     def get_instances(session: Any, table: Any, offset: int, page_size: int) -> List[Any]:
@@ -33,8 +34,8 @@ class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
     @staticmethod
     def get_column_key(column: Column) -> str:
         """Devuelve la clave de la columna."""
-        return column.key 
-    
+        return str(column.key)
+
     @staticmethod
     def get_column_value(column_key: str, record: Any) -> Any:
         """Devuelve el valor de una columna en un registro."""
@@ -53,4 +54,4 @@ class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
     @staticmethod
     def get_record_id(record: Any) -> int:
         """Devuelve el ID de un registro."""
-        return record.id
+        return int(record.id)

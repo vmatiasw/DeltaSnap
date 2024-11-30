@@ -5,17 +5,22 @@ from django.apps import apps
 from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
 
 class DjangoMetadataAdapter(DBMetadataAdapter):
-    def __init__(self, base: models.Model) -> None:
-        super().__init__(base)
+    def __init__(self, app_label) -> None:
+        super().__init__()
+        self.app_label = app_label
 
     def get_tables(self) -> List[type[models.Model]]:
         """Devuelve todas las clases de modelo registradas en Django."""
-        return apps.get_models()
+        return list(apps.get_models())
+    
+    def get_model_by_name(self, model_name: str) -> type[models.Model]:
+        """Devuelve la clase de modelo (tabla) por su nombre."""
+        return apps.get_model(self.app_label + "." + model_name)
 
     @staticmethod
     def get_columns(table) -> List[models.Field]:
         """Devuelve los campos de un modelo (tabla) específico."""
-        return table._meta.fields
+        return list(table._meta.fields)
     
     @staticmethod
     def get_instances(session, table, offset: int, page_size: int) -> List:
@@ -26,7 +31,7 @@ class DjangoMetadataAdapter(DBMetadataAdapter):
     @staticmethod
     def get_column_key(column) -> str:
         """Devuelve el nombre del campo (columna) del modelo."""
-        return column.name
+        return str(column.name)
     
     @staticmethod
     def get_column_value(column_key, record) -> Any:
@@ -41,9 +46,9 @@ class DjangoMetadataAdapter(DBMetadataAdapter):
     @staticmethod
     def get_table_name(table) -> str:
         """Devuelve el nombre de la tabla asociada al modelo."""
-        return table._meta.db_table
+        return str(table._meta.db_table)
     
     @staticmethod
     def get_record_id(record) -> int:
         """Devuelve el ID del registro (específicamente en Django, es el campo de la clave primaria)."""
-        return record.id
+        return int(record.id)

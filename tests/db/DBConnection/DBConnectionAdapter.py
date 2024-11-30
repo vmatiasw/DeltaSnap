@@ -14,6 +14,7 @@ class DBConnectionAdapter(ABC):
         self.password = PASSWORD
         self.db_name = DATABASE_NAME
         self.db_path = self._get_database_url()
+        self.base = None
     
     @staticmethod
     def _get_database_url() -> str:

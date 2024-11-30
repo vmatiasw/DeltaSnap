@@ -2,6 +2,10 @@ import random
 import json
 from django.db import models
 
+from tests.db.DBConnection.db_connection_manajer import db_connection
+
+Model = db_connection.get_base()
+
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 
 # Función para generar el tablero aleatorio
@@ -20,7 +24,7 @@ def tablero_random():
 
 
 # Modelo de Jugador
-class Jugador(models.Model):
+class Jugador(Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
     es_creador = models.BooleanField(default=False)
@@ -33,7 +37,7 @@ class Jugador(models.Model):
 
 
 # Modelo de Partida
-class Partida(models.Model):
+class Partida(Model):
     id = models.AutoField(primary_key=True)
     nombre_partida = models.CharField(max_length=255)
     nombre_creador = models.CharField(max_length=255)
@@ -47,7 +51,7 @@ class Partida(models.Model):
 
 
 # Modelo de Carta
-class Carta(models.Model):
+class Carta(Model):
     id = models.AutoField(primary_key=True)
     carta = models.CharField(
         max_length=255, default=lambda: random.choice(SET_DE_CARTAS))

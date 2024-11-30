@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Type
 
 
 class DBTransactionAdapter(ABC):
@@ -33,8 +33,13 @@ class DBTransactionAdapter(ABC):
         pass
 
     @abstractmethod
-    def query(self, model_name: str) -> Any:
-        """Realiza una consulta a la base de datos para un modelo específico."""
+    def query(self, model: str | Type[Any]) -> Any:
+        """
+        Realiza una consulta a la base de datos para un modelo específico.
+        
+        Args:
+            model (str | Type[Any]): El nombre del modelo o la clase del modelo.
+        """
         pass
 
     @abstractmethod

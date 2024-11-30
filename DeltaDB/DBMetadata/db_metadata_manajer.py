@@ -1,4 +1,4 @@
-from DeltaDB.config import ORM
+from DeltaDB.config import ORM, APP_LABEL
 from tests.db.DBConnection.db_connection_manajer import db_connection
 
 def __get_db_metadata_adapter():
@@ -8,7 +8,7 @@ def __get_db_metadata_adapter():
             return SQLAlchemyMetadataAdapter(db_connection.get_base())
         case "django":
             from DeltaDB.DBMetadata.DjangoMetadataAdapter import DjangoMetadataAdapter
-            return DjangoMetadataAdapter(db_connection.get_base())
+            return DjangoMetadataAdapter(APP_LABEL)
         case _:
             raise Exception(f"ORM {ORM} not supported")
 
