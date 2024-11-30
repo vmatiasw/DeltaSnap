@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Any
 
-class DBMetadataAdapter(ABC):
+class DBMetadataInterface(ABC):
     
     def __init__(self, ) -> None: pass
         

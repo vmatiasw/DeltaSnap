@@ -2,9 +2,9 @@ from typing import Any, List
 from django.db import models
 from django.apps import apps
 
-from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
+from DeltaDB.DBMetadata.DBMetadataInterface import DBMetadataInterface
 
-class DjangoMetadataAdapter(DBMetadataAdapter):
+class DjangoMetadataAdapter(DBMetadataInterface):
     def __init__(self) -> None:
         super().__init__()
 

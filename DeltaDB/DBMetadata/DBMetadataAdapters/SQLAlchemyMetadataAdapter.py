@@ -2,9 +2,9 @@ from typing import Any, List
 from sqlalchemy.orm import Mapper, DeclarativeBase
 from sqlalchemy import Column
 
-from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
+from DeltaDB.DBMetadata.DBMetadataInterface import DBMetadataInterface
 
-class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
+class SQLAlchemyMetadataAdapter(DBMetadataInterface):
     def __init__(self, base: DeclarativeBase) -> None:
         super().__init__()
         self.base = base
