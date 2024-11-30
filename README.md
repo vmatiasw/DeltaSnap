@@ -56,6 +56,6 @@ def test_iniciar_partida(test_session):
 
 Aun así, hay muchos test que requieren de preparar una base de datos de prueba, para ello lo que habría que hacer es crear una representativa de una real pero lo mas chica posible (balancear) e irla actualizando; y que los test nunca modifiquen la base de datos de prueba (rollback).
 
-Luego hay algunos problemas, por ejemplo que pasa si una funcionalidad no es determinista? bueno, para esos casos construí algunas herramientas para manipular los datos de captureDiff para analizar solo lo que queremos analizar como ignorar tablas o columnas de tablas, solo contar frecuencias, chequear esquemas,... y se pueden construir aun mas herramientas, pero por ahora eso escapa a las ganas que tengo de seguir codeando en este proyecto que actualmente a nadie sirve.
+Luego hay algunos problemas, por ejemplo que pasa si una funcionalidad no es determinista? bueno, para esos casos construí algunas herramientas para manipular los datos devueltos para analizar solo lo que queremos analizar como ignorar tablas o columnas de tablas, solo contar frecuencias, chequear esquemas,... y se pueden construir aun mas herramientas, pero por ahora eso escapa a las ganas que tengo de seguir codeando en este proyecto que actualmente a nadie sirve.
 
 Acepto mejoras, no se si hice las mejores decisiones de diseño en las interfaces, marcas #, ...
