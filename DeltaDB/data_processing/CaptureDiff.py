@@ -6,7 +6,7 @@ from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges
 
 # TODO: agregar funciones para:
 # - Devolver el diccionario de cambios invertido
-# - Funciones para conocer el schema de los datos
+# - Funciones que devuelvan el esquema de los datos en vez de recibir el esquema y devolver un booleano
 
 
 class __Data(ABC):
