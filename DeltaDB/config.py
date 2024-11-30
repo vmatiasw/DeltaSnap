@@ -1,5 +1,5 @@
 
-ORM = "sqlalchemy" # "django" | "sqlalchemy"
+ORM = "sqlalchemy" # "sqlalchemy" testeado, "django" no testeado.
 
 HOST = "localhost"
 PORT = ''
