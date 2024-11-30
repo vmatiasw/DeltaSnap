@@ -16,21 +16,25 @@ def test_iniciar_partida(test_session):
     game.iniciar_partida(partida)
     
     captura_final = ing.capture_all_tables(test_session)
-    
-    assert captura_final != captura_inicial
 
+    assert captura_final != captura_inicial
+    
+    captura_inicial[('jugadores', 1)].pop('es_creador')
+    captura_final[('jugadores', 1)].pop('nombre')
+    
     captureDiff = comp.diff_captures(captura_inicial, captura_final)
 
-    assert captureDiff.created.data == {('cartas', 5), ('cartas', 4), ('cartas', 1), ('cartas', 3), ('cartas', 6), ('cartas', 2)}
-    assert not captureDiff.deleted.data
-    assert captureDiff.changes.data == {('partidas', 1): {'iniciada': (False, True), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}}
     assert captureDiff.created.get_frequency() == {'cartas': 6}
     assert not captureDiff.deleted.get_frequency()
-    assert captureDiff.changes.get_frequency() == {'partidas': {'#table frequency': 1, 'iniciada': 1, 'inicio_turno': 1, 'duracion_turno': 1}}
+    assert captureDiff.changes.get_frequency() == {'partidas': {'#table frequency': 1, 'iniciada': 1, 'inicio_turno': 1, 'duracion_turno': 1}, 'jugadores': {'#table frequency': 1, 'es_creador': 1, 'nombre': 1}}
+    assert captureDiff.created.data == {('cartas', 5), ('cartas', 4), ('cartas', 1), ('cartas', 3), ('cartas', 6), ('cartas', 2)}
+    assert not captureDiff.deleted.data
+    assert captureDiff.changes.data == {('partidas', 1): {'iniciada': (False, True), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}, ('jugadores', 1): {'es_creador': ("#column don't exist", True), 'nombre': ('Creador', "#column don't exist")}}
+    assert captureDiff.created.remove_tables(['jugadores']).data == {('cartas', 1), ('cartas', 2), ('cartas', 3), ('cartas', 4), ('cartas', 5), ('cartas', 6)}
+    assert not captureDiff.deleted.remove_tables(['jugadores']).data
+    assert captureDiff.changes.ignore_diff_fields({'partidas': ['iniciada']}).remove_tables(['jugadores']).data == {('partidas', 1): {'duracion_turno': (0, 60), 'iniciada': ('#ignored', '#ignored'), 'inicio_turno': ('0', '2021-10-10T10:00:00Z')}}
     assert captureDiff.changes.ignore_diff_fields({'partidas': ['iniciada']}).data == {('partidas', 1): {'iniciada': ('#ignored', '#ignored'), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}}
     assert captureDiff.created.matches_schema({'cartas'})
     assert captureDiff.deleted.matches_schema(set())
     assert captureDiff.changes.matches_schema({('partidas', 1): {'iniciada', 'inicio_turno', 'duracion_turno'}})
-    assert not captureDiff.created.remove_tables(['cartas']).data
-    assert not captureDiff.deleted.remove_tables(['cartas']).data
-    assert not captureDiff.changes.ignore_diff_fields({'partidas': ['iniciada']}).remove_tables(['partidas']).data
+

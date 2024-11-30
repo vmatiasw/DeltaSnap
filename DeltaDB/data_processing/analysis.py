@@ -1,6 +1,7 @@
 from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges
 from DeltaDB.data_processing.CaptureDiff import CaptureDiff
 
+# TODO: Al marcar algo se usa # en el valor, ... ¿es necesario? ¿es una buena práctica?
 
 def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDiff:
     """
@@ -19,20 +20,21 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
             deleted.add(table_key)
             continue
 
-        # Ensure consistency in structure FIXME: Eliminar asserts (cuando podria suceder este escenario?)
-        assert len(initial_table) == len(final_table), "Column count mismatch between captures."
-
         # Track changes within the table
         current_changes: FieldsChanges = {}
 
         for column, initial_value in initial_table.items():
+            if column not in final_table:
+                current_changes[column] = (initial_value, "#column don't exist")
+                continue
+            
             final_value = final_table.get(column)
-            if final_value is None:
-                raise ValueError(
-                    f"Column '{column}' in table {table_key} not found in the final metadata.")
-
             if initial_value != final_value:
                 current_changes[column] = (initial_value, final_value)
+                
+        for column, final_value in final_table.items():
+            if column not in initial_table:
+                current_changes[column] = ("#column don't exist", final_value)
 
         if current_changes:
             changes[table_key] = current_changes
