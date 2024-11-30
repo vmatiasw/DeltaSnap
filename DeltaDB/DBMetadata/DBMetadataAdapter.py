@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import List, Any
 
-from tests.db.DBConnection.db_connection_manajer import db_connection
-
 class DBMetadataAdapter(ABC):
-    def __init__(self) -> None:
-        self.base = db_connection.get_base()
+    def __init__(self, base) -> None:
+        self.base = base
         
     @abstractmethod
     def get_tables(self) -> List: pass

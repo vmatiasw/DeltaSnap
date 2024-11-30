@@ -5,8 +5,8 @@ from django.apps import apps
 from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
 
 class DjangoMetadataAdapter(DBMetadataAdapter):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, base: models.Model) -> None:
+        super().__init__(base)
 
     def get_tables(self) -> List[type[models.Model]]:
         """Devuelve todas las clases de modelo registradas en Django."""

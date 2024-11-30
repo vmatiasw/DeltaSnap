@@ -1,12 +1,12 @@
 from typing import Any, List
-from sqlalchemy.orm import Mapper
+from sqlalchemy.orm import Mapper, DeclarativeBase
 from sqlalchemy import Column
 
 from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
 
 class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, base: DeclarativeBase) -> None:
+        super().__init__(base)
     
     def get_tables(self) -> List[Mapper]:
         """Devuelve todos los mappers de las tablas en la base de datos."""
