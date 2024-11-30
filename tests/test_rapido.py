@@ -21,17 +21,16 @@ def test_iniciar_partida(test_session):
 
     captureDiff = comp.diff_captures(captura_inicial, captura_final)
 
-    print(captureDiff.created)
-    print(captureDiff.deleted)
-    print(captureDiff.changes)
-    print(captureDiff.created.get_frequency())
-    print(captureDiff.deleted.get_frequency())
-    print(captureDiff.changes.get_frequency())
-    print(captureDiff.changes.ignore_diff_fields({'partidas': ['iniciada']}))
-    print(captureDiff.created.matches_schema({'cartas'}))
-    print(captureDiff.deleted.matches_schema(set()))
-    print(captureDiff.changes.matches_schema({('partidas', 1): {'iniciada', 'inicio_turno', 'duracion_turno'}}))
-    print(captureDiff.created.remove_tables(['cartas']))
-    print(captureDiff.deleted.remove_tables(['cartas']))
-    print(captureDiff.changes.remove_tables(['partidas']))
-    assert False
+    assert captureDiff.created.data == {('cartas', 5), ('cartas', 4), ('cartas', 1), ('cartas', 3), ('cartas', 6), ('cartas', 2)}
+    assert not captureDiff.deleted.data
+    assert captureDiff.changes.data == {('partidas', 1): {'iniciada': (False, True), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}}
+    assert captureDiff.created.get_frequency() == {'cartas': 6}
+    assert not captureDiff.deleted.get_frequency()
+    assert captureDiff.changes.get_frequency() == {'partidas': {'#table frequency': 1, 'iniciada': 1, 'inicio_turno': 1, 'duracion_turno': 1}}
+    assert captureDiff.changes.ignore_diff_fields({'partidas': ['iniciada']}).data == {('partidas', 1): {'iniciada': ('#ignored', '#ignored'), 'inicio_turno': ('0', '2021-10-10T10:00:00Z'), 'duracion_turno': (0, 60)}}
+    assert captureDiff.created.matches_schema({'cartas'})
+    assert captureDiff.deleted.matches_schema(set())
+    assert captureDiff.changes.matches_schema({('partidas', 1): {'iniciada', 'inicio_turno', 'duracion_turno'}})
+    assert not captureDiff.created.remove_tables(['cartas']).data
+    assert not captureDiff.deleted.remove_tables(['cartas']).data
+    assert not captureDiff.changes.ignore_diff_fields({'partidas': ['iniciada']}).remove_tables(['partidas']).data
