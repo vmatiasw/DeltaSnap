@@ -43,11 +43,11 @@ def test_iniciar_partida(test_session):
 	# Se llama a la funcionalidad
 	
 	captura_final = capture_all_tables(test_session)
-	captureDiff = diff_captures(captura_inicial, captura_final)
+	changes, created, deleted = diff_captures(captura_inicial, captura_final)
 	
-	assert not captureDiff.deleted.data
-	assert not captureDiff.created.data
-	assert captureDiff.changes.data == {
+	assert not deleted.data
+	assert not created.data
+	assert changes.data == {
 		('partidas', 1): {
 			'iniciada': (False, True),
 			'inicio_turno': ('0', '2021-10-10T10:00:00Z'),

@@ -1,9 +1,11 @@
+from typing import Tuple
+
 from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges
-from DeltaDB.data_processing.CaptureDiff import CaptureDiff
+from DeltaDB.data_processing.data_classes import Changes, Created, Deleted
 
 # TODO: Al marcar algo se usa # en el valor, ... ¿es necesario? ¿es una buena práctica?
 
-def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDiff:
+def diff_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Changes, Created, Deleted]:
     """
     Compares two capture dictionaries and identifies the differences between them, 
     categorizing them into changes, deletions, and creations.
@@ -44,4 +46,4 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> CaptureDi
         if table_key not in initial_capture:
             created.add(table_key)
 
-    return CaptureDiff(changes, deleted, created)
+    return Changes(changes), Created(created), Deleted(deleted)

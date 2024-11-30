@@ -33,7 +33,7 @@ class __DataSet(__Data):
     def __init__(self, data: Set):
         super().__init__(data)
 
-    def remove_tables(self, table_names: List[str]) -> "__Data":
+    def remove_tables(self, table_names: List[str]) -> "__DataSet":
         table_names_set = set(table_names)
         self.data = {key for key in self.data if key[0] not in table_names_set}
         return self
@@ -46,21 +46,21 @@ class __DataSet(__Data):
         return data_tables == schema
 
 
-class _Deleted(__DataSet):
+class Deleted(__DataSet):
     def __init__(self, deleted: DeletedTables):
         super().__init__(deleted)
 
 
-class _Created(__DataSet):
+class Created(__DataSet):
     def __init__(self, created: CreatedTables):
         super().__init__(created)
 
 
-class _Changes(__Data):
+class Changes(__Data):
     def __init__(self, changes: TablesChanges):
         super().__init__(changes)
 
-    def ignore_diff_fields(self, fields: Dict[str, Set[str]]) -> "_Changes":
+    def ignore_diff_fields(self, fields: Dict[str, Set[str]]) -> "Changes":
         for table_id, table_changes in self.data.items():
             table_name = table_id[0]
             if table_name in fields:
@@ -69,7 +69,7 @@ class _Changes(__Data):
                         table_changes[field] = ('#ignored', '#ignored')
         return self
 
-    def remove_tables(self, table_names: List[str]) -> "__Data":
+    def remove_tables(self, table_names: List[str]) -> "Changes":
         table_names_set = set(table_names)
         self.data = {key: value for key, value in self.data.items()
                      if key[0] not in table_names_set}
@@ -96,19 +96,3 @@ class _Changes(__Data):
                 return False
 
         return True
-
-
-class CaptureDiff:
-    def __init__(self, changes: TablesChanges, deleted: DeletedTables, created: CreatedTables):
-        self.changes = _Changes(changes)
-        self.deleted = _Deleted(deleted)
-        self.created = _Created(created)
-
-    def remove_tables(self, table_names: List[str]) -> "CaptureDiff":
-        self.changes.remove_tables(table_names)
-        self.deleted.remove_tables(table_names)
-        self.created.remove_tables(table_names)
-        return self
-
-    def __str__(self) -> str:
-        return f"{self.changes}, {self.deleted}, {self.created}"
