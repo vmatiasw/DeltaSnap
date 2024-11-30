@@ -5,17 +5,12 @@ from django.apps import apps
 from DeltaDB.DBMetadata.DBMetadataAdapter import DBMetadataAdapter
 
 class DjangoMetadataAdapter(DBMetadataAdapter):
-    def __init__(self, app_label) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.app_label = app_label
 
     def get_tables(self) -> List[type[models.Model]]:
         """Devuelve todas las clases de modelo registradas en Django."""
         return list(apps.get_models())
-    
-    def get_model_by_name(self, model_name: str) -> type[models.Model]:
-        """Devuelve la clase de modelo (tabla) por su nombre."""
-        return apps.get_model(self.app_label + "." + model_name)
 
     @staticmethod
     def get_columns(table) -> List[models.Field]:

@@ -7,6 +7,15 @@ from DeltaDB.DBMetadata.db_metadata_manajer import db_metadata
 class SqlAlchemyDBTransactionAdapter(DBTransactionAdapter):
     def __init__(self, db_session: Session) -> None:
         super().__init__(db_session)
+        self.base = db_metadata.base
+    
+    def get_model_by_name(self, model_name: str) -> Any:
+        """Obtiene un modelo de base de datos por su nombre."""
+        for mapper in self.base.registry.mappers:
+            if model_name == mapper.class_.__name__:
+                return mapper.class_
+
+        raise ValueError(f"El modelo {model_name} no se encuentra definido. \n modelos disponibles: {[mapper.class_.__name__ for mapper in self.base.registry.mappers]}")
     
     def instance_model(self, model_name: str, **kwargs: Any) -> Any:
         """
@@ -14,7 +23,7 @@ class SqlAlchemyDBTransactionAdapter(DBTransactionAdapter):
         y los parámetros proporcionados.
         """
         # Suponiendo que 'models' es un diccionario de clases de modelos disponibles
-        model_class = db_metadata.get_model_by_name(model_name)
+        model_class = self.get_model_by_name(model_name)
         if not model_class:
             raise ValueError(f"El modelo {model_name} no se encuentra definido.")
         
@@ -44,7 +53,7 @@ class SqlAlchemyDBTransactionAdapter(DBTransactionAdapter):
 
     def get(self, model_name: str, id: int) -> Any:
         """Obtiene un registro de la base de datos dado un modelo y un id."""
-        model = db_metadata.get_model_by_name(model_name)
+        model = self.get_model_by_name(model_name)
         return self.session.get(model, id)
 
     def query(self, model: str | Type[Any]) -> Any:
@@ -55,7 +64,7 @@ class SqlAlchemyDBTransactionAdapter(DBTransactionAdapter):
             model (str | Type[Any]): El nombre del modelo o la clase del modelo.
         """
         if isinstance(model, str):
-            model = db_metadata.get_model_by_name(model)
+            model = self.get_model_by_name(model)
         
         return self.session.query(model)
 

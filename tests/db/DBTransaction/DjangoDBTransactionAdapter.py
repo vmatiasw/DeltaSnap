@@ -1,8 +1,9 @@
 from typing import Any, Type
 from django.db import models, transaction
+from django.apps import apps
 
 from tests.db.DBTransaction.DBTransactionAdapter import DBTransactionAdapter
-from DeltaDB.DBMetadata.db_metadata_manajer import db_metadata
+from DeltaDB.config import APP_LABEL
 
 class DjangoDBTransactionAdapter(DBTransactionAdapter):
     def __init__(self, db_session: Any) -> None:
@@ -11,6 +12,11 @@ class DjangoDBTransactionAdapter(DBTransactionAdapter):
         pero se mantiene para compatibilidad.
         """
         super().__init__(db_session)
+        self.app_label = APP_LABEL
+        
+    def get_model_by_name(self, model_name: str) -> type[models.Model]:
+        """Devuelve la clase de modelo (tabla) por su nombre."""
+        return apps.get_model(self.app_label + "." + model_name)
 
     def instance_model(self, model_name: str, **kwargs: Any) -> Any:
         """
@@ -23,7 +29,7 @@ class DjangoDBTransactionAdapter(DBTransactionAdapter):
         Returns:
             Una instancia del modelo sin guardar.
         """
-        model_class = db_metadata.get_model_by_name(model_name)
+        model_class = self.get_model_by_name(model_name)
         return model_class(**kwargs)
 
     def add(self, instance: models.Model) -> None:
@@ -60,7 +66,7 @@ class DjangoDBTransactionAdapter(DBTransactionAdapter):
         Returns:
             El objeto del modelo correspondiente al ID.
         """
-        model_class = db_metadata.get_model_by_name(model_name)
+        model_class = self.get_model_by_name(model_name)
         return model_class.objects.get(id=id)
 
     def query(self, model: str | Type[Any]) -> models.QuerySet:
@@ -74,7 +80,7 @@ class DjangoDBTransactionAdapter(DBTransactionAdapter):
             Un QuerySet de Django para el modelo.
         """
         if isinstance(model, str):
-            model = db_metadata.get_model_by_name(model)
+            model = self.get_model_by_name(model)
         return model.objects.all()
 
     def filter(self, query: models.QuerySet, *args: Any, **kwargs: Any) -> models.QuerySet:

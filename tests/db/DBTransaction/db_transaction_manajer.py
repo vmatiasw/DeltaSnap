@@ -1,4 +1,5 @@
 from DeltaDB.config import ORM
+
 def __get_db_transaction_adapter_class():
     match ORM:
         case "sqlalchemy":

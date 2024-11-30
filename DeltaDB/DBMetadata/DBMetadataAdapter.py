@@ -7,9 +7,6 @@ class DBMetadataAdapter(ABC):
         
     @abstractmethod
     def get_tables(self) -> List: pass
-    
-    @abstractmethod
-    def get_model_by_name(self, model_name: str) -> Any: pass
 
     @staticmethod
     @abstractmethod
