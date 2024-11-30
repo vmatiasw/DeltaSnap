@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges
+from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges, message
 from DeltaDB.data_processing.data_classes import Changes, Created, Deleted
 
 # TODO: Al marcar algo se usa # en el valor, ... ¿es necesario? ¿es una buena práctica?
@@ -27,7 +27,7 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Cha
 
         for column, initial_value in initial_table.items():
             if column not in final_table:
-                current_changes[column] = (initial_value, "#column don't exist")
+                current_changes[column] = (initial_value, message("column don't exist"))
                 continue
             
             final_value = final_table.get(column)
@@ -36,7 +36,7 @@ def diff_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Cha
                 
         for column, final_value in final_table.items():
             if column not in initial_table:
-                current_changes[column] = ("#column don't exist", final_value)
+                current_changes[column] = (message("column don't exist"), final_value)
 
         if current_changes:
             changes[table_key] = current_changes
