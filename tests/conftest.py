@@ -4,6 +4,7 @@ import os
 from tests.db.DBSessionManager import DBTestSessionManager
 from tests.db.DBConnection.db_connection_manajer import db_connection
 from tests.db.TestDB import TestDB
+from DeltaDB.config import DATABASE_NAME
 
 # Configurar logging para que muestre solo los errores
 import logging
@@ -12,7 +13,7 @@ logging.getLogger().level = logging.INFO
 # Si se quiere ver los queries, cambiar a INFO
 logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 
-DB_PATH = os.path.join('tests/tools/db/test.db')
+DB_PATH = os.path.join(f'tests/db/DBConnection/{DATABASE_NAME}.db')
 
 
 @pytest.fixture(scope='session', autouse=True)
