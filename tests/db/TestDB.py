@@ -1,9 +1,10 @@
 from tests.db.DBConnection.db_connection_manajer import db_connection
+from tests.db.DBTransaction.db_transaction_manajer import DBTransaction
 from tests.db.GameFactory import GameFactory
 
 class TestDB:
     def __init__(self) -> None:
-        self.session = db_connection.get_new_session()
+        self.session = DBTransaction(db_connection.get_new_session())
         self.game = GameFactory(self.session)
     
     def setup_data(self):

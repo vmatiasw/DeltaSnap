@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Type
 
 from tests.db.DBTransaction.DBTransactionAdapter import DBTransactionAdapter
 from DeltaDB.DBMetadata.db_metadata_manajer import db_metadata
@@ -32,17 +32,28 @@ class SqlAlchemyDBTransactionAdapter(DBTransactionAdapter):
         self.session.commit()
 
     def flush(self) -> None:
-        """Hace flush a la sesión de la base de datos."""
+        """
+        Hace flush a la sesión de la base de datos.
+        Y expira todos los objetos de la sesión.
+        """
         self.session.flush()
+        self.session.expire_all()
 
     def get(self, model_name: str, id: int) -> Any:
         """Obtiene un registro de la base de datos dado un modelo y un id."""
         model = db_metadata.get_model_by_name(model_name)
         return self.session.get(model, id)
 
-    def query(self, model_name: str) -> Any:
-        """Realiza una consulta a la base de datos para un modelo específico."""
-        model = db_metadata.get_model_by_name(model_name)
+    def query(self, model: str | Type[Any]) -> Any:
+        """
+        Realiza una consulta a la base de datos para un modelo específico.
+        
+        Args:
+            model (str | Type[Any]): El nombre del modelo o la clase del modelo.
+        """
+        if isinstance(model, str):
+            model = db_metadata.get_model_by_name(model)
+        
         return self.session.query(model)
 
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:

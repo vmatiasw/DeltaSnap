@@ -1,8 +1,9 @@
 from typing import Any
 
 from tests.db.DBConnection.db_connection_manajer import db_connection
+from tests.db.DBTransaction.db_transaction_manajer import DBTransaction
 
-class DBContextManager:
+class DBSessionManager:
     def __init__(self):
         self.session = None
     
@@ -12,7 +13,7 @@ class DBContextManager:
         """
         self.session = db_connection.get_new_session()
         self.session.begin()
-        return self.session
+        return DBTransaction(self.session)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
@@ -24,7 +25,7 @@ class DBContextManager:
             self.session.commit()
         self.session.close()
         
-class DBTestContextManager(DBContextManager):
+class DBTestSessionManager(DBSessionManager):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """

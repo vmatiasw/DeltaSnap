@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from tests.db.DBContextManager import DBTestContextManager
+from tests.db.DBSessionManager import DBTestSessionManager
 from tests.db.DBConnection.db_connection_manajer import db_connection
 from tests.db.TestDB import TestDB
 
@@ -33,5 +33,5 @@ def test_session():
     """
     Fixture que proporciona una sesión de base de datos gestionada con 'with'.
     """
-    with DBTestContextManager() as session:
+    with DBTestSessionManager() as session:
         yield session

@@ -18,7 +18,7 @@ class SQLAlchemyMetadataAdapter(DBMetadataAdapter):
             if model_name == mapper.class_.__name__:
                 return mapper.class_
 
-        raise ValueError(f"El modelo {model_name} no se encuentra definido.")
+        raise ValueError(f"El modelo {model_name} no se encuentra definido. \n modelos disponibles: {[mapper.class_.__name__ for mapper in self.base.registry.mappers]}")
     
     @staticmethod
     def get_columns(table: Any) -> List[Column]:
