@@ -1,4 +1,8 @@
-# Para que sirve
+# DeltaDB
+<!-- TODO: completar -->
+## Que es
+
+## Para que sirve
 Usualmente, al testear la base de datos se suele hacer lo siguiente:
 
 ```python
@@ -60,3 +64,23 @@ Luego hay algunos problemas, por ejemplo que pasa si una funcionalidad no es det
 
 Acepto mejoras, no se si hice las mejores decisiones de diseño en las interfaces, marcas #, ...
 Ademas, solo adapte para sqlalchemy en python claramente, faltaría ver para otros orms como django y sin orm,... Creería que lo único que hay que modificar para adaptar todo seria agregar en la carpeta DBMetadataAdapters el Adaptador y a db_metadata_manajer para que se elija al cambiar en la configuración ORM = 'orm elegido' por ejemplo
+
+## Uso
+
+## Requisitos
+
+- Python 3.8 o superior (quizas menor, si prueban y anda cambien aca)
+
+## Instalación
+
+1. Clonar el repositorio.
+2. Crear un entorno virtual:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # Para Linux/MacOS
+    venv\Scripts\activate     # Para Windows
+    ```
+3. Instalar dependencias:
+    ```bash
+    pip install -r requirements.txt
+    ```

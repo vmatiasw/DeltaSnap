@@ -3,6 +3,11 @@ from collections import defaultdict
 from DeltaDB.DBMetadata.db_metadata_manajer import db_metadata
 from DeltaDB.types import Capture
 
+# TODO:
+# Eliminar acoplamiento de la sesión de la base de datos
+# Agregar funcion que solo capture los registros que le pasen
+# Agregar funcion que capture un registro y sus relaciones (mas de uno tm? o habra probelmas con duplicados?)
+
 
 def capture_all_tables(session, page_size: int = 1) -> Capture:
     tables = db_metadata.get_tables()
