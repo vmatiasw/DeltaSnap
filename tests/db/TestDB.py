@@ -1,5 +1,5 @@
-from tests.db.DBConnection.db_connection_manajer import db_connection
-from tests.db.DBRepository.repository_manajer import repository
+from DeltaDB.DBConnection.db_connection_manajer import db_connection
+from DeltaDB.DBRepository.repository_manajer import repository
 from tests.db.GameFactory import GameFactory
 
 class TestDB:

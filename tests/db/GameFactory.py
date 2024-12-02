@@ -1,6 +1,6 @@
 from typing import Any
 
-from tests.db.DBRepository.repository_manajer import repository
+from DeltaDB.DBRepository.repository_manajer import repository
 
 MOCK_GMT_TIME_ZT = "2021-10-10T10:00:00Z"
 SEGUNDOS_TEMPORIZADOR_TURNO = 60

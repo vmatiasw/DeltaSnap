@@ -2,13 +2,14 @@ from typing import Any, List
 from sqlalchemy.orm import Mapper, DeclarativeBase
 from sqlalchemy import Column
 
-from DeltaDB.DBMetadata.DBMetadataInterface import DBMetadataInterface
-from tests.db.DBRepository.repository_manajer import repository
+from DeltaDB.DBMetadata.IDBMetadata import DBMetadataInterface
+from DeltaDB.DBRepository.IRepository import IRepository
 
 class SQLAlchemyMetadataAdapter(DBMetadataInterface):
-    def __init__(self, base: DeclarativeBase) -> None:
+    def __init__(self, base: DeclarativeBase, repository:IRepository) -> None:
         super().__init__()
         self.base = base
+        self.repository = repository
     
     def get_tables(self) -> List[Mapper]:
         """Devuelve todos los mappers de las tablas en la base de datos."""
@@ -19,10 +20,9 @@ class SQLAlchemyMetadataAdapter(DBMetadataInterface):
         """Devuelve las columnas de una tabla."""
         return list(table.columns)
     
-    @staticmethod
-    def get_instances(table: Any, offset: int, page_size: int) -> List[Any]:
+    def get_instances(self, table: Any, offset: int, page_size: int) -> List[Any]:
         """Devuelve las instancias de la tabla en un rango determinado."""
-        return repository.query(table.class_).limit(page_size).offset(offset).all()
+        return self.repository.query(table.class_).limit(page_size).offset(offset).all()
     
     @staticmethod
     def get_column_key(column: Column) -> str:

@@ -1,12 +1,12 @@
 from typing import Any
 from contextvars import ContextVar
 
-from tests.db.DBConnection.db_connection_manajer import db_connection
+from DeltaDB.DBConnection.db_connection_manajer import db_connection
 
 # ContextVar para almacenar la sesión actual
 current_session: ContextVar[Any] = ContextVar("current_session", default=None)
 
-class DBSessionManager: # cambiar a DBContextManager
+class DBContextManager:
     def __enter__(self) -> Any:
         """
         Inicia la sesión cuando entra en el contexto 'with'.
@@ -32,7 +32,7 @@ class DBSessionManager: # cambiar a DBContextManager
             # Restaura el estado anterior del contexto
             current_session.reset(self._token)
 
-class DBTestSessionManager(DBSessionManager):
+class DBTestContextManager(DBContextManager):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
         Realiza el rollback y cierra la sesión cuando sale del contexto 'with'.

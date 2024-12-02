@@ -1,6 +1,6 @@
 from typing import Any, Type
 
-from tests.db.DBSessionManager import current_session
+from DeltaDB.DBContextManager import current_session
 
 
 class SqlAlchemyRepository:

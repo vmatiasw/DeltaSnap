@@ -1,6 +1,5 @@
 from typing import Dict, List, Set, Any
 from collections import Counter, defaultdict
-from abc import ABC, abstractmethod
 
 from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges, info
 
@@ -9,25 +8,12 @@ from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges, info
 # - Funciones que devuelvan el esquema de los datos en vez de recibir el esquema y devolver un booleano
 # - eliminar ignore_diff_fields?, es mejor mokear
 
-class __Data(ABC):
+class __Data():
     def __init__(self, data: Any):
         self.data = data
 
     def __str__(self) -> str:
         return f"{self.data}"
-
-    @abstractmethod
-    def remove_tables(self, table_names: List[str]) -> "__Data":
-        pass
-
-    @abstractmethod
-    def get_frequency(self) -> Dict[str, Any]:
-        pass
-
-    @abstractmethod
-    def matches_schema(self, schema) -> bool:
-        pass
-
 
 class __DataSet(__Data):
     def __init__(self, data: Set):

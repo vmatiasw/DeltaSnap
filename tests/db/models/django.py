@@ -2,7 +2,7 @@ import random
 import json
 from django.db import models
 
-from tests.db.DBConnection.db_connection_manajer import db_connection
+from DeltaDB.DBConnection.db_connection_manajer import db_connection
 
 Model = db_connection.get_base()
 

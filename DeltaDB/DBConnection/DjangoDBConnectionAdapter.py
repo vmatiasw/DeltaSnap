@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.management import call_command
 from django.apps import AppConfig
 
-from tests.db.DBConnection.DBConnectionAdapter import DBConnectionAdapter
+from DeltaDB.DBConnection.DBConnectionAdapter import DBConnectionAdapter
 from DeltaDB.config import APP_LABEL
 
 class TestAppConfig(AppConfig):

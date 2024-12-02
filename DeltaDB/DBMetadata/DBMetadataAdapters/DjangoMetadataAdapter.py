@@ -2,7 +2,7 @@ from typing import Any, List
 from django.db import models
 from django.apps import apps
 
-from DeltaDB.DBMetadata.DBMetadataInterface import DBMetadataInterface
+from DeltaDB.DBMetadata.IDBMetadata import DBMetadataInterface
 
 class DjangoMetadataAdapter(DBMetadataInterface):
     def __init__(self) -> None:
@@ -18,7 +18,7 @@ class DjangoMetadataAdapter(DBMetadataInterface):
         return list(table._meta.fields)
     
     @staticmethod
-    def get_instances(session, table, offset: int, page_size: int) -> List:
+    def get_instances(table, offset: int, page_size: int) -> List:
         """Devuelve los registros de una tabla en un rango determinado."""
         queryset = table.objects.all()
         return list(queryset[offset:offset + page_size])

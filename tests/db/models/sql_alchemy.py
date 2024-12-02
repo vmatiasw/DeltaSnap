@@ -5,7 +5,7 @@ import random
 from random import shuffle
 import json
 
-from tests.db.DBConnection.SqlAlchemyDBConnectionAdapter import _Base as Base
+from DeltaDB.DBConnection.SqlAlchemyDBConnectionAdapter import _Base as Base
 
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 
