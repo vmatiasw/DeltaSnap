@@ -1,7 +1,9 @@
-from typing import Any, Protocol, List, Type
+from typing import Any, Protocol, List, Type, runtime_checkable
+
 from sqlalchemy.orm import Mapper, DeclarativeBase
 from sqlalchemy import Column
 
+@runtime_checkable
 class IRepository(Protocol):
 
     def query(self, model: Type[Any]) -> Any:
