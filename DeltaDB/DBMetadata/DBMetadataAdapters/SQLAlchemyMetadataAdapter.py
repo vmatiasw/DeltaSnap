@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapper, DeclarativeBase
 from sqlalchemy import Column
 
 from DeltaDB.DBMetadata.DBMetadataInterface import DBMetadataInterface
+from tests.db.DBRepository.repository_manajer import repository
 
 class SQLAlchemyMetadataAdapter(DBMetadataInterface):
     def __init__(self, base: DeclarativeBase) -> None:
@@ -19,9 +20,9 @@ class SQLAlchemyMetadataAdapter(DBMetadataInterface):
         return list(table.columns)
     
     @staticmethod
-    def get_instances(session: Any, table: Any, offset: int, page_size: int) -> List[Any]:
+    def get_instances(table: Any, offset: int, page_size: int) -> List[Any]:
         """Devuelve las instancias de la tabla en un rango determinado."""
-        return session.query(table.class_).limit(page_size).offset(offset).all()
+        return repository.query(table.class_).limit(page_size).offset(offset).all()
     
     @staticmethod
     def get_column_key(column: Column) -> str:

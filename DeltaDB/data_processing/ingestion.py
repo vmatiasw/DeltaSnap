@@ -9,7 +9,7 @@ from DeltaDB.types import Capture
 # Agregar funcion que capture un registro y sus relaciones (mas de uno tm? o habra probelmas con duplicados?)
 
 
-def capture_all_tables(session, page_size: int = 1) -> Capture:
+def capture_all_tables(page_size: int = 1) -> Capture:
     tables = db_metadata.get_tables()
     metadata: Capture = defaultdict(dict)
 
@@ -18,7 +18,7 @@ def capture_all_tables(session, page_size: int = 1) -> Capture:
         columns = db_metadata.get_columns(table)
         table_name = db_metadata.get_table_name(table)
         
-        while instances := db_metadata.get_instances(session, table, offset, page_size):
+        while instances := db_metadata.get_instances(table, offset, page_size):
             
             for record in instances:
                 record_id = db_metadata.get_record_id(record)

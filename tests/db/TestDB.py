@@ -1,11 +1,10 @@
 from tests.db.DBConnection.db_connection_manajer import db_connection
-from tests.db.DBTransaction.db_transaction_manajer import DBTransaction
+from tests.db.DBRepository.repository_manajer import repository
 from tests.db.GameFactory import GameFactory
 
 class TestDB:
     def __init__(self) -> None:
-        self.session = DBTransaction(db_connection.get_new_session())
-        self.game = GameFactory(self.session)
+        self.game = GameFactory()
     
     def setup_data(self):
         '''
@@ -17,4 +16,4 @@ class TestDB:
         partida2 = self.game.crear_partida()
         self.game.unir_jugadores(partida2, numero_de_jugadores=2)
         
-        self.session.commit()
+        repository.commit()

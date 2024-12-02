@@ -7,7 +7,7 @@ from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges, info
 # TODO: agregar funciones para:
 # - Devolver el diccionario de cambios invertido
 # - Funciones que devuelvan el esquema de los datos en vez de recibir el esquema y devolver un booleano
-
+# - eliminar ignore_diff_fields?, es mejor mokear
 
 class __Data(ABC):
     def __init__(self, data: Any):

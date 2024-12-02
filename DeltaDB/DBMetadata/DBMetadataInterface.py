@@ -14,7 +14,7 @@ class DBMetadataInterface(ABC):
 
     @staticmethod
     @abstractmethod
-    def get_instances(session, table, offset: int, page_size: int) -> List: pass
+    def get_instances(table, offset: int, page_size: int) -> List: pass
     
     @staticmethod
     @abstractmethod

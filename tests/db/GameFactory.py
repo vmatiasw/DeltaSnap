@@ -1,24 +1,24 @@
 from typing import Any
 
+from tests.db.DBRepository.repository_manajer import repository
+
 MOCK_GMT_TIME_ZT = "2021-10-10T10:00:00Z"
 SEGUNDOS_TEMPORIZADOR_TURNO = 60
 N_CARTAS_FIGURA_TOTALES = 6
 
 
 class GameFactory:
-    def __init__(self, session):
-        self.session = session
-
+    
     def crear_partida(self) -> Any:
         """Crea una partida inicial con un creador y la agrega a la base de datos."""
-        partida = self.session.instance_model(
+        partida = repository.instance_model(
             'Partida',
             nombre_partida="Partida",
             nombre_creador="Creador",
             iniciada=False,
             tablero='[[2, 1, 3, 4, 2, 3], [4, 2, 1, 1, 3, 3], [2, 1, 3, 2, 3, 4], [4, 1, 1, 2, 2, 4], [1, 3, 1, 2, 1, 3], [2, 3, 4, 4, 4, 4]]')
 
-        creador = self.session.instance_model(
+        creador = repository.instance_model(
             'Jugador',
             nombre="Creador",
             partidas=partida,
@@ -27,9 +27,9 @@ class GameFactory:
 
         partida.jugadores.append(creador)
 
-        self.session.add(creador)
-        self.session.add(partida)
-        self.session.flush()
+        repository.add(creador)
+        repository.add(partida)
+        repository.flush()
         return partida
 
     def unir_jugadores(self, partida: Any, numero_de_jugadores: int = 1) -> list[Any]:
@@ -44,19 +44,19 @@ class GameFactory:
 
         nuevos_jugadores = []
         for i in range(numero_de_jugadores):
-            nuevo_jugador = self.session.instance_model(
+            nuevo_jugador = repository.instance_model(
                 'Jugador',
                 nombre=f"Jugador{i+2}",
                 partidas=partida,
                 es_creador=False,
                 orden=len(partida.jugadores))
 
-            self.session.add(nuevo_jugador)
+            repository.add(nuevo_jugador)
             partida.jugadores.append(nuevo_jugador)
             nuevos_jugadores.append(nuevo_jugador)
-            self.session.flush()
+            repository.flush()
 
-        self.session.flush()
+        repository.flush()
         return nuevos_jugadores
 
     def iniciar_partida(self, partida: Any) -> Any:
@@ -72,7 +72,7 @@ class GameFactory:
         numero_de_cartas_por_jugador = int(N_CARTAS_FIGURA_TOTALES / len(partida.jugadores))
         self.__repartir_cartas(partida, 3, numero_de_cartas_por_jugador)
 
-        self.session.flush()
+        repository.flush()
         return partida
 
     def __repartir_cartas(self, partida: Any, n_cartas_reveladas: int, n_cartas_por_jugador: int):
@@ -85,12 +85,12 @@ class GameFactory:
         # Crear las cartas de figura
         for jugador in partida.jugadores:
             for i in range(n_cartas_por_jugador - len(jugador.mazo_cartas)):
-                carta = self.session.instance_model(
+                carta = repository.instance_model(
                     'Carta',
                     poseida_por=jugador,
                     revelada=(i < n_cartas_reveladas))
                 
-                self.session.add(carta)
+                repository.add(carta)
                 jugador.mazo_cartas.append(carta)
 
-        self.session.flush()
+        repository.flush()
