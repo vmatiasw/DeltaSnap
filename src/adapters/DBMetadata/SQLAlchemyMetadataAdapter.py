@@ -1,12 +1,14 @@
-from typing import Any, List
+from typing import Any, Protocol, List, Type
 from sqlalchemy.orm import Mapper, DeclarativeBase
 from sqlalchemy import Column
 
-from DeltaDB.DBMetadata.IDBMetadata import DBMetadataInterface
-from DeltaDB.DBRepository.IRepository import IRepository
+class IRepository(Protocol):
 
-class SQLAlchemyMetadataAdapter(DBMetadataInterface):
-    def __init__(self, base: DeclarativeBase, repository:IRepository) -> None:
+    def query(self, model: Type[Any]) -> Any:
+        pass
+
+class SQLAlchemyMetadataAdapter():
+    def __init__(self, base: DeclarativeBase, repository : IRepository) -> None:
         super().__init__()
         self.base = base
         self.repository = repository

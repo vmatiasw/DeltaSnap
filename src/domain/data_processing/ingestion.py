@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-from DeltaDB.DBMetadata.db_metadata_manajer import db_metadata
-from DeltaDB.types import Capture
+from src.domain.types import Capture
+from src.domain.interfaces.IDBMetadata import IDBMetadata
 
 # TODO:
 # Eliminar acoplamiento de la sesión de la base de datos
@@ -9,7 +9,7 @@ from DeltaDB.types import Capture
 # Agregar funcion que capture un registro y sus relaciones (mas de uno tm? o habra probelmas con duplicados?)
 
 
-def capture_all_tables(page_size: int = 1) -> Capture:
+def capture_all_tables(db_metadata:IDBMetadata, page_size: int = 1) -> Capture:
     tables = db_metadata.get_tables()
     metadata: Capture = defaultdict(dict)
 
@@ -36,7 +36,7 @@ def capture_all_tables(page_size: int = 1) -> Capture:
     return dict(metadata)
 
 # , ObjectsList # TODO: Actualizar esta funcion
-# from DeltaDB.validations import validate_data, ValidateId, ValidateInstance, ValidateTablename
+# from src.validations import validate_data, ValidateId, ValidateInstance, ValidateTablename
 #
 # # List of validation rules to apply to objects
 # capture_validations = [ValidateId(), ValidateInstance(), ValidateTablename()]

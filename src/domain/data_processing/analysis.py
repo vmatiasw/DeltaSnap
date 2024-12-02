@@ -1,7 +1,7 @@
 from typing import Tuple
 
-from DeltaDB.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges, info
-from DeltaDB.data_processing.data_classes import Changes, Created, Deleted
+from src.domain.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges, info
+from src.domain.data_processing.data_classes import Changes, Created, Deleted
 
 def diff_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Changes, Created, Deleted]:
     """

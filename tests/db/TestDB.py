@@ -1,10 +1,9 @@
-from DeltaDB.DBConnection.db_connection_manajer import db_connection
-from DeltaDB.DBRepository.repository_manajer import repository
 from tests.db.GameFactory import GameFactory
 
 class TestDB:
-    def __init__(self) -> None:
-        self.game = GameFactory()
+    def __init__(self, repository) -> None:
+        self.repository = repository
+        self.game = GameFactory(repository)
     
     def setup_data(self):
         '''
@@ -16,4 +15,4 @@ class TestDB:
         partida2 = self.game.crear_partida()
         self.game.unir_jugadores(partida2, numero_de_jugadores=2)
         
-        repository.commit()
+        self.repository.commit()

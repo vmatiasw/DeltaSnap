@@ -1,11 +1,11 @@
 import os
 from abc import ABC, abstractmethod
 
-from DeltaDB.config import DATABASE, DATABASE_NAME, HOST, PASSWORD, PORT, USERNAME
+from tests.db.config import DATABASE, DATABASE_NAME, HOST, PASSWORD, PORT, USERNAME
 
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), f"{DATABASE_NAME}.db")
 
-class DBConnectionAdapter(ABC):
+class IDBConnection(ABC):
     def __init__(self):
         self.host = HOST
         self.port = PORT

@@ -2,12 +2,12 @@ from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
 from typing import Type
 
-from DeltaDB.DBConnection.DBConnectionAdapter import DBConnectionAdapter
+from tests.db.connection.IDBConnection import IDBConnection
 
 class _Base(DeclarativeBase):
     pass
 
-class SqlAlchemyDBConnectionAdapter(DBConnectionAdapter):
+class SqlAlchemyDBConnectionAdapter(IDBConnection):
     def __init__(self) -> None:
         super().__init__()
         self.engine: Engine = create_engine(self.db_path)

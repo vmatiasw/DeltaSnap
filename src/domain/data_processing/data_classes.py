@@ -1,7 +1,7 @@
 from typing import Dict, List, Set, Any
 from collections import Counter, defaultdict
 
-from DeltaDB.types import CreatedTables, DeletedTables, TablesChanges, info
+from src.domain.types import CreatedTables, DeletedTables, TablesChanges, info
 
 # TODO: agregar funciones para:
 # - Devolver el diccionario de cambios invertido

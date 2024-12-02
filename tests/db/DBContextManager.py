@@ -1,21 +1,21 @@
 from typing import Any
 from contextvars import ContextVar
 
-from DeltaDB.DBConnection.db_connection_manajer import db_connection
-
 # ContextVar para almacenar la sesión actual
 current_session: ContextVar[Any] = ContextVar("current_session", default=None)
 
-class DBContextManager:
+class DBContextManager():
+    def __init__(self, session = None) -> None:
+        self._session = session
+    
     def __enter__(self) -> Any:
         """
         Inicia la sesión cuando entra en el contexto 'with'.
         """
         
-        if session := db_connection.get_new_session():
-            session.begin()
-            # Establece la sesión en el contexto actual
-            token = current_session.set(session)
+        if self._session:
+            self._session.begin()
+            token = current_session.set(self._session)
             self._token = token
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -23,13 +23,12 @@ class DBContextManager:
         Realiza el rollback o commit y cierra la sesión cuando sale del contexto 'with'.
         """
         
-        if session := current_session.get():
+        if self._session:
             if exc_type:
-                session.rollback()
+                self._session.rollback()
             else:
-                session.commit()
-            session.close()
-            # Restaura el estado anterior del contexto
+                self._session.commit()
+            self._session.close()
             current_session.reset(self._token)
 
 class DBTestContextManager(DBContextManager):
@@ -37,8 +36,7 @@ class DBTestContextManager(DBContextManager):
         """
         Realiza el rollback y cierra la sesión cuando sale del contexto 'with'.
         """
-        if session := current_session.get():
-            session.rollback()
-            session.close()
-            # Restaura el estado anterior del contexto
+        if self._session:
+            self._session.rollback()
+            self._session.close()
             current_session.reset(self._token)
