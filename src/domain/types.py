@@ -21,7 +21,4 @@ TablesChanges = Dict[UniqueTableId, FieldsChanges]
 DeletedTables = Set[UniqueTableId]
 CreatedTables = Set[UniqueTableId]
 
-# Generic object and model lists
-T = TypeVar('T') # Generic types
-ObjectsList = List[T]
 ModelsList = List[BaseModel]

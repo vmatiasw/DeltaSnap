@@ -8,7 +8,6 @@ from src.domain.interfaces.IDBMetadata import IDBMetadata
 # Agregar funcion que solo capture los registros que le pasen
 # Agregar funcion que capture un registro y sus relaciones (mas de uno tm? o habra probelmas con duplicados?)
 
-
 def capture_all_tables(db_metadata:IDBMetadata, page_size: int = 1) -> Capture:
     tables = db_metadata.get_tables()
     metadata: Capture = defaultdict(dict)
@@ -35,11 +34,7 @@ def capture_all_tables(db_metadata:IDBMetadata, page_size: int = 1) -> Capture:
 
     return dict(metadata)
 
-# , ObjectsList # TODO: Actualizar esta funcion
-# from src.validations import validate_data, ValidateId, ValidateInstance, ValidateTablename
-#
-# # List of validation rules to apply to objects
-# capture_validations = [ValidateId(), ValidateInstance(), ValidateTablename()]
+#  # TODO: Actualizar esta funcion
 #
 # def capture(objects: ObjectsList) -> Capture:
 #     validate_data(objects, capture_validations)

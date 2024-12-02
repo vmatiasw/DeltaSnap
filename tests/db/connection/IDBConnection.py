@@ -31,13 +31,13 @@ class IDBConnection(ABC):
                 raise Exception(f"Database {DATABASE} not supported")
     
     @abstractmethod
-    def get_base(self): pass
+    def get_base(self): ...
     
     @abstractmethod
-    def get_new_session(self): pass
+    def get_new_session(self): ...
 
     @abstractmethod
-    def create_tables(self) -> None: pass
+    def create_tables(self) -> None: ...
 
     @abstractmethod
-    def drop_tables(self) -> None: pass
+    def drop_tables(self) -> None: ...

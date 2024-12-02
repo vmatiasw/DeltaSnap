@@ -5,7 +5,7 @@ from typing import Type
 from tests.db.connection.IDBConnection import IDBConnection
 
 class _Base(DeclarativeBase):
-    pass
+    ...
 
 class SqlAlchemyDBConnectionAdapter(IDBConnection):
     def __init__(self) -> None:

@@ -49,4 +49,4 @@ def game(repository):
 
 @pytest.fixture(scope='function')
 def delta_db(repository, db_connection):
-    yield DeltaDB.DeltaDB_setup(db_type='sqlite', db_orm='sqlalchemy', repository=repository, base=db_connection.get_base())
+    yield DeltaDB.DeltaDB(db_type='sqlite', db_orm='sqlalchemy', repository=repository, base=db_connection.get_base())
