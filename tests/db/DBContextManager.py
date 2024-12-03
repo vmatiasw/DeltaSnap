@@ -1,45 +1,55 @@
-from typing import Any
-from contextvars import ContextVar
+from typing import Any, Optional
+from contextvars import ContextVar, Token
 
-# ContextVar para almacenar la sesión actual
-current_session: ContextVar[Any] = ContextVar("current_session", default=None)
+current_session: ContextVar[Optional[Any]] = ContextVar("current_session", default=None)
 
-class DBContextManager():
-    def __init__(self, session = None) -> None:
+class DBContextManager:
+    def __init__(self, session: Optional[Any] = None) -> None:
+        """
+        Initializes the context manager to handle transactions in a database.
+
+        Args:
+            session (Optional[Any]): The database session to be managed within the context.
+                If not provided, the context will perform no action.
+        """
         self._session = session
-    
-    def __enter__(self) -> Any:
+        self._token: Token[Any]
+
+    def __enter__(self) -> None:
         """
-        Inicia la sesión cuando entra en el contexto 'with'.
+        Starts the database session and sets it as the current context.
         """
-        
         if self._session:
             self._session.begin()
-        
-        token = current_session.set(self._session)
-        self._token = token
+            
+        self._token = current_session.set(self._session)
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """
-        Realiza el rollback o commit y cierra la sesión cuando sale del contexto 'with'.
+        Rolls back if an error occurred, or commits if everything went well, and closes the session when exiting the context.
         """
-        
         if self._session:
-            if exc_type:
-                self._session.rollback()
-            else:
-                self._session.commit()
-            self._session.close()
+            try:
+                if exc_type:
+                    print(f"Rollback due to: {exc_type} - {exc_val}")
+                    self._session.rollback()
+                else:
+                    self._session.commit()
+            finally:
+                self._session.close()
         
         current_session.reset(self._token)
 
 class DBTestContextManager(DBContextManager):
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """
-        Realiza el rollback y cierra la sesión cuando sale del contexto 'with'.
+        Finalizes the session in test mode and always performs a rollback.
         """
         if self._session:
-            self._session.rollback()
-            self._session.close()
+            try:
+                self._session.rollback()
+            finally:
+                self._session.close()
         
         current_session.reset(self._token)
+
