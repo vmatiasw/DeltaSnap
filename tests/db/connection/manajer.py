@@ -1,5 +1,6 @@
 from tests.db.config import ORM
 
+
 def __get_db_connection_adapter_class():
     match ORM:
         case "sqlalchemy":
@@ -8,4 +9,5 @@ def __get_db_connection_adapter_class():
         case _:
             raise Exception(f"ORM {ORM} not supported")
 
-DBConnection= __get_db_connection_adapter_class()
+
+DBConnection = __get_db_connection_adapter_class()

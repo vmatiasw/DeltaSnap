@@ -9,6 +9,8 @@ Model = db_connection.get_base()
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 
 # Función para generar el tablero aleatorio
+
+
 def tablero_random():
     """Genera una lista de 36 fichas de 4 colores distintos mezcladas aleatoriamente
     Returns:

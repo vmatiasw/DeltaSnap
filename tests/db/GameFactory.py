@@ -6,10 +6,10 @@ N_CARTAS_FIGURA_TOTALES = 6
 
 
 class GameFactory:
-    
+
     def __init__(self, repository: Any):
         self.repository = repository
-    
+
     def crear_partida(self) -> Any:
         """Crea una partida inicial con un creador y la agrega a la base de datos."""
         partida = self.repository.instance_model(
@@ -63,14 +63,17 @@ class GameFactory:
     def iniciar_partida(self, partida: Any) -> Any:
         """Inicia una partida, reparte cartas y actualiza el estado de la partida."""
         assert partida.iniciada == False, "La partida ya ha sido iniciada"
-        assert len(partida.jugadores) > 1, "La partida debe tener al menos 2 jugadores para poder iniciarla"
-        assert len(partida.jugadores) <= 4, "La partida no puede tener más de 4 jugadores"
+        assert len(
+            partida.jugadores) > 1, "La partida debe tener al menos 2 jugadores para poder iniciarla"
+        assert len(
+            partida.jugadores) <= 4, "La partida no puede tener más de 4 jugadores"
 
         partida.iniciada = True
         partida.inicio_turno = MOCK_GMT_TIME_ZT
         partida.duracion_turno = SEGUNDOS_TEMPORIZADOR_TURNO
 
-        numero_de_cartas_por_jugador = int(N_CARTAS_FIGURA_TOTALES / len(partida.jugadores))
+        numero_de_cartas_por_jugador = int(
+            N_CARTAS_FIGURA_TOTALES / len(partida.jugadores))
         self.__repartir_cartas(partida, 3, numero_de_cartas_por_jugador)
 
         self.repository.flush()
@@ -78,10 +81,13 @@ class GameFactory:
 
     def __repartir_cartas(self, partida: Any, n_cartas_reveladas: int, n_cartas_por_jugador: int):
         """Reparte las cartas entre los jugadores de una partida."""
-        assert n_cartas_por_jugador <= int(N_CARTAS_FIGURA_TOTALES / len(partida.jugadores))
+        assert n_cartas_por_jugador <= int(
+            N_CARTAS_FIGURA_TOTALES / len(partida.jugadores))
         assert partida.iniciada == True, "La partida no ha sido iniciada"
-        assert len(partida.jugadores) > 1, "La partida debe tener al menos 2 jugadores para poder repartir las cartas de figura"
-        assert len(partida.jugadores) <= 4, "La partida no puede tener más de 4 jugadores"
+        assert len(
+            partida.jugadores) > 1, "La partida debe tener al menos 2 jugadores para poder repartir las cartas de figura"
+        assert len(
+            partida.jugadores) <= 4, "La partida no puede tener más de 4 jugadores"
 
         # Crear las cartas de figura
         for jugador in partida.jugadores:
@@ -90,7 +96,7 @@ class GameFactory:
                     'Carta',
                     poseida_por=jugador,
                     revelada=(i < n_cartas_reveladas))
-                
+
                 self.repository.add(carta)
                 jugador.mazo_cartas.append(carta)
 

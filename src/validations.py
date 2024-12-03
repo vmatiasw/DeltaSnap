@@ -6,12 +6,14 @@ DBS_SUPPORTED = {'sqlite', 'mysql', 'postgresql'}
 ORMS_SUPPORTED = {'sqlalchemy'}
 """Set of supported ORMs."""
 
+
 def validate_db_type(db_type: str) -> None:
     if db_type not in DBS_SUPPORTED:
         raise ValueError(
             f"Invalid database type '{db_type}'. "
             f"Valid options: {DBS_SUPPORTED}."
         )
+
 
 def validate_db_orm(db_orm: str) -> None:
     if db_orm not in ORMS_SUPPORTED:

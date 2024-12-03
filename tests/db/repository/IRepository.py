@@ -1,11 +1,12 @@
 from typing import Any, Protocol, List, Type
 
+
 class IRepository(Protocol):
 
-    def instance_model(self, model_name:str, **kwargs: Any) -> Any:
+    def instance_model(self, model_name: str, **kwargs: Any) -> Any:
         """Crea una instancia de un modelo de base de datos."""
         ...
-    
+
     def add(self, instance: Any) -> None:
         """Añade una instancia a la sesión de la base de datos."""
         ...
@@ -17,7 +18,7 @@ class IRepository(Protocol):
     def query(self, model: str | Type[Any]) -> Any:
         """
         Realiza una consulta a la base de datos para un modelo específico.
-        
+
         Args:
             model (str | Type[Any]): El nombre del modelo o la clase del modelo.
         """

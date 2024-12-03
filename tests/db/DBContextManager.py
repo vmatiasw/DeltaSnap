@@ -1,7 +1,9 @@
 from typing import Any, Optional
 from contextvars import ContextVar, Token
 
-current_session: ContextVar[Optional[Any]] = ContextVar("current_session", default=None)
+current_session: ContextVar[Optional[Any]] = ContextVar(
+    "current_session", default=None)
+
 
 class DBContextManager:
     def __init__(self, session: Optional[Any] = None) -> None:
@@ -21,7 +23,7 @@ class DBContextManager:
         """
         if self._session:
             self._session.begin()
-            
+
         self._token = current_session.set(self._session)
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
@@ -37,8 +39,9 @@ class DBContextManager:
                     self._session.commit()
             finally:
                 self._session.close()
-        
+
         current_session.reset(self._token)
+
 
 class DBTestContextManager(DBContextManager):
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
@@ -50,6 +53,5 @@ class DBTestContextManager(DBContextManager):
                 self._session.rollback()
             finally:
                 self._session.close()
-        
-        current_session.reset(self._token)
 
+        current_session.reset(self._token)

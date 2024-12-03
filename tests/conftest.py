@@ -18,12 +18,13 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 
 DB_PATH = os.path.join(f'tests/db/connection/{DATABASE_NAME}.db')
 
+
 @pytest.fixture(scope='session', autouse=True)
 def setup_db(db_connection):
     if os.path.exists(DB_PATH):
         logging.info(f"DB {DB_PATH} already exists")
         return
-    
+
     try:
         with DBTestContextManager(db_connection.get_new_session()):
             db_connection.drop_tables()
@@ -33,19 +34,23 @@ def setup_db(db_connection):
     finally:
         if os.path.exists(DB_PATH):
             os.remove(DB_PATH)
-            
+
+
 @pytest.fixture(scope='session')
 def db_connection():
     yield DBConnection()
+
 
 @pytest.fixture(scope='function')
 def repository(db_connection):
     with DBTestContextManager(db_connection.get_new_session()):
         yield Repository(base=db_connection.get_base())
 
+
 @pytest.fixture(scope='function')
 def game(repository):
     yield GameFactory(repository)
+
 
 @pytest.fixture(scope='function')
 def delta_db(repository, db_connection):

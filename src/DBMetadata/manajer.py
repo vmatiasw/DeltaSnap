@@ -27,6 +27,7 @@ ADAPTERS = {
     "sqlalchemy": __get_sqlalchemy_adapter
 }
 
+
 def get_db_metadata_adapter(delta_db):
     """
     Retrieves the appropriate metadata adapter based on the ORM configured in DeltaDB.

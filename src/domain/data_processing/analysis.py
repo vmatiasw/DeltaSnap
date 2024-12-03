@@ -3,14 +3,17 @@ from typing import Tuple
 from src.domain.types import Capture, CreatedRecords, DeletedRecords, FieldsChanges, RecordsChanges, info
 from src.domain.data_processing.data_classes import Changes, Created, Deleted
 
+
 def diff_records_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Changes, Created, Deleted]:
     """
     Compares two capture dictionaries and identifies the differences between them, 
     categorizing them into changes, deletions, and creations.
     """
     changes: RecordsChanges = {}
-    deleted: DeletedRecords = set(initial_capture.keys()) - set(final_capture.keys())
-    created: CreatedRecords = set(final_capture.keys()) - set(initial_capture.keys())
+    deleted: DeletedRecords = set(
+        initial_capture.keys()) - set(final_capture.keys())
+    created: CreatedRecords = set(
+        final_capture.keys()) - set(initial_capture.keys())
 
     # Detect changes in existing records
     for record_key, initial_record in initial_capture.items():
@@ -25,12 +28,14 @@ def diff_records_captures(initial_capture: Capture, final_capture: Capture) -> T
         # Columns that were removed from the final capture
         removed_columns = initial_columns - final_columns
         for column in removed_columns:
-            current_changes[column] = (initial_record[column], info("column don't exist"))
+            current_changes[column] = (
+                initial_record[column], info("column don't exist"))
 
         # Columns that were added to the final capture
         added_columns = final_columns - initial_columns
         for column in added_columns:
-            current_changes[column] = (info("column don't exist"), final_record[column])
+            current_changes[column] = (
+                info("column don't exist"), final_record[column])
 
         # Columns that have changed
         common_columns = initial_columns & final_columns

@@ -5,6 +5,7 @@ from tests.db.config import DATABASE, DATABASE_NAME, HOST, PASSWORD, PORT, USERN
 
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), f"{DATABASE_NAME}.db")
 
+
 class IDBConnection(ABC):
     def __init__(self):
         self.host = HOST
@@ -15,7 +16,7 @@ class IDBConnection(ABC):
         self.db_name = DATABASE_NAME
         self.db_path = self._get_database_url()
         self.base = None
-    
+
     @staticmethod
     def _get_database_url() -> str:
         """Devuelve la URL para conectar con la base de datos."""
@@ -29,10 +30,10 @@ class IDBConnection(ABC):
                 return f"postgresql://{USERNAME}:{PASSWORD}@{HOST}{port}/{DATABASE_NAME}"
             case _:
                 raise Exception(f"Database {DATABASE} not supported")
-    
+
     @abstractmethod
     def get_base(self): ...
-    
+
     @abstractmethod
     def get_new_session(self): ...
 

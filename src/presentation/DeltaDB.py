@@ -4,6 +4,8 @@ from src.validations import validate_db_type, validate_db_orm
 from src.domain.data_processing.ingestion import capture_all_records
 from src.domain.data_processing.analysis import diff_records_captures
 from src.DBMetadata.manajer import get_db_metadata_adapter
+
+
 class DeltaDB:
     """
     Main class for database and ORM interaction.
@@ -29,10 +31,10 @@ class DeltaDB:
         db_metadata (object): The configured database metadata adapter.
     """
 
-    def __init__(self, 
-                 db_type: Literal['sqlite', 'mysql', 'postgresql'], 
-                 db_orm: Literal['sqlalchemy'], 
-                 repository=None, 
+    def __init__(self,
+                 db_type: Literal['sqlite', 'mysql', 'postgresql'],
+                 db_orm: Literal['sqlalchemy'],
+                 repository=None,
                  base=None) -> None:
         """
         Initializes a DeltaDB instance with the specified configuration.
@@ -54,7 +56,7 @@ class DeltaDB:
         """
         return f"DeltaDB(db_type={self.db_type}, db_orm={self.db_orm})"
 
-    def capture_all_records(self): # FIXME: es records
+    def capture_all_records(self):  # FIXME: es records
         """
         Captures the structure and data of all tables in the database.
 

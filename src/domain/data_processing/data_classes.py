@@ -8,6 +8,7 @@ from src.domain.types import CreatedRecords, DeletedRecords, RecordsChanges, inf
 # - Funciones que devuelvan el esquema de los datos en vez de recibir el esquema y devolver un booleano
 # - eliminar ignore_diff_fields?, es mejor mokear
 
+
 class __Data():
     def __init__(self, data: Any):
         self.data = data
@@ -15,13 +16,15 @@ class __Data():
     def __str__(self) -> str:
         return f"{self.data}"
 
+
 class __DataSet(__Data):
     def __init__(self, data: Set):
         super().__init__(data)
 
     def remove_records(self, record_names: List[str]) -> "__DataSet":
         record_names_set = set(record_names)
-        self.data = {key for key in self.data if key[0] not in record_names_set}
+        self.data = {
+            key for key in self.data if key[0] not in record_names_set}
         return self
 
     def get_frequency(self) -> Dict[str, int]:
@@ -51,7 +54,8 @@ class Changes(__Data):
             if table_name in fields:
                 for field, change in record_changes.items():
                     if field in fields[table_name]:
-                        record_changes[field] = (info('change ignored'), info('change ignored'))
+                        record_changes[field] = (
+                            info('change ignored'), info('change ignored'))
         return self
 
     def remove_records(self, record_names: List[str]) -> "Changes":
