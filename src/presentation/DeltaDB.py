@@ -1,8 +1,8 @@
 from typing import Literal
 
 from src.validations import validate_db_type, validate_db_orm
-from src.domain.data_processing.ingestion import capture_all_tables
-from src.domain.data_processing.analysis import diff_captures
+from src.domain.data_processing.ingestion import capture_all_records
+from src.domain.data_processing.analysis import diff_records_captures
 from src.DBMetadata.manajer import get_db_metadata_adapter
 class DeltaDB:
     """
@@ -54,17 +54,17 @@ class DeltaDB:
         """
         return f"DeltaDB(db_type={self.db_type}, db_orm={self.db_orm})"
 
-    def capture_all_tables(self): # FIXME: es records
+    def capture_all_records(self): # FIXME: es records
         """
         Captures the structure and data of all tables in the database.
 
         Returns:
             object: The result of the capture processed by the adapter.
         """
-        return capture_all_tables(self.db_metadata)
+        return capture_all_records(self.db_metadata)
 
     @staticmethod
-    def diff_captures(initial_capture, final_capture):
+    def diff_records_captures(initial_capture, final_capture):
         """
         Compares two data captures and returns the differences.
 
@@ -75,4 +75,4 @@ class DeltaDB:
         Returns:
             object: The result of the capture comparison.
         """
-        return diff_captures(initial_capture, final_capture)
+        return diff_records_captures(initial_capture, final_capture)

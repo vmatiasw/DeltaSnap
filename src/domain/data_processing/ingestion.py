@@ -8,7 +8,7 @@ from src.domain.interfaces.IDBMetadata import IDBMetadata
 # Agregar funcion que solo capture los registros que le pasen
 # Agregar funcion que capture un registro y sus relaciones (mas de uno tm? o habra probelmas con duplicados?)
 
-def capture_all_tables(db_metadata:IDBMetadata, page_size: int = 1) -> Capture:
+def capture_all_records(db_metadata:IDBMetadata, page_size: int = 1) -> Capture:
     tables = db_metadata.get_tables()
     metadata: Capture = defaultdict(dict)
 

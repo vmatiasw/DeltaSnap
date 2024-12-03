@@ -17,8 +17,8 @@ Capture = Dict[UniqueTableId, Dict[Field, Any]] # { (table_name, id): {column_na
 # Changes Deleted Created
 ValueChange = Tuple[Any, Any] # (previous value, new value)
 FieldsChanges = Dict[Field, ValueChange]
-TablesChanges = Dict[UniqueTableId, FieldsChanges]
-DeletedTables = Set[UniqueTableId]
-CreatedTables = Set[UniqueTableId]
+RecordsChanges = Dict[UniqueTableId, FieldsChanges]
+DeletedRecords = Set[UniqueTableId]
+CreatedRecords = Set[UniqueTableId]
 
 ModelsList = List[BaseModel]

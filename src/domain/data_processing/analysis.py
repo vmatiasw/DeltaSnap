@@ -1,16 +1,16 @@
 from typing import Tuple
 
-from src.domain.types import Capture, CreatedTables, DeletedTables, FieldsChanges, TablesChanges, info
+from src.domain.types import Capture, CreatedRecords, DeletedRecords, FieldsChanges, RecordsChanges, info
 from src.domain.data_processing.data_classes import Changes, Created, Deleted
 
-def diff_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Changes, Created, Deleted]:
+def diff_records_captures(initial_capture: Capture, final_capture: Capture) -> Tuple[Changes, Created, Deleted]:
     """
     Compares two capture dictionaries and identifies the differences between them, 
     categorizing them into changes, deletions, and creations.
     """
-    changes: TablesChanges = {}
-    deleted: DeletedTables = set(initial_capture.keys()) - set(final_capture.keys())
-    created: CreatedTables = set(final_capture.keys()) - set(initial_capture.keys())
+    changes: RecordsChanges = {}
+    deleted: DeletedRecords = set(initial_capture.keys()) - set(final_capture.keys())
+    created: CreatedRecords = set(final_capture.keys()) - set(initial_capture.keys())
 
     # Detect changes in existing tables
     for table_key, initial_table in initial_capture.items():
