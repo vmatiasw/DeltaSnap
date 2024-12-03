@@ -15,8 +15,9 @@ class DBContextManager():
         
         if self._session:
             self._session.begin()
-            token = current_session.set(self._session)
-            self._token = token
+        
+        token = current_session.set(self._session)
+        self._token = token
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
@@ -29,7 +30,8 @@ class DBContextManager():
             else:
                 self._session.commit()
             self._session.close()
-            current_session.reset(self._token)
+        
+        current_session.reset(self._token)
 
 class DBTestContextManager(DBContextManager):
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -39,4 +41,5 @@ class DBTestContextManager(DBContextManager):
         if self._session:
             self._session.rollback()
             self._session.close()
-            current_session.reset(self._token)
+        
+        current_session.reset(self._token)
