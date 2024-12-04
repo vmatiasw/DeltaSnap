@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, List, Set, Any
 from collections import Counter, defaultdict
 
-from src.domain.types import CreatedRecords, DeletedRecords, RecordsChanges, info
+from DeltaDB.domain.types import CreatedRecords, DeletedRecords, RecordsChanges, info
 
 
 class __Data:

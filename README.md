@@ -22,7 +22,7 @@ En mi opinión este tipo de test tiene dos defectos:
 2. Se puede no chequear algo que si era importante chequear, y esto no necesariamente es porque se hizo mal el test, quizás algo que se agrego luego y no se actualizo en el test.
 
 Por esta razón me parece útil una herramienta que permita sacar capturas en dos puntos (antes y después de ejecutar la funcionalidad) y compararlas para conocer que tablas se eliminaron, crearon y modificaron, y en las que se modificaron, que es lo que se modifico.
-Y esa herramienta es justo la que cree y llame src.
+Y esa herramienta es justo la que cree y llame DeltaDB
 Un test utilizándola no solo testearia correctitud en ciertas tablas y campos arbitrarios como en el caso anterior, testearia todo, correctitud y completitud.
 
 Ventajas:

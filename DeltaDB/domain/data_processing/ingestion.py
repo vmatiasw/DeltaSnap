@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import Any, List, Dict
 
-from src.domain.types import Capture
-from src.domain.interfaces.IDBMetadata import IDBMetadata
+from DeltaDB.domain.types import Capture
+from DeltaDB.domain.interfaces.IDBMetadata import IDBMetadata
 
 
 def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
@@ -22,7 +22,7 @@ def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Cap
             continue
 
         columns = db_metadata.get_table_columns_from_record(record)
-        capture[table_name, record_id] = __extract_column_values(
+        capture[table_name, record_id] = __extract_fields_values(
             db_metadata, record, columns
         )
 
@@ -36,12 +36,12 @@ def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Cap
 def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
     """Captura los registros proporcionados."""
     capture: Capture = defaultdict(dict)
+
     for record in records:
         table_name = db_metadata.get_table_name_from_record(record)
         record_id = db_metadata.get_record_id(record)
         columns = db_metadata.get_table_columns_from_record(record)
-
-        capture[table_name, record_id] = __extract_column_values(
+        capture[table_name, record_id] = __extract_fields_values(
             db_metadata, record, columns
         )
 
@@ -62,8 +62,7 @@ def capture_all_records(db_metadata: IDBMetadata, page_size: int = 1) -> Capture
 
             for record in records:
                 record_id = db_metadata.get_record_id(record)
-
-                capture[table_name, record_id] = __extract_column_values(
+                capture[table_name, record_id] = __extract_fields_values(
                     db_metadata, record, columns
                 )
 
@@ -72,14 +71,16 @@ def capture_all_records(db_metadata: IDBMetadata, page_size: int = 1) -> Capture
     return dict(capture)
 
 
-def __extract_column_values(
-    db_metadata: IDBMetadata, record: Any, columns: List[Any]
+def __extract_fields_values(
+    db_metadata: IDBMetadata, record: Any, fields: List[Any]
 ) -> Dict[str, Any]:
-    columns_values: Dict[str, Any] = defaultdict(dict)
-    for column in columns:
-        column_name = db_metadata.get_column_name(column)
-        column_value = db_metadata.get_column_value(column_name, record)
-        column_is_foreign_key = db_metadata.column_is_foreign_key(column)
+    fields_values: Dict[str, Any] = defaultdict(dict)
+
+    for field in fields:
+        column_name = db_metadata.get_column_name(field)
+        field_value = db_metadata.get_field_value(column_name, record)
+        column_is_foreign_key = db_metadata.column_is_foreign_key(field)
         key = f"{column_name} (FK)" if column_is_foreign_key else column_name
-        columns_values[key] = column_value
-    return dict(columns_values)
+        fields_values[key] = field_value
+
+    return dict(fields_values)

@@ -1,13 +1,13 @@
 from typing import Literal
 
-from src.validations import validate_db_type, validate_db_orm
-from src.domain.data_processing.ingestion import (
+from DeltaDB.validations import validate_db_type, validate_db_orm
+from DeltaDB.domain.data_processing.ingestion import (
     capture_all_records,
     capture_records,
     capture_related_records,
 )
-from src.domain.data_processing.analysis import diff_records_captures
-from src.DBMetadata.manajer import get_db_metadata_adapter
+from DeltaDB.domain.data_processing.analysis import diff_records_captures
+from DeltaDB.adapters.DBMetadata.manager import get_db_metadata_adapter
 
 
 class DeltaDB:

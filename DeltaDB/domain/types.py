@@ -4,7 +4,7 @@ from tests.db.models.sql_alchemy import Base  # FIXME: Change this import
 
 BaseModel = TypeVar("BaseModel", bound=Base)  # SQLAlchemy models
 
-UniqueTableId = Tuple[str, int]  # (table_name, id)
+RecordId = Tuple[str, int]  # (table_name, id)
 
 Info = NewType("Info", str)
 
@@ -15,14 +15,14 @@ def info(value: str) -> Info:
 
 # Capture
 Field = str
-# { (table_name, id): {column_name: value} }
-Capture = Dict[UniqueTableId, Dict[Field, Any]]
+# { (table_name, id): {field_name: value} }
+Capture = Dict[RecordId, Dict[Field, Any]]
 
 # Changes Deleted Created
 ValueChange = Tuple[Any, Any]  # (previous value, new value)
-FieldsChanges = Dict[Field, ValueChange]
-RecordsChanges = Dict[UniqueTableId, FieldsChanges]
-DeletedRecords = Set[UniqueTableId]
-CreatedRecords = Set[UniqueTableId]
+RecordChanges = Dict[Field, ValueChange]
+RecordsChanges = Dict[RecordId, RecordChanges]
+DeletedRecords = Set[RecordId]
+CreatedRecords = Set[RecordId]
 
 ModelsList = List[BaseModel]

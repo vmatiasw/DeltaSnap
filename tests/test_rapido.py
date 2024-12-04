@@ -124,8 +124,8 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
             "duracion_turno": (0, 60),
         },
         ("jugadores", 1): {
-            "es_creador": ("#column don't exist", True),
-            "nombre": ("Creador", "#column don't exist"),
+            "es_creador": ("#field don't exist", True),
+            "nombre": ("Creador", "#field don't exist"),
         },
     }
     assert created.remove_tables(["jugadores"]).data == {

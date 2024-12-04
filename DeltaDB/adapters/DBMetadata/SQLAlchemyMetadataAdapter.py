@@ -39,7 +39,7 @@ class SQLAlchemyMetadataAdapter:
         return str(column.key)
 
     @staticmethod
-    def get_column_value(column_name: str, record: Any) -> Any:
+    def get_field_value(column_name: str, record: Any) -> Any:
         """Devuelve el valor de una columna en un registro."""
         return getattr(record, column_name)
 

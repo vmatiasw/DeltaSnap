@@ -4,8 +4,8 @@ import os
 
 from tests.db.DBContextManager import DBTestContextManager
 from tests.db.GameFactory import GameFactory
-from tests.db.repository.manajer import Repository
-from tests.db.connection.manajer import DBConnection
+from tests.db.repository.manager import Repository
+from tests.db.connection.manager import DBConnection
 from tests.db.TestDB import TestDB
 from tests.db.config import DATABASE_NAME
 
