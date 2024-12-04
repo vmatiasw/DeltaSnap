@@ -1,10 +1,9 @@
-
 def __get_sqlalchemy_adapter(delta_db):
     """
     Retrieves the adapter for SQLAlchemy metadata.
 
     Args:
-        delta_db: An instance of DeltaDB containing `base` (a subclass of DeclarativeBase) 
+        delta_db: An instance of DeltaDB containing `base` (a subclass of DeclarativeBase)
                   and `repository` (an implementation of IRepository).
 
     Returns:
@@ -14,18 +13,21 @@ def __get_sqlalchemy_adapter(delta_db):
         ValueError: If `base` is not a subclass of DeclarativeBase or `repository` does not implement IRepository.
     """
     from sqlalchemy.orm import DeclarativeBase
-    from src.DBMetadata.adapters.SQLAlchemyMetadataAdapter import SQLAlchemyMetadataAdapter, IRepository
+    from src.DBMetadata.adapters.SQLAlchemyMetadataAdapter import (
+        SQLAlchemyMetadataAdapter,
+        IRepository,
+    )
 
-    if not issubclass(delta_db.base, DeclarativeBase) or not isinstance(delta_db.repository, IRepository):
+    if not issubclass(delta_db.base, DeclarativeBase) or not isinstance(
+        delta_db.repository, IRepository
+    ):
         raise ValueError(
             "You must provide `base` (a subclass of DeclarativeBase) and a `repository` (implementing IRepository) for SQLAlchemy."
         )
     return SQLAlchemyMetadataAdapter(delta_db.base, delta_db.repository)
 
 
-ADAPTERS = {
-    "sqlalchemy": __get_sqlalchemy_adapter
-}
+ADAPTERS = {"sqlalchemy": __get_sqlalchemy_adapter}
 
 
 def get_db_metadata_adapter(delta_db):

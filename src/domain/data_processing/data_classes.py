@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 from src.domain.types import CreatedRecords, DeletedRecords, RecordsChanges, info
 
 
-class __Data():
+class __Data:
     def __init__(self, data: Any):
         self.data = data
 
@@ -25,8 +25,7 @@ class __DataSet(__Data):
         :return: The updated dataset.
         """
         record_names_set = set(record_names)
-        self.data = {
-            key for key in self.data if key[0] not in record_names_set}
+        self.data = {key for key in self.data if key[0] not in record_names_set}
         return self
 
     def get_frequency(self) -> Dict[str, int]:
@@ -74,7 +73,9 @@ class Changes(__Data):
                 for field, change in record_changes.items():
                     if field in fields[table_name]:
                         record_changes[field] = (
-                            info('change ignored'), info('change ignored'))
+                            info("change ignored"),
+                            info("change ignored"),
+                        )
         return self
 
     def remove_tables(self, record_names: List[str]) -> Changes:
@@ -85,8 +86,11 @@ class Changes(__Data):
         :return: The updated Changes object.
         """
         record_names_set = set(record_names)
-        self.data = {key: value for key, value in self.data.items()
-                     if key[0] not in record_names_set}
+        self.data = {
+            key: value
+            for key, value in self.data.items()
+            if key[0] not in record_names_set
+        }
         return self
 
     def get_frequency(self) -> Dict[str, Dict[str, int]]:
@@ -95,14 +99,13 @@ class Changes(__Data):
 
         :return: A dictionary mapping table names to field frequencies.
         """
-        result: Dict[str, Dict[str, int]] = defaultdict(
-            lambda: defaultdict(int))
-        
+        result: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
+
         for (table_name, record_id), record_changes in self.data.items():
-            result[table_name][info('table frequency')] += 1
+            result[table_name][info("table frequency")] += 1
             for field, change in record_changes.items():
                 result[table_name][field] += 1
-        
+
         return {table: dict(fields) for table, fields in result.items()}
 
     def get_schema(self) -> Dict[str, Set[str]]:

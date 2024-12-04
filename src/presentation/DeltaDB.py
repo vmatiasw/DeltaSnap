@@ -31,11 +31,13 @@ class DeltaDB:
         db_metadata (object): The configured database metadata adapter.
     """
 
-    def __init__(self,
-                 db_type: Literal['sqlite', 'mysql', 'postgresql'],
-                 db_orm: Literal['sqlalchemy'],
-                 repository=None,
-                 base=None) -> None:
+    def __init__(
+        self,
+        db_type: Literal["sqlite", "mysql", "postgresql"],
+        db_orm: Literal["sqlalchemy"],
+        repository=None,
+        base=None,
+    ) -> None:
         """
         Initializes a DeltaDB instance with the specified configuration.
         """

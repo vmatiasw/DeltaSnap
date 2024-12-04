@@ -25,17 +25,18 @@ def capture_all_records(db_metadata: IDBMetadata, page_size: int = 1) -> Capture
 
                 for column in columns:
                     column_name = db_metadata.get_column_key(column)
-                    column_value = db_metadata.get_column_value(
-                        column_name, record)
-                    column_is_foreign_key = db_metadata.column_is_foreign_key(
-                        column)
+                    column_value = db_metadata.get_column_value(column_name, record)
+                    column_is_foreign_key = db_metadata.column_is_foreign_key(column)
 
-                    key = f'{column_name} (FK)' if column_is_foreign_key else column_name
+                    key = (
+                        f"{column_name} (FK)" if column_is_foreign_key else column_name
+                    )
                     metadata[table_name, record_id][key] = column_value
 
             offset += page_size
 
     return dict(metadata)
+
 
 #  # TODO: Actualizar esta funcion
 #

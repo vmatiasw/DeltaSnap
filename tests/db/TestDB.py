@@ -7,9 +7,9 @@ class TestDB:
         self.game = GameFactory(repository)
 
     def setup_data(self):
-        '''
+        """
         Función para crear una base de datos de prueba representativa de una real.
-        '''
+        """
         partida = self.game.crear_partida()
         self.game.unir_jugadores(partida, numero_de_jugadores=2)
 

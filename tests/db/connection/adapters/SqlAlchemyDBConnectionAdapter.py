@@ -5,8 +5,7 @@ from typing import Type
 from tests.db.connection.IDBConnection import IDBConnection
 
 
-class _Base(DeclarativeBase):
-    ...
+class _Base(DeclarativeBase): ...
 
 
 class SqlAlchemyDBConnectionAdapter(IDBConnection):
@@ -14,7 +13,8 @@ class SqlAlchemyDBConnectionAdapter(IDBConnection):
         super().__init__()
         self.engine: Engine = create_engine(self.db_path)
         self.sessionMaker: sessionmaker = sessionmaker(
-            autocommit=False, autoflush=False, bind=self.engine)
+            autocommit=False, autoflush=False, bind=self.engine
+        )
         self.base: Type[_Base] = _Base
 
     def get_base(self) -> Type[_Base]:

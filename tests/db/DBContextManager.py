@@ -1,8 +1,7 @@
 from typing import Any, Optional
 from contextvars import ContextVar, Token
 
-current_session: ContextVar[Optional[Any]] = ContextVar(
-    "current_session", default=None)
+current_session: ContextVar[Optional[Any]] = ContextVar("current_session", default=None)
 
 
 class DBContextManager:

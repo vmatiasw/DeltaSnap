@@ -7,11 +7,10 @@ from sqlalchemy import Column
 @runtime_checkable
 class IRepository(Protocol):
 
-    def query(self, model: Type[Any]) -> Query:
-        ...
+    def query(self, model: Type[Any]) -> Query: ...
 
 
-class SQLAlchemyMetadataAdapter():
+class SQLAlchemyMetadataAdapter:
     def __init__(self, base: DeclarativeBase, repository: IRepository) -> None:
         super().__init__()
         self.base = base

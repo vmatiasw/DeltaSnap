@@ -14,7 +14,8 @@ class SqlAlchemyRepository:
                 return mapper.class_
 
         raise ValueError(
-            f"El modelo {model_name} no se encuentra definido. \n modelos disponibles: {[mapper.class_.__name__ for mapper in self.base.registry.mappers]}")
+            f"El modelo {model_name} no se encuentra definido. \n modelos disponibles: {[mapper.class_.__name__ for mapper in self.base.registry.mappers]}"
+        )
 
     def instance_model(self, model_name: str, **kwargs: Any) -> Any:
         """
@@ -24,13 +25,11 @@ class SqlAlchemyRepository:
         # Suponiendo que 'models' es un diccionario de clases de modelos disponibles
         model_class = self.get_model_by_name(model_name)
         if not model_class:
-            raise ValueError(
-                f"El modelo {model_name} no se encuentra definido.")
+            raise ValueError(f"El modelo {model_name} no se encuentra definido.")
 
         # Validar que el modelo tenga un mapeo de clases (es un modelo de base de datos)
         if not hasattr(model_class, "__table__"):
-            raise ValueError(
-                f"{model_name} no es un modelo de base de datos válido.")
+            raise ValueError(f"{model_name} no es un modelo de base de datos válido.")
 
         # Crear la instancia del modelo
         instance = model_class(**kwargs)

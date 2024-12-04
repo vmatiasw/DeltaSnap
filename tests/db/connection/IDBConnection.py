@@ -27,7 +27,9 @@ class IDBConnection(ABC):
             case "mysql":
                 return f"mysql+mysqlconnector://{USERNAME}:{PASSWORD}@{HOST}{port}/{DATABASE_NAME}"
             case "postgresql":
-                return f"postgresql://{USERNAME}:{PASSWORD}@{HOST}{port}/{DATABASE_NAME}"
+                return (
+                    f"postgresql://{USERNAME}:{PASSWORD}@{HOST}{port}/{DATABASE_NAME}"
+                )
             case _:
                 raise Exception(f"Database {DATABASE} not supported")
 
