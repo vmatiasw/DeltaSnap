@@ -93,7 +93,7 @@ def test_iniciar_partida(repository, game, db_capturer: DBCapturer):
     captura_inicial[("jugadores", 1)].pop("es_creador")
     captura_final[("jugadores", 1)].pop("nombre")
 
-    changes, created, deleted = db_capturer.diff_records_captures(
+    changes, created, deleted = DBCapturer.diff_records_captures(
         captura_inicial, captura_final
     )
 
@@ -137,7 +137,7 @@ def test_iniciar_partida(repository, game, db_capturer: DBCapturer):
         ("cartas", 6),
     }
     assert not deleted.remove_tables(["jugadores"])
-    assert changes.ignore_fields_changes({"partidas": ["iniciada"]}).remove_tables(
+    assert changes.ignore_fields_changes({"partidas": {"iniciada"}}).remove_tables(
         ["jugadores"]
     ) == {
         ("partidas", 1): {
@@ -146,7 +146,7 @@ def test_iniciar_partida(repository, game, db_capturer: DBCapturer):
             "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
         }
     }
-    assert changes.ignore_fields_changes({"partidas": ["iniciada"]}) == {
+    assert changes.ignore_fields_changes({"partidas": {"iniciada"}}) == {
         ("partidas", 1): {
             "iniciada": ("#change ignored", "#change ignored"),
             "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
