@@ -108,7 +108,7 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
         },
         "jugadores": {"#table frequency": 1, "es_creador": 1, "nombre": 1},
     }
-    assert created.data == {
+    assert created == {
         ("cartas", 5),
         ("cartas", 4),
         ("cartas", 1),
@@ -116,8 +116,8 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
         ("cartas", 6),
         ("cartas", 2),
     }
-    assert not deleted.data
-    assert changes.data == {
+    assert not deleted
+    assert changes == {
         ("partidas", 1): {
             "iniciada": (False, True),
             "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
@@ -128,7 +128,7 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
             "nombre": ("Creador", "#field don't exist"),
         },
     }
-    assert created.remove_tables(["jugadores"]).data == {
+    assert created.remove_tables(["jugadores"]) == {
         ("cartas", 1),
         ("cartas", 2),
         ("cartas", 3),
@@ -136,17 +136,17 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
         ("cartas", 5),
         ("cartas", 6),
     }
-    assert not deleted.remove_tables(["jugadores"]).data
+    assert not deleted.remove_tables(["jugadores"])
     assert changes.ignore_fields_changes({"partidas": ["iniciada"]}).remove_tables(
         ["jugadores"]
-    ).data == {
+    ) == {
         ("partidas", 1): {
             "duracion_turno": (0, 60),
             "iniciada": ("#change ignored", "#change ignored"),
             "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
         }
     }
-    assert changes.ignore_fields_changes({"partidas": ["iniciada"]}).data == {
+    assert changes.ignore_fields_changes({"partidas": ["iniciada"]}) == {
         ("partidas", 1): {
             "iniciada": ("#change ignored", "#change ignored"),
             "inicio_turno": ("0", "2021-10-10T10:00:00Z"),

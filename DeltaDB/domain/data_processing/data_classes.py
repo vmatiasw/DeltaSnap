@@ -12,6 +12,20 @@ class __Data:
     def __str__(self) -> str:
         return f"{self.data}"
 
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, type(self)):
+            return self.data == other.data
+        return self.data == other
+
+    def __bool__(self) -> bool:
+        return bool(self.data)
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __iter__(self):
+        return iter(self.data)
+
 
 class __DataSet(__Data):
     def __init__(self, data: Set):
