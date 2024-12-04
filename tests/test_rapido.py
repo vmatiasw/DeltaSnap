@@ -4,9 +4,16 @@ from DeltaDB import DeltaDB
 def test_iniciar_partida(repository, game, delta_db: DeltaDB):
     """Test para iniciar una partida con suficientes jugadores"""
 
-    partida = repository.get("Partida", 1)
-
-    captura_inicial = delta_db.capture_all_records()
+    partida1 = repository.get("Partida", 1)
+    partida2 = repository.get("Partida", 2)
+    jugador1 = repository.get("Jugador", 1)
+    jugador2 = repository.get("Jugador", 2)
+    jugador3 = repository.get("Jugador", 3)
+    jugador4 = repository.get("Jugador", 4)
+    jugador5 = repository.get("Jugador", 5)
+    jugador6 = repository.get("Jugador", 6)
+    
+    captura_inicial = delta_db.capture_records([partida1, partida2, jugador1, jugador2, jugador3, jugador4, jugador5, jugador6])
 
     assert captura_inicial == {
         ("jugadores", 1): {
@@ -71,7 +78,7 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
         },
     }
 
-    game.iniciar_partida(partida)
+    game.iniciar_partida(partida1)
 
     captura_final = delta_db.capture_all_records()
 
