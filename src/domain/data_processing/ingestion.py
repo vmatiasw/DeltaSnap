@@ -6,32 +6,35 @@ from src.domain.interfaces.IDBMetadata import IDBMetadata
 
 
 def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
+    """Captura iterativamente los registros relacionados a los registros proporcionados utilizando una pila."""
     capture: Capture = defaultdict(dict)
+    stack = []
+
     for record in records:
-        __capture_related_records(db_metadata, record, capture)
+        stack.append(record)
+
+    while stack:
+        record = stack.pop()
+        table_name = db_metadata.get_table_name_from_record(record)
+        record_id = db_metadata.get_record_id(record)
+
+        if capture.get((table_name, record_id)):
+            continue
+
+        columns = db_metadata.get_table_columns_from_record(record)
+        capture[table_name, record_id] = __extract_column_values(
+            db_metadata, record, columns
+        )
+
+        related_records = db_metadata.get_related_records(record)
+        for related_record in related_records:
+            stack.append(related_record)
+
     return dict(capture)
 
 
-def __capture_related_records(
-    db_metadata: IDBMetadata, record: Any, capture: Capture
-) -> None:
-    table_name = db_metadata.get_table_name_from_record(record)
-    record_id = db_metadata.get_record_id(record)
-    if capture.get((table_name, record_id)):
-        return
-
-    columns = db_metadata.get_table_columns_from_record(record)
-
-    capture[table_name, record_id] = __extract_column_values(
-        db_metadata, record, columns
-    )
-
-    related_records = db_metadata.get_related_records(record)
-    for related_record in related_records:
-        __capture_related_records(db_metadata, related_record, capture)
-
-
 def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
+    """Captura los registros proporcionados."""
     capture: Capture = defaultdict(dict)
     for record in records:
         table_name = db_metadata.get_table_name_from_record(record)
@@ -46,6 +49,7 @@ def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
 
 
 def capture_all_records(db_metadata: IDBMetadata, page_size: int = 1) -> Capture:
+    """Captura todos los registros de la base de datos."""
     tables = db_metadata.get_tables()
     capture: Capture = defaultdict(dict)
 
