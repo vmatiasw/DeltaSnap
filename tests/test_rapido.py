@@ -12,8 +12,10 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
     jugador4 = repository.get("Jugador", 4)
     jugador5 = repository.get("Jugador", 5)
     jugador6 = repository.get("Jugador", 6)
-    
-    captura_inicial = delta_db.capture_records([partida1, partida2, jugador1, jugador2, jugador3, jugador4, jugador5, jugador6])
+
+    captura_inicial = delta_db.capture_records(
+        [partida1, partida2, jugador1, jugador2, jugador3, jugador4, jugador5, jugador6]
+    )
 
     assert captura_inicial == {
         ("jugadores", 1): {
@@ -77,6 +79,10 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
             "tablero": "[[2, 1, 3, 4, 2, 3], [4, 2, 1, 1, 3, 3], [2, 1, 3, 2, 3, 4], [4, 1, 1, 2, 2, 4], [1, 3, 1, 2, 1, 3], [2, 3, 4, 4, 4, 4]]",
         },
     }
+
+    captura_inicial_2 = delta_db.capture_related_records([partida1, partida2])
+
+    assert captura_inicial_2 == captura_inicial
 
     game.iniciar_partida(partida1)
 

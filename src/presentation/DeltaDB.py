@@ -1,7 +1,11 @@
 from typing import Literal
 
 from src.validations import validate_db_type, validate_db_orm
-from src.domain.data_processing.ingestion import capture_all_records, capture_records
+from src.domain.data_processing.ingestion import (
+    capture_all_records,
+    capture_records,
+    capture_related_records,
+)
 from src.domain.data_processing.analysis import diff_records_captures
 from src.DBMetadata.manajer import get_db_metadata_adapter
 
@@ -66,7 +70,7 @@ class DeltaDB:
             object: The result of the capture processed by the adapter.
         """
         return capture_all_records(self.db_metadata)
-    
+
     def capture_records(self, records):
         """
         Captures the structure and data of the specified records.
@@ -78,6 +82,18 @@ class DeltaDB:
             object: The result of the capture processed by the adapter.
         """
         return capture_records(self.db_metadata, records)
+
+    def capture_related_records(self, records):
+        """
+        Captures the structure and data of the specified records and their related records.
+
+        Args:
+            records (object): The records to be captured.
+
+        Returns:
+            object: The result of the capture processed by the adapter.
+        """
+        return capture_related_records(self.db_metadata, records)
 
     @staticmethod
     def diff_records_captures(initial_capture, final_capture):

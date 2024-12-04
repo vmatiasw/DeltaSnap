@@ -7,8 +7,38 @@ from src.domain.interfaces.IDBMetadata import IDBMetadata
 # TODO:
 # Agregar funcion que capture los registros pasados y cada uo de sus registros foraneos recursivamente
 # No habria problema si se hace de manera recursiva, ya que se esta utilizando un diccionario y
-# las claves son unicas, por lo que solo habria que parar cuando se llegue a un registro que ya se 
+# las claves son unicas, por lo que solo habria que parar cuando se llegue a un registro que ya se
 # haya capturado
+
+
+def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
+    metadata: Capture = defaultdict(dict)
+    for record in records:
+        __capture_related_records(db_metadata, record, metadata)
+    return dict(metadata)
+
+
+def __capture_related_records(
+    db_metadata: IDBMetadata, record: Any, metadata: Capture
+) -> None:
+    table_name = db_metadata.get_table_name_from_record(record)
+    record_id = db_metadata.get_record_id(record)
+    if metadata.get((table_name, record_id)):
+        return
+
+    columns = db_metadata.get_table_columns_from_record(record)
+
+    for column in columns:
+        column_name = db_metadata.get_column_name(column)
+        column_value = db_metadata.get_column_value(column_name, record)
+        column_is_foreign_key = db_metadata.column_is_foreign_key(column)
+        key = f"{column_name} (FK)" if column_is_foreign_key else column_name
+        metadata[table_name, record_id][key] = column_value
+
+    related_records = db_metadata.get_related_records(record)
+    for related_record in related_records:
+        __capture_related_records(db_metadata, related_record, metadata)
+
 
 def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
     metadata: Capture = defaultdict(dict)
