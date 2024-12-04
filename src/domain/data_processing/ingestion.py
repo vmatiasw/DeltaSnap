@@ -5,9 +5,10 @@ from src.domain.types import Capture
 from src.domain.interfaces.IDBMetadata import IDBMetadata
 
 # TODO:
-# Agregar funcion que solo capture los registros que le pasen
-# Agregar funcion que capture un registro y sus relaciones (mas de uno tm? o habra probelmas con duplicados?)
-
+# Agregar funcion que capture los registros pasados y cada uo de sus registros foraneos recursivamente
+# No habria problema si se hace de manera recursiva, ya que se esta utilizando un diccionario y
+# las claves son unicas, por lo que solo habria que parar cuando se llegue a un registro que ya se 
+# haya capturado
 
 def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
     metadata: Capture = defaultdict(dict)
