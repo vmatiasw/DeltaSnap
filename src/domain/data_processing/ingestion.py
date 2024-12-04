@@ -4,12 +4,6 @@ from typing import Any, List
 from src.domain.types import Capture
 from src.domain.interfaces.IDBMetadata import IDBMetadata
 
-# TODO:
-# Agregar funcion que capture los registros pasados y cada uo de sus registros foraneos recursivamente
-# No habria problema si se hace de manera recursiva, ya que se esta utilizando un diccionario y
-# las claves son unicas, por lo que solo habria que parar cuando se llegue a un registro que ya se
-# haya capturado
-
 
 def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
     metadata: Capture = defaultdict(dict)
@@ -28,12 +22,9 @@ def __capture_related_records(
 
     columns = db_metadata.get_table_columns_from_record(record)
 
-    for column in columns:
-        column_name = db_metadata.get_column_name(column)
-        column_value = db_metadata.get_column_value(column_name, record)
-        column_is_foreign_key = db_metadata.column_is_foreign_key(column)
-        key = f"{column_name} (FK)" if column_is_foreign_key else column_name
-        metadata[table_name, record_id][key] = column_value
+    __capture_record_columns(
+        db_metadata, record, metadata, table_name, record_id, columns
+    )
 
     related_records = db_metadata.get_related_records(record)
     for related_record in related_records:
@@ -47,12 +38,9 @@ def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
         record_id = db_metadata.get_record_id(record)
         columns = db_metadata.get_table_columns_from_record(record)
 
-        for column in columns:
-            column_name = db_metadata.get_column_name(column)
-            column_value = db_metadata.get_column_value(column_name, record)
-            column_is_foreign_key = db_metadata.column_is_foreign_key(column)
-            key = f"{column_name} (FK)" if column_is_foreign_key else column_name
-            metadata[table_name, record_id][key] = column_value
+        __capture_record_columns(
+            db_metadata, record, metadata, table_name, record_id, columns
+        )
 
     return dict(metadata)
 
@@ -71,16 +59,21 @@ def capture_all_records(db_metadata: IDBMetadata, page_size: int = 1) -> Capture
             for record in records:
                 record_id = db_metadata.get_record_id(record)
 
-                for column in columns:
-                    column_name = db_metadata.get_column_name(column)
-                    column_value = db_metadata.get_column_value(column_name, record)
-                    column_is_foreign_key = db_metadata.column_is_foreign_key(column)
-
-                    key = (
-                        f"{column_name} (FK)" if column_is_foreign_key else column_name
-                    )
-                    metadata[table_name, record_id][key] = column_value
+                __capture_record_columns(
+                    db_metadata, record, metadata, table_name, record_id, columns
+                )
 
             offset += page_size
 
     return dict(metadata)
+
+
+def __capture_record_columns(
+    db_metadata, record, metadata, table_name, record_id, columns
+):
+    for column in columns:
+        column_name = db_metadata.get_column_name(column)
+        column_value = db_metadata.get_column_value(column_name, record)
+        column_is_foreign_key = db_metadata.column_is_foreign_key(column)
+        key = f"{column_name} (FK)" if column_is_foreign_key else column_name
+        metadata[table_name, record_id][key] = column_value
