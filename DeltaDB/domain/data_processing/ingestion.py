@@ -6,7 +6,15 @@ from DeltaDB.domain.interfaces.IDBMetadata import IDBMetadata
 
 
 def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
-    """Captura iterativamente los registros relacionados a los registros proporcionados utilizando una pila."""
+    """
+    Captures the structure and data of the specified records and their related records.
+
+    Args:
+        records (object): The records to be captured.
+
+    Returns:
+        object: The result of the capture processed by the adapter.
+    """
     capture: Capture = defaultdict(dict)
     stack = []
 
@@ -34,7 +42,15 @@ def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Cap
 
 
 def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
-    """Captura los registros proporcionados."""
+    """
+    Captures the structure and data of the specified records.
+
+    Args:
+        records (object): The records to be captured.
+
+    Returns:
+        object: The result of the capture processed by the adapter.
+    """
     capture: Capture = defaultdict(dict)
 
     for record in records:
@@ -48,8 +64,16 @@ def capture_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
     return dict(capture)
 
 
-def capture_all_records(db_metadata: IDBMetadata, page_size: int = 1) -> Capture:
-    """Captura todos los registros de la base de datos."""
+def capture_all_records(db_metadata: IDBMetadata, page_size: int = 1000) -> Capture:
+    """
+    Captures the structure and data of all tables in the database.
+
+    Args:
+        page_size (int): The number of records to capture per page.
+
+    Returns:
+        object: The result of the capture processed by the adapter.
+    """
     tables = db_metadata.get_tables()
     capture: Capture = defaultdict(dict)
 

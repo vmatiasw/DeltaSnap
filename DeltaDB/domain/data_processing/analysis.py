@@ -15,8 +15,15 @@ def diff_records_captures(
     initial_capture: Capture, final_capture: Capture
 ) -> Tuple[Changes, Created, Deleted]:
     """
-    Compares two capture dictionaries and identifies the differences between them,
+    Compares two data captures and identifies the differences between them,
     categorizing them into changes, deletions, and creations.
+
+    Args:
+        initial_capture (object): The initial data capture.
+        final_capture (object): The final data capture.
+
+    Returns:
+        object: The result of the capture comparison.
     """
     deleted: DeletedRecords = set(initial_capture.keys()) - set(final_capture.keys())
     created: CreatedRecords = set(final_capture.keys()) - set(initial_capture.keys())

@@ -19,6 +19,7 @@ def get_db_metadata_adapter(delta_db):
         )
     return adapter_func(delta_db)
 
+
 def __get_sqlalchemy_adapter(delta_db):
     """
     Retrieves the adapter for SQLAlchemy metadata.
@@ -34,7 +35,7 @@ def __get_sqlalchemy_adapter(delta_db):
         ValueError: If `base` is not a subclass of DeclarativeBase or `repository` does not implement IRepository.
     """
     from sqlalchemy.orm import DeclarativeBase
-    from DeltaDB.adapters.DBMetadata.SQLAlchemyMetadataAdapter import (
+    from DeltaDB.infrastructure.adapters.DBMetadata.SQLAlchemyMetadataAdapter import (
         SQLAlchemyMetadataAdapter,
         IRepository,
     )
@@ -49,4 +50,3 @@ def __get_sqlalchemy_adapter(delta_db):
 
 
 ADAPTERS = {"sqlalchemy": __get_sqlalchemy_adapter}
-

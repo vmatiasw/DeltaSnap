@@ -1,6 +1,7 @@
-import DeltaDB
 import pytest
 import os
+
+from DeltaDB import DBCapturer, DBConfig
 
 from tests.db.DBContextManager import DBTestContextManager
 from tests.db.GameFactory import GameFactory
@@ -54,10 +55,12 @@ def game(repository):
 
 
 @pytest.fixture(scope="function")
-def delta_db(repository, db_connection):
-    yield DeltaDB.DeltaDB(
-        db_type="sqlite",
-        db_orm="sqlalchemy",
-        repository=repository,
-        base=db_connection.get_base(),
+def db_capturer(repository, db_connection):
+    yield DBCapturer(
+        DBConfig(
+            db_type="sqlite",
+            db_orm="sqlalchemy",
+            repository=repository,
+            base=db_connection.get_base(),
+        )
     )

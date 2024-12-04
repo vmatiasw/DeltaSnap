@@ -1,7 +1,7 @@
-from DeltaDB import DeltaDB
+from DeltaDB import DBCapturer
 
 
-def test_iniciar_partida(repository, game, delta_db: DeltaDB):
+def test_iniciar_partida(repository, game, db_capturer: DBCapturer):
     """Test para iniciar una partida con suficientes jugadores"""
 
     partida1 = repository.get("Partida", 1)
@@ -13,7 +13,7 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
     jugador5 = repository.get("Jugador", 5)
     jugador6 = repository.get("Jugador", 6)
 
-    captura_inicial = delta_db.capture_records(
+    captura_inicial = db_capturer.capture_records(
         [partida1, partida2, jugador1, jugador2, jugador3, jugador4, jugador5, jugador6]
     )
 
@@ -80,20 +80,20 @@ def test_iniciar_partida(repository, game, delta_db: DeltaDB):
         },
     }
 
-    captura_inicial_2 = delta_db.capture_related_records([partida1, partida2])
+    captura_inicial_2 = db_capturer.capture_related_records([partida1, partida2])
 
     assert captura_inicial_2 == captura_inicial
 
     game.iniciar_partida(partida1)
 
-    captura_final = delta_db.capture_all_records()
+    captura_final = db_capturer.capture_all_records()
 
     assert captura_final != captura_inicial
 
     captura_inicial[("jugadores", 1)].pop("es_creador")
     captura_final[("jugadores", 1)].pop("nombre")
 
-    changes, created, deleted = delta_db.diff_records_captures(
+    changes, created, deleted = db_capturer.diff_records_captures(
         captura_inicial, captura_final
     )
 
