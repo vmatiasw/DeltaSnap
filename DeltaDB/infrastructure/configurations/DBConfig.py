@@ -11,7 +11,7 @@ class DBConfig:
     Args:
         db_type (Literal['sqlite', 'mysql', 'postgresql']): The type of the database.
         db_orm (Literal['sqlalchemy']): The ORM to use.
-        repository (Optional[Any]): The repository instance for database interaction (default is None).
+        test_session (Optional[Any]): The readonly session used for database interaction (e.g., `Session` in SQLAlchemy, default is None).
         base (Optional[Any]): The base class for model mapping (e.g., `DeclarativeBase` in SQLAlchemy, default is None).
 
     Raises:
@@ -20,7 +20,7 @@ class DBConfig:
     Attributes:
         db_type (str): The type of the database.
         db_orm (str): The ORM used for database interaction.
-        repository (Optional[Any]): The repository instance.
+        test_session (Optional[Any]): The test_session used for database interaction.
         base (Optional[Any]): The base class used for mapping.
     """
 
@@ -28,14 +28,14 @@ class DBConfig:
         self,
         db_type: Literal["sqlite", "mysql", "postgresql"],
         db_orm: Literal["sqlalchemy"],
-        repository: Optional[Any] = None,
+        test_session: Optional[Any] = None,
         base: Optional[Any] = None,
     ):
         validate_db_type(db_type)
         validate_db_orm(db_orm)
         self.db_type = db_type
         self.db_orm = db_orm
-        self.repository = repository
+        self.test_session = test_session
         self.base = base
 
     def get_db_metadata_adapter(self):

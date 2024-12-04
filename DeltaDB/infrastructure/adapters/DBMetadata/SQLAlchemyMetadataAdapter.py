@@ -1,20 +1,14 @@
-from typing import Any, Protocol, List, Type, runtime_checkable
+from typing import Any, List
 
-from sqlalchemy.orm import Mapper, DeclarativeBase, Query
+from sqlalchemy.orm import Mapper, DeclarativeBase, Session
 from sqlalchemy import Column, Table, inspect
 
 
-@runtime_checkable
-class IRepository(Protocol):
-
-    def query(self, model: Type[Any]) -> Query: ...
-
-
 class SQLAlchemyMetadataAdapter:
-    def __init__(self, base: DeclarativeBase, repository: IRepository) -> None:
+    def __init__(self, base: DeclarativeBase, test_session: Session) -> None:
         super().__init__()
         self.base = base
-        self.repository = repository
+        self.test_session = test_session
 
     def get_tables(self) -> List[Mapper]:
         """Devuelve todos los mappers de las tablas en la base de datos."""
@@ -31,7 +25,9 @@ class SQLAlchemyMetadataAdapter:
 
     def get_records(self, table: Mapper, offset: int, page_size: int) -> List[Any]:
         """Devuelve las instancias de la tabla en un rango determinado."""
-        return self.repository.query(table.class_).limit(page_size).offset(offset).all()
+        return (
+            self.test_session.query(table.class_).limit(page_size).offset(offset).all()
+        )
 
     @staticmethod
     def get_column_name(column: Column) -> str:

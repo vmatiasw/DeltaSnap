@@ -55,12 +55,12 @@ def game(repository):
 
 
 @pytest.fixture(scope="function")
-def db_capturer(repository, db_connection):
+def db_capturer(db_connection, repository):
     yield DBCapturer(
         DBConfig(
             db_type="sqlite",
             db_orm="sqlalchemy",
-            repository=repository,
+            test_session=repository.get_current_session(),
             base=db_connection.get_base(),
         )
     )

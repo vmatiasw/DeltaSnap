@@ -27,3 +27,7 @@ class IRepository(Protocol):
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:
         """Filtra una consulta de base de datos usando los parámetros proporcionados."""
         ...
+        
+    def get_current_session(self) -> Any:
+        """Devuelve la sesión actual."""
+        ...

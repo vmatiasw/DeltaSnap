@@ -71,3 +71,7 @@ class SqlAlchemyRepository:
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:
         """Filtra una consulta de base de datos usando los parámetros proporcionados."""
         return query.filter(*args, **kwargs)
+
+    def get_current_session(self) -> Any:
+        """Devuelve la sesión actual."""
+        return current_session.get()

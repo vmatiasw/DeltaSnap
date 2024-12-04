@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
-from typing import Type
+from typing import Type, Any
 
 from tests.db.connection.IDBConnection import IDBConnection
 

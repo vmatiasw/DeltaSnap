@@ -67,6 +67,8 @@ Ademas, solo adapte para sqlalchemy en python claramente, faltaría ver para otr
 
 ## Uso
 
+Usar sobre bases de datos de prueba sin informacion confidencial ni de alguna importancia.
+
 ## Requisitos
 
 - Python 3.8 o superior (quizas menor, si prueban y anda cambien aca)

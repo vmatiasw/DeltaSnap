@@ -1,6 +1,5 @@
 from DeltaDB import DBCapturer
 
-
 def test_iniciar_partida(repository, game, db_capturer: DBCapturer):
     """Test para iniciar una partida con suficientes jugadores"""
 
