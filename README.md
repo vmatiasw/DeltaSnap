@@ -1,10 +1,25 @@
 # DeltaDB
-<!-- TODO: completar -->
 ## Indice
+1. [¿Qué es DeltaDB?](#¿Qué-es-DeltaDB?)
+2. [¿Para qué sirve?](#¿Para-qué-sirve?)
+3. [Ventajas](#Ventajas)
+4. [Instalación](#instalación) 
+5. [Uso](#uso) 
+6. [Estructura del Proyecto](#Estructura-del-Proyecto)
+7. [Requisitos](#Requisitos)
+8. [Instalación](#Instalación)
+## ¿Qué-es-DeltaDB?
+DeltaDB es una herramienta diseñada para facilitar la validación automática de cambios en bases de datos durante pruebas unitarias. Con DeltaDB puedes capturar el estado completo de la base de datos en diferentes momentos y compararlos de manera estructurada.
+## ¿Para-qué-sirve?
 
-## Que es
+### Usos
+- Testing
+- Debugging
+- Verificar los efectos persistentes de los casos de test
+- También pero con pinzas se podría usar para verificar migraciones de bases de datos exitosas
 
-## Para que sirve
+### Justificación
+
 Usualmente, al testear la base de datos se suele hacer lo siguiente:
 
 ```python
@@ -67,16 +82,28 @@ Luego hay algunos problemas, por ejemplo que pasa si una funcionalidad no es det
 Acepto mejoras, no se si hice las mejores decisiones de diseño en las interfaces, marcas #, ...
 Ademas, solo adapte para sqlalchemy en python claramente, faltaría ver para otros orms como django y sin orm,... Creería que lo único que hay que modificar para adaptar todo seria agregar en la carpeta DBMetadataAdapters el Adaptador y a db_metadata_manajer para que se elija al cambiar en la configuración ORM = 'orm elegido' por ejemplo
 
+## Ventajas
+1. **Cobertura total**: No necesitas seleccionar qué aspectos de la base de datos probar, DeltaDB lo hace por ti. 
+2. **Simplificación**: Reduce el número de `asserts` necesarios en tests complejos. 
+3. **Evolución automática**: Los tests se adaptan automáticamente a los cambios del esquema de la base de datos. 
+4. **Comparaciones completas**: Valida valores previos y posteriores, detectando cambios inesperados.
+
+
 ## Uso
-
-Usar sobre bases de datos de prueba sin informacion confidencial ni de alguna importancia.
-
+Usar sobre bases de datos de prueba sin información confidencial ni de alguna importancia.
+DeltaDB está diseñado para pruebas automatizadas. Sigue estos pasos: 
+1. Importa de DeltaDB DBCapturer y DBConfig
+2. Instancia un DBCapturer con la configuración correspondiente en DBConfig
+3. Crea un entorno de test, una base de datos de pruebas que sea tan representativa de la real como sea necesario que no contenga información sensible ni importante sobre la que correr DeltaDB.
+4. Crea un test, captura antes y despues de la funcionalidad a testear y obtiene las diferencias.
+5. Revisa que las diferencias que sean correctas y completas, y si si, entonces copia el diccionario y los sets.
+6. Crea tres assert, uno para cada dato, y compara para que siempre que se corra el test se verifique que los cambios sean iguales.
+7. Si hay algo que sigue cambiando por alguna característica de la funcionalidad, entonces mockearla en ese test.
 ## Requisitos
-
-- Python 3.8 o superior (quizas menor, si prueban y anda cambien aca)
+- Python 3.6 o superior (quizás menor, si prueban y anda cambien acá)
+- El proyecto no tiene dependencias mas que las que ya usas para tu base de datos.
 
 ## Instalación
-
 1. Clonar el repositorio.
 2. Crear un entorno virtual:
     ```bash
@@ -88,16 +115,3 @@ Usar sobre bases de datos de prueba sin informacion confidencial ni de alguna im
     ```bash
     pip install -r requirements.txt
     ```
-
-## Estructura del Proyecto
-
-## ## Contribuir
-
-¡Las contribuciones son bienvenidas! Si quieres contribuir, sigue estos pasos:
-
-1. Haz un fork del repositorio.
-2. Crea una rama para tu característica (`git checkout -b feature/nueva-funcionalidad`).
-3. Haz los cambios y asegúrate de probarlos.
-4. Haz un commit (`git commit -am 'Añadir nueva funcionalidad'`).
-5. Sube tu rama a tu fork (`git push origin feature/nueva-funcionalidad`).
-6. Crea un pull request al repositorio original
