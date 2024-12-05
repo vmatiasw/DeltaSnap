@@ -11,7 +11,7 @@ from DeltaDB.domain.types import (
 from DeltaDB.domain.data_processing.data_classes import Changes, Created, Deleted
 
 
-def diff_records_captures(
+def compare_capture(
     initial_capture: Capture, final_capture: Capture
 ) -> Tuple[Changes, Created, Deleted]:
     """

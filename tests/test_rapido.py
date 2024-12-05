@@ -1,5 +1,6 @@
 from DeltaDB import DBCapturer
 
+
 def test_iniciar_partida(repository, game, db_capturer: DBCapturer):
     """Test para iniciar una partida con suficientes jugadores"""
 
@@ -92,7 +93,7 @@ def test_iniciar_partida(repository, game, db_capturer: DBCapturer):
     captura_inicial[("jugadores", 1)].pop("es_creador")
     captura_final[("jugadores", 1)].pop("nombre")
 
-    changes, created, deleted = DBCapturer.diff_records_captures(
+    changes, created, deleted = DBCapturer.compare_capture(
         captura_inicial, captura_final
     )
 

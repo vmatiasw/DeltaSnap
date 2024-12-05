@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Any, Tuple
 
 from DeltaDB.infrastructure.configurations.DBConfig import DBConfig
 from DeltaDB.domain.data_processing.ingestion import (
@@ -6,7 +6,7 @@ from DeltaDB.domain.data_processing.ingestion import (
     capture_records,
     capture_related_records,
 )
-from DeltaDB.domain.data_processing.analysis import diff_records_captures
+from DeltaDB.domain.data_processing.analysis import compare_capture
 from DeltaDB.domain.types import Capture
 from DeltaDB.domain.data_processing.data_classes import Changes, Created, Deleted
 
@@ -59,7 +59,7 @@ class DBCapturer:
         return capture_related_records(self.db_metadata, records)
 
     @staticmethod
-    def diff_records_captures(
+    def compare_capture(
         initial_capture: Capture, final_capture: Capture
     ) -> Tuple[Changes, Created, Deleted]:
         """
@@ -73,4 +73,4 @@ class DBCapturer:
         Returns:
             object: The result of the capture comparison.
         """
-        return diff_records_captures(initial_capture, final_capture)
+        return compare_capture(initial_capture, final_capture)
