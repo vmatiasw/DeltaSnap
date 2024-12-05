@@ -1,21 +1,29 @@
 """
-DeltaDB library - A library for processing database records, capturing data, 
+DeltaDB Library - A library for processing database records, capturing data, 
 and viewing the differences between them.
 
-This module exposes the main configuration, capturer, and types used in the library.
+This module exposes the core components of the DeltaDB library, including:
+- Main configuration (`DBConfig`)
+- Data capturer (`DBCapturer`)
+- Core data types used in the library (e.g., `RecordId`, `Info`, `Capture`)
 """
 
-__all__ = []
+__all__ = [
+    "DBConfig",              # Main configuration for database access
+    "DBCapturer",            # Captures database records and differences
+    "RecordId",              # Type for record identifiers
+    "Info",                  # Metadata for records
+    "Capture",               # Captured database records
+    "RecordsChanges",        # Tracks changes between records
+    "DeletedRecords",        # Deleted records in the capture
+    "CreatedRecords",        # Newly created records in the capture
+]
 
 # Configurations
 from DeltaDB.infrastructure.configurations.DBConfig import DBConfig
 
-__all__ += ["DBConfig"]
-
 # Features
 from DeltaDB.presentation.DBCapturer import DBCapturer
-
-__all__ += ["DBCapturer"]
 
 # Types
 from DeltaDB.domain.types import (
@@ -26,12 +34,3 @@ from DeltaDB.domain.types import (
     DeletedRecords,
     CreatedRecords,
 )
-
-__all__ += [
-    "RecordId",
-    "Info",
-    "Capture",
-    "RecordsChanges",
-    "DeletedRecords",
-    "CreatedRecords",
-]

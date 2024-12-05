@@ -1,5 +1,7 @@
 # DeltaDB
 <!-- TODO: completar -->
+## Indice
+
 ## Que es
 
 ## Para que sirve
@@ -31,14 +33,14 @@ Ventajas:
 3. Si se actualiza el esquema de la base de datos los test se actualizan al instante y fallan si alguna funcionalidad llega a cambiar algo mas o menos de lo que cambiaba antes.
 4. Se testea el valor anterior ademas. Cosa que nunca se hace.
 
-Antes de dar un ejemplo, explicare como funciona la herramienta. Básicamente podes ejecutar en dos puntos cualquiera la función `capture_all_records(test_session)` para obtener las capturas de la db en esos puntos, y luego con la función `diff_records_captures(captura_inicial, captura_final)` se obtiene los siguientes datos:
+Antes de dar un ejemplo, explicare como funciona la herramienta. Básicamente podes ejecutar en dos puntos cualquiera la función `capture_all_records(test_session)` para obtener las capturas de la db en esos puntos, y luego con la función `compare_capture(captura_inicial, captura_final)` se obtiene los siguientes datos:
 - Tablas eliminadas: conjunto de tuplas `('nombre de tabla', id de tabla)`
 - Tablas creadas: conjunto de tuplas `('nombre de tabla', id de tabla)`
 - Tablas modificadas: diccionario con claves de la forma `('nombre de tabla', id de tabla)` y valores de la forma de diccionario con clave `'nombre de la columna'` y valor `(valor inicial, valor final)`
 
 Finalmente, un test quedaría así:
 ```python
-from DeltaDB import capture_all_records, diff_records_captures
+from DeltaDB import capture_all_records, compare_capture
 
 def test_iniciar_partida(test_session):
 	'''Test para iniciar una partida'''
@@ -47,7 +49,7 @@ def test_iniciar_partida(test_session):
 	# Se llama a la funcionalidad
 	
 	captura_final = capture_all_records(test_session)
-	changes, created, deleted = diff_records_captures(captura_inicial, captura_final)
+	changes, created, deleted = compare_capture(captura_inicial, captura_final)
 	
 	assert not deleted.data
 	assert not created.data
@@ -86,3 +88,16 @@ Usar sobre bases de datos de prueba sin informacion confidencial ni de alguna im
     ```bash
     pip install -r requirements.txt
     ```
+
+## Estructura del Proyecto
+
+## ## Contribuir
+
+¡Las contribuciones son bienvenidas! Si quieres contribuir, sigue estos pasos:
+
+1. Haz un fork del repositorio.
+2. Crea una rama para tu característica (`git checkout -b feature/nueva-funcionalidad`).
+3. Haz los cambios y asegúrate de probarlos.
+4. Haz un commit (`git commit -am 'Añadir nueva funcionalidad'`).
+5. Sube tu rama a tu fork (`git push origin feature/nueva-funcionalidad`).
+6. Crea un pull request al repositorio original
