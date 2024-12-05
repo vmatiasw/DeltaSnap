@@ -1,7 +1,7 @@
 from typing import Any, Type
 
 from tests.db.DBContextManager import current_session
-
+from tests.db.models.sql_alchemy import Base
 
 class SqlAlchemyRepository:
     def __init__(self, base) -> None:
