@@ -268,7 +268,7 @@ class TestDataClasses:
         """
         Test the getitem method.
         """
-        changes, created, deleted = differences
+        changes, _, _ = differences
         assert changes[("jugadores", 1)] == {
             "nombre": ("Creador", "#field don't exist"),
             "es_creador": ("#field don't exist", True),
@@ -278,7 +278,7 @@ class TestDataClasses:
         """
         Test the setitem method.
         """
-        changes, created, deleted = copy.deepcopy(differences)
+        changes, _, _ = copy.deepcopy(differences)
         changes[("juego", 1)] = {
             "nombre": ("Tenis", "Basket"),
         }
@@ -314,24 +314,18 @@ class TestDataClasses:
 
     def test_changes_dict(self, differences):
         changes, _, _ = differences
-        assert list(changes.keys()) == [("jugadores", 1), ("partidas", 1)]
-        assert list(changes.items()) == [
-            (
-                ("jugadores", 1),
-                {
-                    "nombre": ("Creador", "#field don't exist"),
-                    "es_creador": ("#field don't exist", True),
-                },
-            ),
-            (
-                ("partidas", 1),
-                {
-                    "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                    "iniciada": (False, True),
-                    "duracion_turno": (0, 60),
-                },
-            ),
-        ]
+        assert changes.keys() == {("jugadores", 1), ("partidas", 1)}
+        assert dict(changes.items()) == {
+            ("jugadores", 1): {
+                "es_creador": ("#field don't exist", True),
+                "nombre": ("Creador", "#field don't exist"),
+            },
+            ("partidas", 1): {
+                "duracion_turno": (0, 60),
+                "iniciada": (False, True),
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+            },
+        }
 
     def test_data_sets(self, differences):
         _, created, deleted = copy.deepcopy(differences)

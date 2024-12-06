@@ -1,4 +1,4 @@
-def get_db_metadata_adapter(db_config):
+def _get_db_metadata_adapter(db_config):
     """
     Retrieves the appropriate metadata adapter based on the ORM configured in DBConfig.
 

@@ -1,44 +1,21 @@
 from typing import Literal, Optional, Any
+from dataclasses import dataclass
 
-from DeltaDB.presentation.utils.validations import validate_db_type, validate_db_orm
-from DeltaDB.infrastructure.adapters.DBMetadata.manager import get_db_metadata_adapter
+from DeltaDB.infrastructure.adapters.DBMetadata.manager import _get_db_metadata_adapter
 
 
+@dataclass
 class DBConfig:
     """
-    Class for configuring which database and ORM to use and passing the corresponding dependencies.
-
-    Args:
-        db_type (Literal['sqlite', 'mysql', 'postgresql']): The type of the database.
-        db_orm (Literal['sqlalchemy']): The ORM to use.
-        test_session (Optional[Any]): The readonly session used for database interaction (e.g., `Session` in SQLAlchemy, default is None).
-        base (Optional[Any]): The base class for model mapping (e.g., `DeclarativeBase` in SQLAlchemy, default is None).
-
-    Raises:
-        ValueError: If db_type or db_orm is not supported.
-
-    Attributes:
-        db_type (str): The type of the database.
-        db_orm (str): The ORM used for database interaction.
-        test_session (Optional[Any]): The test_session used for database interaction.
-        base (Optional[Any]): The base class used for mapping.
+    Class for configuring which database and ORM to use, and passing the corresponding dependencies.
     """
 
-    def __init__(
-        self,
-        db_type: Literal["sqlite", "mysql", "postgresql"],
-        db_orm: Literal["sqlalchemy"],
-        test_session: Optional[Any] = None,
-        base: Optional[Any] = None,
-    ):
-        validate_db_type(db_type)
-        validate_db_orm(db_orm)
-        self.db_type = db_type
-        self.db_orm = db_orm
-        self.test_session = test_session
-        self.base = base
+    db_type: Literal["sqlite", "mysql", "postgresql"]
+    db_orm: Literal["sqlalchemy"]
+    test_session: Optional[Any] = None
+    base: Optional[Any] = None
 
-    def get_db_metadata_adapter(self):
+    def _get_db_metadata_adapter(self):
         """
         Returns the DBMetadataAdapter based on the configuration.
 
@@ -46,13 +23,4 @@ class DBConfig:
         infrastructure layer, enabling database metadata retrieval to the
         data ingestion.
         """
-        return get_db_metadata_adapter(self)
-
-    def __str__(self) -> str:
-        """
-        Returns a string representation of the current configuration.
-
-        Returns:
-            str: A human-readable string describing the configuration.
-        """
-        return f"DBConfig(db_type={self.db_type}, db_orm={self.db_orm})"
+        return _get_db_metadata_adapter(self)

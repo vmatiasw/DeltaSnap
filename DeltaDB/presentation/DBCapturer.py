@@ -14,14 +14,14 @@ from DeltaDB.domain.data_classes.data_sets import Created, Deleted
 
 class DBCapturer:
     """
-    A class for capturing the structure and data of database.
+    A class for capturing the structure and data of the database.
 
     Args:
-        configurator: An instance of DatabaseConfigurator with the necessary settings.
+        configurator: An instance of DBConfig with the necessary settings.
     """
 
     def __init__(self, configurator: DBConfig):
-        self.db_metadata = configurator.get_db_metadata_adapter()
+        self.db_metadata = configurator._get_db_metadata_adapter()
 
     def capture_all_records(self, page_size: int = 1000) -> Capture:
         """
@@ -31,7 +31,7 @@ class DBCapturer:
             page_size (int): The number of records to capture per page.
 
         Returns:
-            object: The capture result.
+            Capture: The capture result.
         """
         return capture_all_records(self.db_metadata, page_size)
 
@@ -40,10 +40,10 @@ class DBCapturer:
         Captures the structure and data of the specified records.
 
         Args:
-            records (object): The records to be captured.
+            records (List[Any]): The records to be captured.
 
         Returns:
-            object: The capture result.
+            Capture: The capture result.
         """
         return capture_records(self.db_metadata, records)
 
@@ -52,10 +52,10 @@ class DBCapturer:
         Captures the structure and data of the specified records and their related records.
 
         Args:
-            records (object): The records to be captured.
+            records (List[Any]): The records to be captured.
 
         Returns:
-            object: The capture result.
+            Capture: The capture result.
         """
         return capture_related_records(self.db_metadata, records)
 
@@ -68,10 +68,10 @@ class DBCapturer:
         categorizing them into changes, deletions, and creations.
 
         Args:
-            initial_capture (object): The initial data capture.
-            final_capture (object): The final data capture.
+            initial_capture (Capture): The initial data capture.
+            final_capture (Capture): The final data capture.
 
         Returns:
-            object: The result of the capture comparison.
+            Tuple[Changes, Created, Deleted]: The result of the capture comparison.
         """
         return compare_capture(initial_capture, final_capture)
