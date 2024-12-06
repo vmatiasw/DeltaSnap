@@ -12,9 +12,10 @@ class __Data:
     def __str__(self) -> str:
         return f"{self.data}"
 
+    def __repr__(self) -> str:
+        return f"{self.data}"
+
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, type(self)):
-            return self.data == other.data
         return self.data == other
 
     def __bool__(self) -> bool:
@@ -23,9 +24,20 @@ class __Data:
     def __len__(self) -> int:
         return len(self.data)
 
+    def __getitem__(self, index: int) -> Any:
+        return self.data[index]
+
+    def __setitem__(self, index: int, value: Any) -> None:
+        self.data[index] = value
+
+    def __contains__(self, item: Any) -> bool:
+        return item in self.data
+    
     def __iter__(self):
         return iter(self.data)
 
+    def __delitem__(self, index: int) -> None:
+        del self.data[index]
 
 class __DataSet(__Data):
     def __init__(self, data: Set):
@@ -57,6 +69,17 @@ class __DataSet(__Data):
         :return: A set of table names.
         """
         return {tup[0] for tup in self.data}
+
+    def get_inverted_capture(self) -> Dict[str, Set[str]]:
+        """
+        Returns the inverted capture of the dataset.
+
+        :return: A dictionary mapping table names to sets of field names.
+        """
+        inverted_capture: Dict[str, Set[str]] = defaultdict(set)
+        for table_name, record_id in self.data:
+            inverted_capture[table_name].add(record_id)
+        return dict(inverted_capture)
 
 
 class Deleted(__DataSet):
@@ -132,3 +155,17 @@ class Changes(__Data):
         for (table_name, record_id), changes_dict in self.data.items():
             schema[table_name] |= set(changes_dict.keys())
         return dict(schema)
+
+    def get_inverted_capture(self) -> Dict[str, Dict[str, Set[str]]]:
+        """
+        Returns the inverted capture of the changes.
+
+        :return: A dictionary mapping table names to dictionaries of field names and record ids.
+        """
+        inverted_capture: Dict[str, Dict[str, Set[str]]] = defaultdict(
+            lambda: defaultdict(set)
+        )
+        for (table_name, record_id), record_changes in self.data.items():
+            for field, change in record_changes.items():
+                inverted_capture[table_name][field].add(record_id)
+        return {table: dict(fields) for table, fields in inverted_capture.items()}
