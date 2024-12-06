@@ -4,7 +4,7 @@ from tests.db.DBContextManager import current_session
 from tests.db.models.sql_alchemy import Base
 
 class SqlAlchemyRepository:
-    def __init__(self, base) -> None:
+    def __init__(self, base: Base) -> None:
         self.base = base
 
     def get_model_by_name(self, model_name: str) -> Any:

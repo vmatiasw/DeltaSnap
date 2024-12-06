@@ -1,11 +1,9 @@
 from sqlalchemy import Integer, Boolean, String, ForeignKey
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import relationship, Mapped, mapped_column, DeclarativeBase
 from sqlalchemy.ext.orderinglist import ordering_list
 import random
-from random import shuffle
-import json
 
-from tests.db.connection.adapters.SqlAlchemyDBConnectionAdapter import _Base as Base
+class Base(DeclarativeBase): ...
 
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 

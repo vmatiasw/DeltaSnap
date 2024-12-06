@@ -4,9 +4,10 @@ import pytest
 from DeltaDB import DBCapturer, Changes, Created, Deleted
 from tests.db.GameFactory import GameFactory
 from tests.db.repository.IRepository import IRepository
+from tests.db.config import DB_SOURCES
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def differences(repository: IRepository, db_capturer: DBCapturer, game: GameFactory):
     captura_inicial = db_capturer.capture_all_records()
     partida = repository.get("Partida", 1)
@@ -19,6 +20,7 @@ def differences(repository: IRepository, db_capturer: DBCapturer, game: GameFact
     return DBCapturer.compare_capture(captura_inicial, captura_final)
 
 
+@pytest.mark.parametrize("db_source", DB_SOURCES)
 @pytest.mark.usefixtures("differences")
 class TestDataClasses:
     """

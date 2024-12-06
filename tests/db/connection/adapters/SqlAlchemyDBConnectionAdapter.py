@@ -1,23 +1,22 @@
 from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
-from typing import Type, Any
+from sqlalchemy.orm import sessionmaker, Session
+from typing import Type
 
 from tests.db.connection.IDBConnection import IDBConnection
-
-
-class _Base(DeclarativeBase): ...
+from tests.db.models.sql_alchemy import Base
 
 
 class SqlAlchemyDBConnectionAdapter(IDBConnection):
-    def __init__(self) -> None:
+    def __init__(self, db_source) -> None:
         super().__init__()
+        self.db_source: str = db_source
         self.engine: Engine = create_engine(self.db_path)
         self.sessionMaker: sessionmaker = sessionmaker(
             autocommit=False, autoflush=False, bind=self.engine
         )
-        self.base: Type[_Base] = _Base
+        self.base: Type[Base] = Base
 
-    def get_base(self) -> Type[_Base]:
+    def get_base(self) -> Type[Base]:
         """Devuelve la clase Base de SQLAlchemy."""
         return self.base
 
