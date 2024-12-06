@@ -13,10 +13,8 @@ DeltaDB es una herramienta diseñada para facilitar la validación automática d
 ## ¿Para-qué-sirve?
 
 ### Usos
-- Testing
 - Debugging
 - Verificar los efectos persistentes de los casos de test
-- También pero con pinzas se podría usar para verificar migraciones de bases de datos exitosas
 
 ### Justificación
 

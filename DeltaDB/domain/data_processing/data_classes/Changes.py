@@ -1,98 +1,12 @@
 from __future__ import annotations
-from typing import Dict, List, Set, Any
-from collections import Counter, defaultdict
+from typing import Dict, List, Set
+from collections import defaultdict
 
-from DeltaDB.domain.types import CreatedRecords, DeletedRecords, RecordsChanges, info
-
-
-class __Data:
-    def __init__(self, data: Any):
-        self.data = data
-
-    def __str__(self) -> str:
-        return f"{self.data}"
-
-    def __repr__(self) -> str:
-        return f"{self.data}"
-
-    def __eq__(self, other: Any) -> bool:
-        return self.data == other
-
-    def __bool__(self) -> bool:
-        return bool(self.data)
-
-    def __len__(self) -> int:
-        return len(self.data)
-
-    def __getitem__(self, index: int) -> Any:
-        return self.data[index]
-
-    def __setitem__(self, index: int, value: Any) -> None:
-        self.data[index] = value
-
-    def __contains__(self, item: Any) -> bool:
-        return item in self.data
-    
-    def __iter__(self):
-        return iter(self.data)
-
-    def __delitem__(self, index: int) -> None:
-        del self.data[index]
-
-class __DataSet(__Data):
-    def __init__(self, data: Set):
-        super().__init__(data)
-
-    def remove_tables(self, record_names: List[str]) -> __DataSet:
-        """
-        Removes records of the specified tables from the dataset.
-
-        :param table_names: List of table names to remove from the dataset.
-        :return: The updated dataset.
-        """
-        record_names_set = set(record_names)
-        self.data = {key for key in self.data if key[0] not in record_names_set}
-        return self
-
-    def get_frequency(self) -> Dict[str, int]:
-        """
-        Returns the frequency of each table in the dataset.
-
-        :return: A dictionary mapping table names to their frequencies.
-        """
-        return dict(Counter([key[0] for key in self.data]))
-
-    def get_schema(self) -> Set[str]:
-        """
-        Returns the table names in the dataset.
-
-        :return: A set of table names.
-        """
-        return {tup[0] for tup in self.data}
-
-    def get_inverted_capture(self) -> Dict[str, Set[str]]:
-        """
-        Returns the inverted capture of the dataset.
-
-        :return: A dictionary mapping table names to sets of field names.
-        """
-        inverted_capture: Dict[str, Set[str]] = defaultdict(set)
-        for table_name, record_id in self.data:
-            inverted_capture[table_name].add(record_id)
-        return dict(inverted_capture)
+from DeltaDB.domain.types import RecordsChanges, info
+from DeltaDB.domain.data_processing.data_classes.BaseData import BaseData
 
 
-class Deleted(__DataSet):
-    def __init__(self, deleted: DeletedRecords):
-        super().__init__(deleted)
-
-
-class Created(__DataSet):
-    def __init__(self, created: CreatedRecords):
-        super().__init__(created)
-
-
-class Changes(__Data):
+class Changes(BaseData):
     def __init__(self, changes: RecordsChanges):
         super().__init__(changes)
 

@@ -8,7 +8,8 @@ from DeltaDB.domain.types import (
     RecordsChanges,
     info,
 )
-from DeltaDB.domain.data_processing.data_classes import Changes, Created, Deleted
+from DeltaDB.domain.data_processing.data_classes.Changes import Changes
+from DeltaDB.domain.data_processing.data_classes.data_sets import Created, Deleted
 
 
 def compare_capture(
