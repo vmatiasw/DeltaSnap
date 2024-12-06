@@ -11,6 +11,9 @@ This module exposes the core components of the DeltaDB library, including:
 __all__ = [
     "DBConfig",              # Main configuration for database access
     "DBCapturer",            # Captures database records and differences
+    "Deleted",               # Represents deleted records
+    "Created",               # Represents created records
+    "Changes",               # Represents changes between records
     "RecordId",              # Type for record identifiers
     "Info",                  # Metadata for records
     "Capture",               # Captured database records
@@ -24,6 +27,13 @@ from DeltaDB.infrastructure.configurations.DBConfig import DBConfig
 
 # Features
 from DeltaDB.presentation.DBCapturer import DBCapturer
+
+# Classes
+from DeltaDB.domain.data_processing.data_classes import (
+    Deleted,
+    Created,
+    Changes,
+)
 
 # Types
 from DeltaDB.domain.types import (
