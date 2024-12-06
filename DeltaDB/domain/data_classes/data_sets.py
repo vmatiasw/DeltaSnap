@@ -3,10 +3,9 @@ from typing import Dict, Set, Tuple
 from collections import Counter, defaultdict
 
 from DeltaDB.domain.types import CreatedRecords, DeletedRecords
-from DeltaDB.domain.data_classes.BaseData import BaseData
 
 
-class BaseDataSet(BaseData):
+class BaseDataSet(set):
     def __init__(self, data: Set[Tuple[str, int]]):
         """
         Base class for datasets.
@@ -22,7 +21,11 @@ class BaseDataSet(BaseData):
         :param table_names: List of table names to remove from the dataset.
         :return: The updated dataset.
         """
-        self.data = {key for key in self.data if key[0] not in table_names}
+        for table_name, record_id in self:
+            if table_name in table_names:
+                self.remove((table_name, record_id))
+
+        # other approach: return type(self)({item for item in self if item[0] not in table_names})
         return self
 
     def get_frequency(self) -> Dict[str, int]:
@@ -31,7 +34,7 @@ class BaseDataSet(BaseData):
 
         :return: A dictionary mapping table names to their frequencies.
         """
-        return Counter(key[0] for key in self.data)
+        return Counter(key[0] for key in self)
 
     def get_schema(self) -> Set[str]:
         """
@@ -39,7 +42,7 @@ class BaseDataSet(BaseData):
 
         :return: A set of table names.
         """
-        return {table_name for table_name, _ in self.data}
+        return {table_name for table_name, _ in self}
 
     def get_inverted_capture(self) -> Dict[str, Set[str]]:
         """
@@ -48,7 +51,7 @@ class BaseDataSet(BaseData):
         :return: A dictionary mapping table names to sets of record IDs.
         """
         inverted_capture = defaultdict(set)
-        for table_name, record_id in self.data:
+        for table_name, record_id in self:
             inverted_capture[table_name].add(record_id)
         return dict(inverted_capture)
 

@@ -32,8 +32,8 @@ class TestDataClasses:
         """
         changes, created, deleted = differences
         assert isinstance(created, Created)
-        assert isinstance(created.data, set)
-        assert created.data == {
+        assert isinstance(created, set)
+        assert created == {
             ("cartas", 1),
             ("cartas", 2),
             ("cartas", 3),
@@ -46,19 +46,19 @@ class TestDataClasses:
         """
         Test the initialization of the Deleted class.
         """
-        changes, created, deleted = differences
+        _, _, deleted = differences
         assert isinstance(deleted, Deleted)
-        assert isinstance(deleted.data, set)
-        assert deleted.data == set()
+        assert isinstance(deleted, set)
+        assert deleted == set()
 
     def test_changes_class_initialization(self, differences):
         """
         Test the initialization of the Changes class.
         """
-        changes, created, deleted = differences
+        changes, _, _ = differences
         assert isinstance(changes, Changes)
-        assert isinstance(changes.data, dict)
-        assert changes.data == {
+        assert isinstance(changes, dict)
+        assert changes == {
             ("partidas", 1): {
                 "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
                 "iniciada": (False, True),
@@ -117,15 +117,24 @@ class TestDataClasses:
             },
         }
 
-    def test_get_schema_empty_case(self, differences):
+    def test_get_schema_empty_case(self):
         """
         Test the get_schema method when there are no changes.
         """
-        changes, created, deleted = differences
         empty_changes = Changes({})
         assert empty_changes.get_schema() == {}
         assert not empty_changes.get_inverted_capture()
         assert empty_changes.get_frequency() == {}
+
+        empty_deleted = Deleted(set())
+        assert empty_deleted.get_schema() == set()
+        assert not empty_deleted.get_inverted_capture()
+        assert empty_deleted.get_frequency() == {}
+
+        empty_created = Created(set())
+        assert empty_created.get_schema() == set()
+        assert not empty_created.get_inverted_capture()
+        assert empty_created.get_frequency() == {}
 
     def test_get_schema(self, differences):
         """
@@ -273,7 +282,7 @@ class TestDataClasses:
         changes[("juego", 1)] = {
             "nombre": ("Tenis", "Basket"),
         }
-        
+
         assert changes[("juego", 1)] == {
             "nombre": ("Tenis", "Basket"),
         }
@@ -302,5 +311,50 @@ class TestDataClasses:
                 "duracion_turno": (0, 60),
             }
         }
-    
-    
+
+    def test_changes_dict(self, differences):
+        changes, _, _ = differences
+        assert list(changes.keys()) == [("jugadores", 1), ("partidas", 1)]
+        assert list(changes.items()) == [
+            (
+                ("jugadores", 1),
+                {
+                    "nombre": ("Creador", "#field don't exist"),
+                    "es_creador": ("#field don't exist", True),
+                },
+            ),
+            (
+                ("partidas", 1),
+                {
+                    "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                    "iniciada": (False, True),
+                    "duracion_turno": (0, 60),
+                },
+            ),
+        ]
+
+    def test_data_sets(self, differences):
+        _, created, deleted = copy.deepcopy(differences)
+
+        created |= {("dino", 7)}
+        assert created == {
+            ("cartas", 1),
+            ("cartas", 2),
+            ("cartas", 3),
+            ("cartas", 4),
+            ("cartas", 5),
+            ("cartas", 6),
+            ("dino", 7),
+        }
+        assert created.intersection({("cartas", 1), ("cartas", 2)}) == {
+            ("cartas", 1),
+            ("cartas", 2),
+        }
+        assert created - {("cartas", 1), ("cartas", 2)} == {
+            ("cartas", 3),
+            ("cartas", 4),
+            ("cartas", 5),
+            ("cartas", 6),
+            ("dino", 7),
+        }
+        assert deleted & {("cartas", 1), ("cartas", 2)} == set()
