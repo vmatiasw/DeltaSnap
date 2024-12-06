@@ -7,11 +7,10 @@ from DeltaDB.infrastructure.adapters.DBMetadata.manager import _get_db_metadata_
 @dataclass
 class DBConfig:
     """
-    Class for configuring which database and ORM to use, and passing the corresponding dependencies.
+    Class for configuring which database or ORM to use, and passing the corresponding dependencies.
     """
 
-    db_type: Literal["sqlite", "mysql", "postgresql"]
-    db_orm: Literal["sqlalchemy"]
+    db_source: Literal["sqlalchemy"] # ORMs and databases supported by DeltaDB
     test_session: Optional[Any] = None
     base: Optional[Any] = None
 

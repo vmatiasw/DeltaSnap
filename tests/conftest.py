@@ -60,8 +60,7 @@ def game(repository):
 def db_capturer(db_connection, repository):
     yield DBCapturer(
         DBConfig(
-            db_type="sqlite",
-            db_orm="sqlalchemy",
+            db_source="sqlalchemy",
             test_session=repository.get_current_session(),
             base=db_connection.get_base(),
         )

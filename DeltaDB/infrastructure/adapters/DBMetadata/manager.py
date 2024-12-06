@@ -6,16 +6,16 @@ def _get_db_metadata_adapter(db_config):
         db_config: An instance of DBConfig.
 
     Returns:
-        An ORM-specific metadata adapter.
+        An ORM/DB-specific metadata adapter.
 
     Raises:
-        ValueError: If the ORM configured in DBConfig is not supported.
+        ValueError: If the ORM/DB configured in DBConfig is not supported.
     """
-    adapter_func = ADAPTERS.get(db_config.db_orm)
+    adapter_func = ADAPTERS.get(db_config.db_source)
     if not adapter_func:
         raise ValueError(
-            f"Unsupported ORM '{db_config.db_orm}'. "
-            f"Available ORMs: {list(ADAPTERS.keys())}."
+            f"Unsupported ORM/DB '{db_config.db_source}'. "
+            f"Available ORM/DB: {list(ADAPTERS.keys())}."
         )
     return adapter_func(db_config)
 
