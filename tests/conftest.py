@@ -10,6 +10,8 @@ from tests.db.connection.manager import DBConnection
 from tests.db.TestDB import TestDB
 from tests.db.config import DATABASE_NAME
 
+# TODO: ejecutar todos los tests con cada una de las configuraciones
+
 # Configurar logging para que muestre solo los errores
 import logging
 
@@ -43,18 +45,18 @@ def db_connection():
     yield DBConnection()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def repository(db_connection):
     with DBTestContextManager(db_connection.get_new_session()):
         yield Repository(base=db_connection.get_base())
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def game(repository):
     yield GameFactory(repository)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def db_capturer(db_connection, repository):
     yield DBCapturer(
         DBConfig(

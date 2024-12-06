@@ -1,0 +1,306 @@
+import copy
+import pytest
+
+from DeltaDB import DBCapturer, Changes, Created, Deleted
+from tests.db.GameFactory import GameFactory
+from tests.db.repository.IRepository import IRepository
+
+
+@pytest.fixture(scope="class")
+def differences(repository: IRepository, db_capturer: DBCapturer, game: GameFactory):
+    captura_inicial = db_capturer.capture_all_records()
+    partida = repository.get("Partida", 1)
+    game.iniciar_partida(partida)
+    captura_final = db_capturer.capture_all_records()
+
+    captura_inicial[("jugadores", 1)].pop("es_creador")
+    captura_final[("jugadores", 1)].pop("nombre")
+
+    return DBCapturer.compare_capture(captura_inicial, captura_final)
+
+
+@pytest.mark.usefixtures("differences")
+class TestDataClasses:
+    """
+    Class to test the data classes instances (Changes, Creation, Deletion).
+    """
+
+    # Initialization tests
+    def test_created_class_initialization(self, differences):
+        """
+        Test the initialization of the Created class.
+        """
+        changes, created, deleted = differences
+        assert isinstance(created, Created)
+        assert isinstance(created.data, set)
+        assert created.data == {
+            ("cartas", 1),
+            ("cartas", 2),
+            ("cartas", 3),
+            ("cartas", 4),
+            ("cartas", 5),
+            ("cartas", 6),
+        }
+
+    def test_deleted_class_initialization(self, differences):
+        """
+        Test the initialization of the Deleted class.
+        """
+        changes, created, deleted = differences
+        assert isinstance(deleted, Deleted)
+        assert isinstance(deleted.data, set)
+        assert deleted.data == set()
+
+    def test_changes_class_initialization(self, differences):
+        """
+        Test the initialization of the Changes class.
+        """
+        changes, created, deleted = differences
+        assert isinstance(changes, Changes)
+        assert isinstance(changes.data, dict)
+        assert changes.data == {
+            ("partidas", 1): {
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "iniciada": (False, True),
+                "duracion_turno": (0, 60),
+            },
+            ("jugadores", 1): {
+                "nombre": ("Creador", "#field don't exist"),
+                "es_creador": ("#field don't exist", True),
+            },
+        }
+
+    # Methods tests
+    def test_remove_tables_empty_case(self, differences):
+        """
+        Test the remove_tables method when no tables are removed.
+        """
+        changes, created, deleted = copy.deepcopy(differences)
+        assert created.remove_tables([]) == {
+            ("cartas", 1),
+            ("cartas", 2),
+            ("cartas", 3),
+            ("cartas", 4),
+            ("cartas", 5),
+            ("cartas", 6),
+        }
+        assert deleted.remove_tables([]) == set()
+        assert changes.remove_tables([]) == {
+            ("partidas", 1): {
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "iniciada": (False, True),
+                "duracion_turno": (0, 60),
+            },
+            ("jugadores", 1): {
+                "nombre": ("Creador", "#field don't exist"),
+                "es_creador": ("#field don't exist", True),
+            },
+        }
+
+    def test_ignore_fields_changes_multiple(self, differences):
+        """
+        Test the ignore_fields_changes method with multiple fields to ignore.
+        """
+        changes, _, _ = copy.deepcopy(differences)
+
+        assert changes.ignore_fields_changes(
+            {"partidas": {"iniciada", "duracion_turno"}, "jugadores": {"nombre"}}
+        ) == {
+            ("partidas", 1): {
+                "iniciada": ("#change ignored", "#change ignored"),
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "duracion_turno": ("#change ignored", "#change ignored"),
+            },
+            ("jugadores", 1): {
+                "nombre": ("#change ignored", "#change ignored"),
+                "es_creador": ("#field don't exist", True),
+            },
+        }
+
+    def test_get_schema_empty_case(self, differences):
+        """
+        Test the get_schema method when there are no changes.
+        """
+        changes, created, deleted = differences
+        empty_changes = Changes({})
+        assert empty_changes.get_schema() == {}
+        assert not empty_changes.get_inverted_capture()
+        assert empty_changes.get_frequency() == {}
+
+    def test_get_schema(self, differences):
+        """
+        Test the get_schema method.
+        """
+        changes, created, deleted = differences
+        assert created.get_schema() == {"cartas"}
+        assert not deleted.get_schema()
+        assert changes.get_schema() == {
+            "partidas": {"iniciada", "duracion_turno", "inicio_turno"},
+            "jugadores": {"es_creador", "nombre"},
+        }
+
+    def test_get_inverted_capture(self, differences):
+        """
+        Test the get_inverted_capture method.
+        """
+        changes, created, deleted = differences
+        assert created.get_inverted_capture() == {"cartas": {1, 2, 3, 4, 5, 6}}
+        assert not deleted.get_inverted_capture()
+        assert changes.get_inverted_capture() == {
+            "jugadores": {"es_creador": {1}, "nombre": {1}},
+            "partidas": {"duracion_turno": {1}, "iniciada": {1}, "inicio_turno": {1}},
+        }
+
+    def test_get_frequency(self, differences):
+        """
+        Test the get_frequency method.
+        """
+        changes, created, deleted = differences
+        assert created.get_frequency() == {"cartas": 6}
+        assert not deleted.get_frequency()
+        assert changes.get_frequency() == {
+            "partidas": {
+                "#table frequency": 1,
+                "iniciada": 1,
+                "inicio_turno": 1,
+                "duracion_turno": 1,
+            },
+            "jugadores": {"#table frequency": 1, "es_creador": 1, "nombre": 1},
+        }
+
+    def test_remove_tables(self, differences):
+        """
+        Test the remove_tables method with a copy of the instances.
+        """
+        changes, created, deleted = copy.deepcopy(differences)
+
+        assert created.remove_tables(["jugadores"]) == {
+            ("cartas", 3),
+            ("cartas", 6),
+            ("cartas", 5),
+            ("cartas", 2),
+            ("cartas", 1),
+            ("cartas", 4),
+        }
+
+        assert not deleted.remove_tables(["jugadores"])
+        assert changes.remove_tables(["jugadores"]) == {
+            ("partidas", 1): {
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "iniciada": (False, True),
+                "duracion_turno": (0, 60),
+            }
+        }
+
+        assert isinstance(created, Created)
+        assert isinstance(deleted, Deleted)
+        assert isinstance(changes, Changes)
+
+    # Magic methods tests
+    def test_eq(self, differences):
+        """
+        Test the eq method.
+        """
+        changes, created, deleted = differences
+        assert created == {
+            ("cartas", 5),
+            ("cartas", 1),
+            ("cartas", 4),
+            ("cartas", 3),
+            ("cartas", 6),
+            ("cartas", 2),
+        }
+        assert deleted == set()
+        assert changes == {
+            ("partidas", 1): {
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "iniciada": (False, True),
+                "duracion_turno": (0, 60),
+            },
+            ("jugadores", 1): {
+                "nombre": ("Creador", "#field don't exist"),
+                "es_creador": ("#field don't exist", True),
+            },
+        }
+
+    def test_bool(self, differences):
+        """
+        Test the bool method.
+        """
+        changes, created, deleted = differences
+        assert bool(created)
+        assert not bool(deleted)
+        assert bool(changes)
+
+    def test_len(self, differences):
+        """
+        Test the len method.
+        """
+        changes, created, deleted = differences
+        assert len(created) == 6
+        assert len(deleted) == 0
+        assert len(changes) == 2
+
+    def test_iter(self, differences):
+        """
+        Test the iter method.
+        """
+        changes, created, deleted = differences
+        for record in created:
+            assert record
+
+        for record in deleted:
+            assert record
+
+        for record in changes:
+            assert record
+
+    def test_getitem(self, differences):
+        """
+        Test the getitem method.
+        """
+        changes, created, deleted = differences
+        assert changes[("jugadores", 1)] == {
+            "nombre": ("Creador", "#field don't exist"),
+            "es_creador": ("#field don't exist", True),
+        }
+
+    def test_setitem(self, differences):
+        """
+        Test the setitem method.
+        """
+        changes, created, deleted = copy.deepcopy(differences)
+        changes[("juego", 1)] = {
+            "nombre": ("Tenis", "Basket"),
+        }
+        
+        assert changes[("juego", 1)] == {
+            "nombre": ("Tenis", "Basket"),
+        }
+
+    def test_contains(self, differences):
+        """
+        Test the contains method.
+        """
+        changes, created, deleted = differences
+        assert ("cartas", 1) in created
+        assert ("papa", 10) not in deleted
+        assert ("partidas", 1) in changes
+        assert ("jugadores", 1) in changes
+
+    def test_delitem(self, differences):
+        """
+        Test the delitem method.
+        """
+        changes, created, deleted = copy.deepcopy(differences)
+        del changes[("jugadores", 1)]
+        assert ("jugadores", 1) not in changes
+        assert changes == {
+            ("partidas", 1): {
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "iniciada": (False, True),
+                "duracion_turno": (0, 60),
+            }
+        }
+    
+    

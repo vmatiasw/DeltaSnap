@@ -31,26 +31,6 @@ class Jugador(Base):
 
 # PARTIDA ------------------------------------------------------
 
-
-def tablero_random():
-    """Genera una lista de 36 fichas de 4 colores distintos mezcladas aleatoriamente
-    Returns:
-        String: Lista de fichas (Como JSON)
-    """
-    set_de_fichas = (
-        [1 for i in range(9)]
-        + [2 for i in range(9)]
-        + [3 for i in range(9)]
-        + [4 for i in range(9)]
-    )
-    shuffle(set_de_fichas)
-    tablero = []
-    for i in range(6):
-        tablero.append(set_de_fichas[i * 6 : i * 6 + 6])
-    tablero_as_json = json.dumps(tablero)
-    return tablero_as_json
-
-
 class Partida(Base):
     # PARTIDA -----------------------
     __tablename__ = "partidas"
@@ -71,7 +51,6 @@ class Partida(Base):
     # JUEGO -----------------------
     inicio_turno = mapped_column(String(255), nullable=False, default="0")
     duracion_turno = mapped_column(Integer, nullable=False, default=0)
-    tablero = mapped_column(String(255), nullable=False, default=tablero_random)
 
 
 # Carta --------------------------------------------------
