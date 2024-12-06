@@ -3,7 +3,7 @@ from typing import Dict, List, Set
 from collections import defaultdict
 
 from DeltaDB.domain.types import RecordsChanges, info
-from DeltaDB.domain.data_processing.data_classes.BaseData import BaseData
+from DeltaDB.domain.data_classes.BaseData import BaseData
 
 
 class Changes(BaseData):

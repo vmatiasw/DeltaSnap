@@ -29,8 +29,8 @@ from DeltaDB.infrastructure.configurations.DBConfig import DBConfig
 from DeltaDB.presentation.DBCapturer import DBCapturer
 
 # Classes
-from DeltaDB.domain.data_processing.data_classes.Changes import Changes
-from DeltaDB.domain.data_processing.data_classes.data_sets import Deleted, Created
+from DeltaDB.domain.data_classes.Changes import Changes
+from DeltaDB.domain.data_classes.data_sets import Deleted, Created
 
 # Types
 from DeltaDB.domain.types import (

@@ -3,7 +3,7 @@ from typing import Dict, Set, Tuple
 from collections import Counter, defaultdict
 
 from DeltaDB.domain.types import CreatedRecords, DeletedRecords
-from DeltaDB.domain.data_processing.data_classes.BaseData import BaseData
+from DeltaDB.domain.data_classes.BaseData import BaseData
 
 
 class BaseDataSet(BaseData):

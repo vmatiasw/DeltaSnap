@@ -8,8 +8,8 @@ from DeltaDB.domain.data_processing.ingestion import (
 )
 from DeltaDB.domain.data_processing.analysis import compare_capture
 from DeltaDB.domain.types import Capture
-from DeltaDB.domain.data_processing.data_classes.Changes import Changes
-from DeltaDB.domain.data_processing.data_classes.data_sets import Created, Deleted
+from DeltaDB.domain.data_classes.Changes import Changes
+from DeltaDB.domain.data_classes.data_sets import Created, Deleted
 
 
 class DBCapturer:
