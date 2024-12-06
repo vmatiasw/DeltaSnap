@@ -2,10 +2,8 @@ import pytest
 
 from DeltaDB import DBCapturer
 from tests.db.repository.IRepository import IRepository
-from tests.db.config import DB_SOURCES
 
 
-@pytest.mark.parametrize("db_source", DB_SOURCES)
 @pytest.mark.usefixtures("db_capturer", "game")
 class TestCapture:
     """
