@@ -1,7 +1,7 @@
 from typing import Any, Type
 
 from tests.db.DBContextManager import current_session
-from tests.db.models.sql_alchemy import Base
+from tests.db.game_test.models.sql_alchemy import Base
 
 class SqlAlchemyRepository:
     def __init__(self, base: Base) -> None:
@@ -71,7 +71,3 @@ class SqlAlchemyRepository:
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:
         """Filtra una consulta de base de datos usando los parámetros proporcionados."""
         return query.filter(*args, **kwargs)
-
-    def get_current_session(self) -> Any:
-        """Devuelve la sesión actual."""
-        return current_session.get()

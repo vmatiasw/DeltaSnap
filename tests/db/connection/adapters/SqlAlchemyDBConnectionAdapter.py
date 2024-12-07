@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from typing import Type
 
 from tests.db.connection.IDBConnection import IDBConnection
-from tests.db.models.sql_alchemy import Base
+from tests.db.game_test.models.sql_alchemy import Base
 
 
 class SqlAlchemyDBConnectionAdapter(IDBConnection):

@@ -1,4 +1,4 @@
-from typing import Any, Protocol, List, Type
+from typing import Any, Protocol, Type
 
 
 class IRepository(Protocol):
@@ -27,7 +27,18 @@ class IRepository(Protocol):
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:
         """Filtra una consulta de base de datos usando los parámetros proporcionados."""
         ...
-        
-    def get_current_session(self) -> Any:
-        """Devuelve la sesión actual."""
+
+    def get_model_by_name(self, model_name: str) -> Any:
+        """Obtiene un modelo de base de datos por su nombre."""
+        ...
+
+    def commit(self) -> None:
+        """Hace commit a la sesión de la base de datos."""
+        ...
+
+    def flush(self) -> None:
+        """
+        Hace flush a la sesión de la base de datos.
+        Y expira todos los objetos de la sesión.
+        """
         ...

@@ -2,7 +2,7 @@ import copy
 import pytest
 
 from DeltaDB import DBCapturer, Changes, Created, Deleted
-from tests.db.GameFactory import GameFactory
+from tests.db.game_test.GameFactory import GameFactory
 from tests.db.repository.IRepository import IRepository
 
 
