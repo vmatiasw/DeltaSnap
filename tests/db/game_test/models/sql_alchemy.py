@@ -3,7 +3,9 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column, DeclarativeBase
 from sqlalchemy.ext.orderinglist import ordering_list
 import random
 
+
 class Base(DeclarativeBase): ...
+
 
 SET_DE_CARTAS = ["c1", "c2", "c3"]
 
@@ -17,17 +19,18 @@ class Jugador(Base):
     )
     nombre: Mapped[str] = mapped_column(String(255), nullable=False)
     es_creador: Mapped[Boolean] = mapped_column(Boolean, default=False)
-    id_partida: Mapped[int] = mapped_column(
+    partida_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("partidas.id"), nullable=False
     )
-    partidas = relationship("Partida", back_populates="jugadores")
+    partida = relationship("Partida", back_populates="jugadores")
     orden: Mapped[int] = mapped_column(Integer, nullable=True)
     mazo_cartas: Mapped[list["Carta"]] = relationship(
-        "Carta", back_populates="poseida_por", cascade="all, delete-orphan"
+        "Carta", back_populates="jugador", cascade="all, delete-orphan"
     )
 
 
 # PARTIDA ------------------------------------------------------
+
 
 class Partida(Base):
     # PARTIDA -----------------------
@@ -40,7 +43,7 @@ class Partida(Base):
     iniciada = mapped_column(Boolean, default=False)
     jugadores: Mapped[list[Jugador]] = relationship(
         "Jugador",
-        back_populates="partidas",
+        back_populates="partida",
         cascade="all",
         order_by="Jugador.orden",
         collection_class=ordering_list("orden"),
@@ -64,5 +67,5 @@ class Carta(Base):
         String(255), nullable=False, default=lambda: random.choice(SET_DE_CARTAS)
     )
     revelada: Mapped[Boolean] = mapped_column(Boolean, default=True)
-    poseida_por = relationship("Jugador", back_populates="mazo_cartas")
-    id_jugador = mapped_column(Integer, ForeignKey("jugadores.id"))
+    jugador = relationship("Jugador", back_populates="mazo_cartas")
+    jugador_id = mapped_column(Integer, ForeignKey("jugadores.id"))

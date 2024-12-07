@@ -104,7 +104,13 @@ def __extract_fields_values(
         column_name = db_metadata.get_column_name(field)
         field_value = db_metadata.get_field_value(column_name, record)
         column_is_foreign_key = db_metadata.column_is_foreign_key(field)
-        key = f"{column_name} (FK)" if column_is_foreign_key else column_name
-        fields_values[key] = field_value
+
+        if column_is_foreign_key:
+            f_record = db_metadata.get_record_by_field(column_name, record)
+            f_record_id = db_metadata.get_record_id(f_record)
+            f_record_table_name = db_metadata.get_table_name_from_record(f_record)
+            fields_values[column_name] = (f_record_table_name, f_record_id)
+        else:
+            fields_values[column_name] = field_value
 
     return dict(fields_values)

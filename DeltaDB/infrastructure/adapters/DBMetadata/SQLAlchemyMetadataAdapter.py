@@ -77,3 +77,21 @@ class SQLAlchemyMetadataAdapter:
                 related_records.append(related_data)
 
         return related_records
+    
+    def get_record_by_field(self, column_name: str, record: Any):
+        """
+        Devuelve el registro al que apunta la clave foránea.
+        PRE: field es una clave foránea.
+        """
+        column_value = getattr(record, column_name)
+        relationships = inspect(record.__class__).relationships
+
+        for rel_name, rel in relationships.items():
+            related_data = getattr(record, rel_name)
+            
+            if isinstance(related_data, list):
+                for related_record in related_data:
+                    if related_record.id == column_value:
+                        return related_record 
+            elif related_data and related_data.id == column_value:
+                return related_data
