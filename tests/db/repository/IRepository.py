@@ -42,3 +42,15 @@ class IRepository(Protocol):
         Y expira todos los objetos de la sesión.
         """
         ...
+
+    def append(self, list, instance) -> None:
+        """
+        Agrega `instance` a `list`.
+        """
+        ...
+        
+    def get_list(self, list) -> list:
+        ...
+        
+    def count(self, list) -> int:
+        ...

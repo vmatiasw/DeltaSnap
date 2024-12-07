@@ -1,7 +1,8 @@
 from typing import Any, Type
 
-from tests.db.DBContextManager import current_session
+from tests.db.connection.adapters.SqlAlchemyDBConnectionAdapter import current_session
 from tests.db.game_test.models.sql_alchemy import Base
+
 
 class SqlAlchemyRepository:
     def __init__(self, base: Base) -> None:
@@ -39,6 +40,10 @@ class SqlAlchemyRepository:
         """Añade una instancia a la sesión de la base de datos."""
         current_session.get().add(instance)
 
+    def append(self, list, instance: Any) -> None:
+        """Añade una instancia a la sesión de la base de datos."""
+        list.append(instance)
+
     def commit(self) -> None:
         """Hace commit a la sesión de la base de datos."""
         current_session.get().commit()
@@ -71,3 +76,9 @@ class SqlAlchemyRepository:
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:
         """Filtra una consulta de base de datos usando los parámetros proporcionados."""
         return query.filter(*args, **kwargs)
+
+    def count(self, list) -> int:
+        return len(list)
+    
+    def get_list(self, list) -> list:
+        return list
