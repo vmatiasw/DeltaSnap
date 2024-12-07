@@ -1,5 +1,7 @@
 import os
 from abc import ABC, abstractmethod
+from contextlib import contextmanager
+from typing import Any, Generator
 
 from tests.db.config import DATABASE, DATABASE_NAME, HOST, PASSWORD, PORT, USERNAME
 
@@ -16,6 +18,7 @@ class IDBConnection(ABC):
         self.db_name = DATABASE_NAME
         self.db_path = self._get_database_url()
         self.base = None
+        self.db_source = None
 
     @staticmethod
     def _get_database_url() -> str:
@@ -37,7 +40,15 @@ class IDBConnection(ABC):
     def get_base(self): ...
 
     @abstractmethod
-    def get_new_session(self): ...
+    @contextmanager
+    def new_transaction(self) -> Generator[Any, None, None]:
+        """
+        Un administrador de contexto para manejar transacciones en modo de prueba.
+
+        Yields:
+            session (Any): La sesión gestionada para el contexto.
+        """
+        pass
 
     @abstractmethod
     def create_tables(self) -> None: ...

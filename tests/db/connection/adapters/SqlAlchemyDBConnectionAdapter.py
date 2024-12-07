@@ -1,9 +1,14 @@
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker, Session
-from typing import Type
+from typing import Type, Generator, Any
+from contextlib import contextmanager
+from contextvars import ContextVar, Token
 
 from tests.db.connection.IDBConnection import IDBConnection
 from tests.db.game_test.models.sql_alchemy import Base
+
+
+current_session: ContextVar[Session] = ContextVar("current_session")
 
 
 class SqlAlchemyDBConnectionAdapter(IDBConnection):
@@ -20,9 +25,30 @@ class SqlAlchemyDBConnectionAdapter(IDBConnection):
         """Devuelve la clase Base de SQLAlchemy."""
         return self.base
 
-    def get_new_session(self) -> Session:
-        """Devuelve una nueva sesión de SQLAlchemy."""
-        return self.sessionMaker()
+    @contextmanager
+    def new_transaction(self) -> Generator[Any, Any, Any]:
+        """
+        Un administrador de contexto para manejar transacciones en modo de prueba.
+
+        Args:
+            session (Any): Sesión de la base de datos a gestionar en el contexto.
+
+        Yields:
+            session (Any): La sesión gestionada para el contexto.
+        """
+        session: Session = self.sessionMaker()
+        token = current_session.set(session)
+        try:
+            session.begin()
+            yield session
+        except Exception as e:
+            raise
+        finally:
+            try:
+                session.rollback()
+            finally:
+                session.close()
+                current_session.reset(token)
 
     def create_tables(self) -> None:
         """Crea las tablas en la base de datos."""
