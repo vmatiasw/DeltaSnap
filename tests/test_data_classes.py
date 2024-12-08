@@ -5,6 +5,8 @@ from DeltaDB import DBCapturer, Changes, Created, Deleted
 from tests.db.game_test.GameFactory import GameFactory
 from tests.db.repository.IRepository import IRepository
 
+# TODO: dividir clase en 3 o 4 y divicir tests por change, deleted y created
+
 
 @pytest.fixture(scope="function")
 def differences(repository: IRepository, db_capturer: DBCapturer, game: GameFactory):
@@ -59,14 +61,17 @@ class TestDataClasses:
         assert isinstance(changes, Changes)
         assert isinstance(changes, dict)
         assert changes == {
+            ("jugadores", 1): {
+                "nombre": ("Creador", "#field don't exist"),
+                "es_creador": ("#field don't exist", True),
+                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+            },
+            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 4), ("cartas", 3)})},
+            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 5), ("cartas", 6)})},
             ("partidas", 1): {
                 "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
                 "iniciada": (False, True),
                 "duracion_turno": (0, 60),
-            },
-            ("jugadores", 1): {
-                "nombre": ("Creador", "#field don't exist"),
-                "es_creador": ("#field don't exist", True),
             },
         }
 
@@ -87,14 +92,17 @@ class TestDataClasses:
         assert deleted.remove_tables([]) == set()
         assert changes.remove_tables([]) == {
             ("partidas", 1): {
+                "duracion_turno": (0, 60),
                 "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
                 "iniciada": (False, True),
-                "duracion_turno": (0, 60),
             },
             ("jugadores", 1): {
                 "nombre": ("Creador", "#field don't exist"),
                 "es_creador": ("#field don't exist", True),
+                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
             },
+            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
+            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
         }
 
     def test_ignore_fields_changes_multiple(self, differences):
@@ -107,14 +115,17 @@ class TestDataClasses:
             {"partidas": {"iniciada", "duracion_turno"}, "jugadores": {"nombre"}}
         ) == {
             ("partidas", 1): {
-                "iniciada": ("#change ignored", "#change ignored"),
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
                 "duracion_turno": ("#change ignored", "#change ignored"),
+                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "iniciada": ("#change ignored", "#change ignored"),
             },
             ("jugadores", 1): {
                 "nombre": ("#change ignored", "#change ignored"),
                 "es_creador": ("#field don't exist", True),
+                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
             },
+            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
+            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
         }
 
     def test_get_schema_empty_case(self):
@@ -145,7 +156,7 @@ class TestDataClasses:
         assert not deleted.get_schema()
         assert changes.get_schema() == {
             "partidas": {"iniciada", "duracion_turno", "inicio_turno"},
-            "jugadores": {"es_creador", "nombre"},
+            "jugadores": {"nombre", "es_creador", "mazo_cartas"},
         }
 
     def test_get_inverted_capture(self, differences):
@@ -156,8 +167,8 @@ class TestDataClasses:
         assert created.get_inverted_capture() == {"cartas": {1, 2, 3, 4, 5, 6}}
         assert not deleted.get_inverted_capture()
         assert changes.get_inverted_capture() == {
-            "jugadores": {"es_creador": {1}, "nombre": {1}},
-            "partidas": {"duracion_turno": {1}, "iniciada": {1}, "inicio_turno": {1}},
+            "partidas": {"duracion_turno": {1}, "inicio_turno": {1}, "iniciada": {1}},
+            "jugadores": {"nombre": {1}, "es_creador": {1}, "mazo_cartas": {1, 2, 3}},
         }
 
     def test_get_frequency(self, differences):
@@ -170,11 +181,16 @@ class TestDataClasses:
         assert changes.get_frequency() == {
             "partidas": {
                 "#table frequency": 1,
-                "iniciada": 1,
-                "inicio_turno": 1,
                 "duracion_turno": 1,
+                "inicio_turno": 1,
+                "iniciada": 1,
             },
-            "jugadores": {"#table frequency": 1, "es_creador": 1, "nombre": 1},
+            "jugadores": {
+                "#table frequency": 3,
+                "nombre": 1,
+                "es_creador": 1,
+                "mazo_cartas": 3,
+            },
         }
 
     def test_remove_tables(self, differences):
@@ -221,14 +237,17 @@ class TestDataClasses:
         }
         assert deleted == set()
         assert changes == {
+            ("jugadores", 1): {
+                "nombre": ("Creador", "#field don't exist"),
+                "es_creador": ("#field don't exist", True),
+                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+            },
+            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
+            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
             ("partidas", 1): {
                 "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
                 "iniciada": (False, True),
                 "duracion_turno": (0, 60),
-            },
-            ("jugadores", 1): {
-                "nombre": ("Creador", "#field don't exist"),
-                "es_creador": ("#field don't exist", True),
             },
         }
 
@@ -248,7 +267,7 @@ class TestDataClasses:
         changes, created, deleted = differences
         assert len(created) == 6
         assert len(deleted) == 0
-        assert len(changes) == 2
+        assert len(changes) == 4
 
     def test_iter(self, differences):
         """
@@ -272,6 +291,7 @@ class TestDataClasses:
         assert changes[("jugadores", 1)] == {
             "nombre": ("Creador", "#field don't exist"),
             "es_creador": ("#field don't exist", True),
+            "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
         }
 
     def test_setitem(self, differences):
@@ -305,25 +325,35 @@ class TestDataClasses:
         del changes[("jugadores", 1)]
         assert ("jugadores", 1) not in changes
         assert changes == {
+            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
+            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
             ("partidas", 1): {
                 "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
                 "iniciada": (False, True),
                 "duracion_turno": (0, 60),
-            }
+            },
         }
 
     def test_changes_dict(self, differences):
         changes, _, _ = differences
-        assert changes.keys() == {("jugadores", 1), ("partidas", 1)}
+        assert changes.keys() == {
+            ("jugadores", 1),
+            ("jugadores", 2),
+            ("jugadores", 3),
+            ("partidas", 1),
+        }
         assert dict(changes.items()) == {
             ("jugadores", 1): {
-                "es_creador": ("#field don't exist", True),
                 "nombre": ("Creador", "#field don't exist"),
+                "es_creador": ("#field don't exist", True),
+                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
             },
+            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
+            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
             ("partidas", 1): {
-                "duracion_turno": (0, 60),
-                "iniciada": (False, True),
                 "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
+                "iniciada": (False, True),
+                "duracion_turno": (0, 60),
             },
         }
 

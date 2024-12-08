@@ -31,8 +31,15 @@ class IDBMetadata(Protocol):
         """Devuelve si la columna es una clave foranea"""
         ...
         
+    def column_is_relationship(self, column) -> bool:
+        """Devuelve si la columna es una relacion"""
+        ...
+        
     def get_record_by_field(self, column_name: str, record: Any) -> Any:
-        """Devuelve el registro de la clave foranea"""
+        """
+        Devuelve el registro al que apunta la clave foránea.
+        PRE: field (column_name, record) es una clave foránea.
+        """
         ...
 
     def get_table_name_from_table(self, table) -> str:
@@ -49,4 +56,8 @@ class IDBMetadata(Protocol):
 
     def get_related_records(self, record) -> List[Any]:
         """Devuelve los registros relacionados"""
+        ...
+
+    def get_field_related_records(self, column_name, record) -> List[Any]:
+        """Devuelve los registros relacionados de la columna"""
         ...

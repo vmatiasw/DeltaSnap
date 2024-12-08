@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from sqlalchemy.orm import Mapper, DeclarativeBase, Session
+from sqlalchemy.orm import Mapper, DeclarativeBase, Session, RelationshipProperty
 from sqlalchemy import Column, Table, inspect
 
 
@@ -15,13 +15,18 @@ class SQLAlchemyMetadataAdapter:
         return list(self.base.registry.mappers)
 
     @staticmethod
-    def get_table_columns_from_table(table: Mapper) -> List[Column]:
+    def get_table_columns_from_table(table: Mapper) -> List[Column|RelationshipProperty]:
         """Devuelve las columnas de una tabla."""
-        return list(table.columns)
+        columns: List[Column|RelationshipProperty] = list(table.columns)
+        for rel_name, rel in table.relationships.items():
+            if isinstance(rel, RelationshipProperty):
+                columns.append(rel)
+        return columns
 
-    def get_table_columns_from_record(self, record: Any) -> List[Column]:
+    def get_table_columns_from_record(self, record: Any) -> List[Column|RelationshipProperty]:
         """Devuelve las columnas de un registro."""
-        return self.get_table_columns_from_table(record.__mapper__.persist_selectable)
+        mapper: Mapper = record.__mapper__
+        return self.get_table_columns_from_table(mapper)
 
     def get_records(self, table: Mapper, offset: int, page_size: int) -> List[Any]:
         """Devuelve las instancias de la tabla en un rango determinado."""
@@ -30,7 +35,7 @@ class SQLAlchemyMetadataAdapter:
         )
 
     @staticmethod
-    def get_column_name(column: Column) -> str:
+    def get_column_name(column: Column|RelationshipProperty) -> str:
         """Devuelve la clave de la columna."""
         return str(column.key)
 
@@ -40,9 +45,14 @@ class SQLAlchemyMetadataAdapter:
         return getattr(record, column_name)
 
     @staticmethod
-    def column_is_foreign_key(column: Column) -> bool:
+    def column_is_foreign_key(column: Column|RelationshipProperty) -> bool:
         """Devuelve True si la columna es una clave foránea."""
-        return bool(column.foreign_keys)
+        return not isinstance(column, RelationshipProperty) and bool(column.foreign_keys)
+
+    @staticmethod
+    def column_is_relationship(column: Column|RelationshipProperty) -> bool:
+        """Devuelve True si la columna es una ralacion."""
+        return isinstance(column, RelationshipProperty)
 
     @staticmethod
     def get_table_name_from_table(table: Mapper) -> str:
@@ -69,7 +79,9 @@ class SQLAlchemyMetadataAdapter:
         :return: Una lista con los registros relacionados.
         """
         related_records = []
-        for rel_name, rel in inspect(record.__class__).relationships.items():
+        relationships = inspect(record.__class__).relationships
+        
+        for rel_name, rel in relationships.items():
             related_data = getattr(record, rel_name)
             if isinstance(related_data, list):
                 related_records.extend(related_data)
@@ -78,10 +90,26 @@ class SQLAlchemyMetadataAdapter:
 
         return related_records
     
+    def get_field_related_records(self, column_name, record) -> List[Any]:
+        """Devuelve los registros relacionados de la columna"""
+        related_records = []
+        relationships = inspect(record.__class__).relationships
+
+        for rel_name, rel in relationships.items():
+            if rel_name == column_name:
+                related_data = getattr(record, rel_name)
+                if isinstance(related_data, list):
+                    related_records.extend(related_data)
+                elif related_data is not None:
+                    related_records.append(related_data)
+
+        return related_records
+        
+    
     def get_record_by_field(self, column_name: str, record: Any):
         """
         Devuelve el registro al que apunta la clave foránea.
-        PRE: field es una clave foránea.
+        PRE: field (column_name, record) es una clave foránea.
         """
         column_value = getattr(record, column_name)
         relationships = inspect(record.__class__).relationships

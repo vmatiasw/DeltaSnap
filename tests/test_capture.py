@@ -55,6 +55,7 @@ class TestCapture:
                 "iniciada": False,
                 "inicio_turno": "0",
                 "duracion_turno": 0,
+                "jugadores": {("jugadores", 1), ("jugadores", 2), ("jugadores", 3)},
             },
             ("partidas", 2): {
                 "id": 2,
@@ -63,6 +64,7 @@ class TestCapture:
                 "iniciada": False,
                 "inicio_turno": "0",
                 "duracion_turno": 0,
+                "jugadores": {("jugadores", 5), ("jugadores", 6), ("jugadores", 4)},
             },
         }
 
@@ -82,6 +84,7 @@ class TestCapture:
                 "iniciada": False,
                 "inicio_turno": "0",
                 "duracion_turno": 0,
+                "jugadores": {("jugadores", 1), ("jugadores", 2), ("jugadores", 3)},
             },
             ("jugadores", 3): {
                 "id": 3,
@@ -89,6 +92,8 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 2,
+                "partida": {("partidas", 1)},
+                "mazo_cartas": set(),
             },
             ("jugadores", 2): {
                 "id": 2,
@@ -96,6 +101,8 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 1,
+                "partida": {("partidas", 1)},
+                "mazo_cartas": set(),
             },
             ("jugadores", 1): {
                 "id": 1,
@@ -103,6 +110,8 @@ class TestCapture:
                 "es_creador": True,
                 "partida_id": ("partidas", 1),
                 "orden": 0,
+                "partida": {("partidas", 1)},
+                "mazo_cartas": set(),
             },
         }
 
@@ -118,6 +127,7 @@ class TestCapture:
                 "iniciada": False,
                 "inicio_turno": "0",
                 "duracion_turno": 0,
+                "jugadores": {("jugadores", 1), ("jugadores", 2), ("jugadores", 3)},
             },
             ("partidas", 2): {
                 "id": 2,
@@ -126,6 +136,7 @@ class TestCapture:
                 "iniciada": False,
                 "inicio_turno": "0",
                 "duracion_turno": 0,
+                "jugadores": {("jugadores", 4), ("jugadores", 5), ("jugadores", 6)},
             },
             ("jugadores", 1): {
                 "id": 1,
@@ -133,6 +144,8 @@ class TestCapture:
                 "es_creador": True,
                 "partida_id": ("partidas", 1),
                 "orden": 0,
+                "partida": {("partidas", 1)},
+                "mazo_cartas": set(),
             },
             ("jugadores", 2): {
                 "id": 2,
@@ -140,6 +153,8 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 1,
+                "partida": {("partidas", 1)},
+                "mazo_cartas": set(),
             },
             ("jugadores", 3): {
                 "id": 3,
@@ -147,6 +162,8 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 2,
+                "partida": {("partidas", 1)},
+                "mazo_cartas": set(),
             },
             ("jugadores", 4): {
                 "id": 4,
@@ -154,6 +171,8 @@ class TestCapture:
                 "es_creador": True,
                 "partida_id": ("partidas", 2),
                 "orden": 0,
+                "partida": {("partidas", 2)},
+                "mazo_cartas": set(),
             },
             ("jugadores", 5): {
                 "id": 5,
@@ -161,6 +180,8 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 2),
                 "orden": 1,
+                "partida": {("partidas", 2)},
+                "mazo_cartas": set(),
             },
             ("jugadores", 6): {
                 "id": 6,
@@ -168,5 +189,7 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 2),
                 "orden": 2,
+                "partida": {("partidas", 2)},
+                "mazo_cartas": set(),
             },
         }
