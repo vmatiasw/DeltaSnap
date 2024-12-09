@@ -41,7 +41,7 @@ class IDBConnection(ABC):
 
     @abstractmethod
     @contextmanager
-    def new_transaction(self) -> Generator[Any, None, None]:
+    def new_test_transaction(self) -> Generator[Any, None, None]:
         """
         Un administrador de contexto para manejar transacciones en modo de prueba.
 

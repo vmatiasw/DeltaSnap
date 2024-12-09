@@ -38,12 +38,12 @@ def game(repository: IRepository):
 def setup_db(db_connection: IDBConnection, game: GameFactory, repository: IRepository):
     if os.path.exists(DB_PATH):
         logging.info(f"DB {DB_PATH} already exists")
-        return
+        yield
 
     try:
-        with db_connection.new_transaction():
-            db_connection.drop_tables()
-            db_connection.create_tables()
+        db_connection.drop_tables()
+        db_connection.create_tables()
+        with db_connection.new_test_transaction():
             setup_db_data(repository, game)
             yield
     finally:
@@ -56,7 +56,7 @@ def setup_db(db_connection: IDBConnection, game: GameFactory, repository: IRepos
 
 @pytest.fixture(scope="function")
 def db_session(db_connection: IDBConnection):
-    with db_connection.new_transaction() as session:
+    with db_connection.new_test_transaction() as session:
         yield session
 
 
@@ -69,3 +69,16 @@ def db_capturer(db_connection: IDBConnection, db_session):
             base=db_connection.get_base(),
         )
     )
+
+
+@pytest.fixture(scope="function")
+def differences(repository: IRepository, db_capturer: DBCapturer, game: GameFactory):
+    captura_inicial = db_capturer.capture_all_records()
+    partida = repository.get("Partida", 1)
+    game.iniciar_partida(partida)
+    captura_final = db_capturer.capture_all_records()
+
+    captura_inicial[("jugadores", 1)].pop("es_creador")
+    captura_final[("jugadores", 1)].pop("nombre")
+
+    return DBCapturer.compare_capture(captura_inicial, captura_final)

@@ -12,4 +12,4 @@ def setup_db_data(repository: IRepository, game: GameFactory):
     partida2 = game.crear_partida()
     game.unir_jugadores(partida2, numero_de_jugadores=2)
 
-    repository.commit()
+    repository.commit() # FIXME: esta bien que se haga commit aca?

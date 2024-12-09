@@ -8,20 +8,6 @@ from tests.db.repository.IRepository import IRepository
 # TODO: dividir clase en 3 o 4 y divicir tests por change, deleted y created
 
 
-@pytest.fixture(scope="function")
-def differences(repository: IRepository, db_capturer: DBCapturer, game: GameFactory):
-    captura_inicial = db_capturer.capture_all_records()
-    partida = repository.get("Partida", 1)
-    game.iniciar_partida(partida)
-    captura_final = db_capturer.capture_all_records()
-
-    captura_inicial[("jugadores", 1)].pop("es_creador")
-    captura_final[("jugadores", 1)].pop("nombre")
-
-    return DBCapturer.compare_capture(captura_inicial, captura_final)
-
-
-@pytest.mark.usefixtures("differences")
 class TestDataClasses:
     """
     Class to test the data classes instances (Changes, Creation, Deletion).

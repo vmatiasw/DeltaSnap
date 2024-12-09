@@ -48,7 +48,7 @@ class SqlAlchemyRepository:
         """Hace commit a la sesión de la base de datos."""
         current_session.get().commit()
 
-    def flush(self) -> None:
+    def flush(self, objects = []) -> None:
         """
         Hace flush a la sesión de la base de datos.
         Y expira todos los objetos de la sesión.
@@ -82,3 +82,6 @@ class SqlAlchemyRepository:
     
     def get_list(self, list) -> list:
         return list
+    
+    def get_key(self, instance) -> int:
+        return instance.id

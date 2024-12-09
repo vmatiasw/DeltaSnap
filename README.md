@@ -1,4 +1,7 @@
 # DeltaDB
+
+TODO: mejorar nombres de archivos
+
 ## Indice
 1. [¿Qué es DeltaDB?](#¿Qué-es-DeltaDB?)
 2. [¿Para qué sirve?](#¿Para-qué-sirve?)

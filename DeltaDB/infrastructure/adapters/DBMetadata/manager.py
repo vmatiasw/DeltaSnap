@@ -49,4 +49,14 @@ def __get_sqlalchemy_adapter(db_config):
     return SQLAlchemyMetadataAdapter(db_config.base, db_config.test_session)
 
 
-ADAPTERS = {"sqlalchemy": __get_sqlalchemy_adapter}
+def __get_django_adapter(db_config):
+    """
+    Retrieves the adapter for Django metadata.
+    """
+    from DeltaDB.infrastructure.adapters.DBMetadata.DjangoDBMetadata import DjangoDBMetadata
+    
+    return DjangoDBMetadata()
+
+
+
+ADAPTERS = {"sqlalchemy": __get_sqlalchemy_adapter, "django": __get_django_adapter}

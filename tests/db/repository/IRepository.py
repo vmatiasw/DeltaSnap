@@ -36,7 +36,7 @@ class IRepository(Protocol):
         """Hace commit a la sesión de la base de datos."""
         ...
 
-    def flush(self) -> None:
+    def flush(self, objects) -> None:
         """
         Hace flush a la sesión de la base de datos.
         Y expira todos los objetos de la sesión.
@@ -53,4 +53,7 @@ class IRepository(Protocol):
         ...
         
     def count(self, list) -> int:
+        ...
+        
+    def get_key(self, instance) -> int:
         ...

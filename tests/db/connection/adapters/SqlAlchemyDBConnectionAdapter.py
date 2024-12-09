@@ -26,7 +26,7 @@ class SqlAlchemyDBConnectionAdapter(IDBConnection):
         return self.base
 
     @contextmanager
-    def new_transaction(self) -> Generator[Any, Any, Any]:
+    def new_test_transaction(self) -> Generator[Any, Any, Any]:
         """
         Un administrador de contexto para manejar transacciones en modo de prueba.
 

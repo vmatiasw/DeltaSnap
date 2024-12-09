@@ -18,9 +18,9 @@ class GameFactory:
             nombre_creador="Creador",
             iniciada=False,
         )
-
+        partida_id = self.repository.get_key(partida)
         creador = self.repository.instance_model(
-            "Jugador", nombre="Creador", partida=partida, es_creador=True, orden=0
+            "Jugador", nombre="Creador", partida_id=partida_id, es_creador=True, orden=0
         )
         self.repository.append(partida.jugadores, creador)
 
@@ -42,10 +42,11 @@ class GameFactory:
 
         nuevos_jugadores = []
         for i in range(numero_de_jugadores):
+            partida_id = self.repository.get_key(partida)
             nuevo_jugador = self.repository.instance_model(
                 "Jugador",
                 nombre=f"Jugador{i+2}",
-                partida=partida,
+                partida_id=partida_id,
                 es_creador=False,
                 orden=self.repository.count(partida.jugadores),
             )
@@ -68,7 +69,7 @@ class GameFactory:
 
         self.__repartir_cartas(partida, 3, 2)
 
-        self.repository.flush()
+        self.repository.flush([partida])
         return partida
 
     def __repartir_cartas(
@@ -80,9 +81,12 @@ class GameFactory:
         jugadores = self.repository.get_list(partida.jugadores)
         # Crear las cartas de figura
         for jugador in jugadores:
-            for i in range(n_cartas_por_jugador - self.repository.count(jugador.mazo_cartas)):
+            for i in range(
+                n_cartas_por_jugador - self.repository.count(jugador.mazo_cartas)
+            ):
+                jugador_id = self.repository.get_key(jugador)
                 carta = self.repository.instance_model(
-                    "Carta", jugador=jugador, revelada=(i < n_cartas_reveladas)
+                    "Carta", jugador_id=jugador_id, revelada=(i < n_cartas_reveladas)
                 )
 
                 self.repository.add(carta)
