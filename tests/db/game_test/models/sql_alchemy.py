@@ -22,7 +22,7 @@ class Jugador(Base):
     partida_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("partidas.id"), nullable=False
     )
-    partida = relationship("Partida", back_populates="jugadores")
+    partida: Mapped["Partida"] = relationship("Partida", back_populates="jugadores")
     orden: Mapped[int] = mapped_column(Integer, nullable=True)
     mazo_cartas: Mapped[list["Carta"]] = relationship(
         "Carta", back_populates="jugador", cascade="all, delete-orphan"
@@ -33,14 +33,13 @@ class Jugador(Base):
 
 
 class Partida(Base):
-    # PARTIDA -----------------------
     __tablename__ = "partidas"
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, index=True, autoincrement=True
     )
-    nombre_partida = mapped_column(String(255), nullable=False)
-    nombre_creador = mapped_column(String(255), nullable=False)
-    iniciada = mapped_column(Boolean, default=False)
+    nombre_partida: Mapped[str] = mapped_column(String(255), nullable=False)
+    nombre_creador: Mapped[str] = mapped_column(String(255), nullable=False)
+    iniciada: Mapped[Boolean] = mapped_column(Boolean, default=False)
     jugadores: Mapped[list[Jugador]] = relationship(
         "Jugador",
         back_populates="partida",
@@ -48,17 +47,14 @@ class Partida(Base):
         order_by="Jugador.orden",
         collection_class=ordering_list("orden"),
     )
-
-    # JUEGO -----------------------
-    inicio_turno = mapped_column(String(255), nullable=False, default="0")
-    duracion_turno = mapped_column(Integer, nullable=False, default=0)
+    inicio_turno: Mapped[str] = mapped_column(String(255), nullable=False, default="0")
+    duracion_turno: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
-# Carta --------------------------------------------------
+# CARTA -------------------------------------------------------
 
 
 class Carta(Base):
-
     __tablename__ = "cartas"
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, index=True, autoincrement=True
@@ -67,5 +63,5 @@ class Carta(Base):
         String(255), nullable=False, default=lambda: random.choice(SET_DE_CARTAS)
     )
     revelada: Mapped[Boolean] = mapped_column(Boolean, default=True)
-    jugador = relationship("Jugador", back_populates="mazo_cartas")
+    jugador: Mapped["Jugador"] = relationship("Jugador", back_populates="mazo_cartas")
     jugador_id = mapped_column(Integer, ForeignKey("jugadores.id"))

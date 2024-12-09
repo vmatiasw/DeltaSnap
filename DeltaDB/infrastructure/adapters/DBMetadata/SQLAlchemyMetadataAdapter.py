@@ -14,13 +14,24 @@ class SQLAlchemyMetadataAdapter:
         """Devuelve todos los mappers de las tablas en la base de datos."""
         return list(self.base.registry.mappers)
 
-    @staticmethod
-    def get_table_columns_from_table(table: Mapper) -> List[Column|RelationshipProperty]:
-        """Devuelve las columnas de una tabla."""
-        columns: List[Column|RelationshipProperty] = list(table.columns)
+    def get_table_columns_from_table(self, table: Mapper) -> List[Column | RelationshipProperty]:
+        """
+        Devuelve las columnas de una tabla, evitando agregar relaciones redundantes
+        si ya existe una clave foránea asociada a la relación.
+        """
+        columns: List[Column | RelationshipProperty] = list(table.columns)
+
+        existing_foreign_keys = {
+            (fk.column.table.name, fk.parent.key) 
+            for col in table.columns if hasattr(col, 'foreign_keys') for fk in col.foreign_keys
+        }
+
         for rel_name, rel in table.relationships.items():
             if isinstance(rel, RelationshipProperty):
-                columns.append(rel)
+                rel_id = (self.get_table_name_from_table(rel.mapper), list(rel.local_columns)[0].key)
+                if not rel_id in existing_foreign_keys:
+                    columns.append(rel)
+
         return columns
 
     def get_table_columns_from_record(self, record: Any) -> List[Column|RelationshipProperty]:

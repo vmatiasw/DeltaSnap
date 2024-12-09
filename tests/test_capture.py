@@ -4,7 +4,6 @@ from DeltaDB import DBCapturer
 from tests.db.repository.IRepository import IRepository
 
 
-@pytest.mark.usefixtures("db_capturer", "game")
 class TestCapture:
     """
     Class to test the data capture.
@@ -38,7 +37,8 @@ class TestCapture:
             ]
         )
 
-        assert capture1 == capture2 == capture3
+        assert capture1 == capture2
+        assert capture2 == capture3
 
     def test_capture_records(self, db_capturer: DBCapturer, repository: IRepository):
         """
@@ -92,7 +92,6 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 2,
-                "partida": {("partidas", 1)},
                 "mazo_cartas": set(),
             },
             ("jugadores", 2): {
@@ -101,7 +100,6 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 1,
-                "partida": {("partidas", 1)},
                 "mazo_cartas": set(),
             },
             ("jugadores", 1): {
@@ -110,7 +108,6 @@ class TestCapture:
                 "es_creador": True,
                 "partida_id": ("partidas", 1),
                 "orden": 0,
-                "partida": {("partidas", 1)},
                 "mazo_cartas": set(),
             },
         }
@@ -144,7 +141,6 @@ class TestCapture:
                 "es_creador": True,
                 "partida_id": ("partidas", 1),
                 "orden": 0,
-                "partida": {("partidas", 1)},
                 "mazo_cartas": set(),
             },
             ("jugadores", 2): {
@@ -153,7 +149,6 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 1,
-                "partida": {("partidas", 1)},
                 "mazo_cartas": set(),
             },
             ("jugadores", 3): {
@@ -162,7 +157,6 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 1),
                 "orden": 2,
-                "partida": {("partidas", 1)},
                 "mazo_cartas": set(),
             },
             ("jugadores", 4): {
@@ -171,7 +165,6 @@ class TestCapture:
                 "es_creador": True,
                 "partida_id": ("partidas", 2),
                 "orden": 0,
-                "partida": {("partidas", 2)},
                 "mazo_cartas": set(),
             },
             ("jugadores", 5): {
@@ -180,7 +173,6 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 2),
                 "orden": 1,
-                "partida": {("partidas", 2)},
                 "mazo_cartas": set(),
             },
             ("jugadores", 6): {
@@ -189,7 +181,6 @@ class TestCapture:
                 "es_creador": False,
                 "partida_id": ("partidas", 2),
                 "orden": 2,
-                "partida": {("partidas", 2)},
                 "mazo_cartas": set(),
             },
         }
