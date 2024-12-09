@@ -1,6 +1,11 @@
 # DeltaDB
 
-TODO: mejorar nombres de archivos
+TODO: 
+- mejorar nombres de archivos
+- refactorizar los adaptadores
+- definir si protocol o abc
+- implementar una base de datos cruda?
+- mejorar la base de datos de prueba, es muy simple
 
 ## Indice
 1. [¿Qué es DeltaDB?](#¿Qué-es-DeltaDB?)
