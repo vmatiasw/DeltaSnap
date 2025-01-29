@@ -1,9 +1,6 @@
 import copy
-import pytest
 
-from src.deltasnap import DBCapturer, Changes, Created, Deleted
-from tests.db.game_test.GameFactory import GameFactory
-from tests.db.repository.IRepository import IRepository
+from src.deltasnap import Changes, Created, Deleted
 
 # TODO: dividir clase en 3 o 4 y divicir tests por change, deleted y created
 
@@ -22,12 +19,12 @@ class TestDataClasses:
         assert isinstance(created, Created)
         assert isinstance(created, set)
         assert created == {
-            ("cartas", 1),
-            ("cartas", 2),
-            ("cartas", 3),
-            ("cartas", 4),
-            ("cartas", 5),
-            ("cartas", 6),
+            ("cards", 1),
+            ("cards", 2),
+            ("cards", 3),
+            ("cards", 4),
+            ("cards", 5),
+            ("cards", 6),
         }
 
     def test_deleted_class_initialization(self, differences):
@@ -47,17 +44,17 @@ class TestDataClasses:
         assert isinstance(changes, Changes)
         assert isinstance(changes, dict)
         assert changes == {
-            ("jugadores", 1): {
-                "nombre": ("Creador", "#field don't exist"),
-                "es_creador": ("#field don't exist", True),
-                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+            ("players", 1): {
+                "name": ("Creator", "#field don't exist"),
+                "is_creator": ("#field don't exist", True),
+                "card_deck": (set(), {("cards", 1), ("cards", 2)}),
             },
-            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 4), ("cartas", 3)})},
-            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 5), ("cartas", 6)})},
-            ("partidas", 1): {
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                "iniciada": (False, True),
-                "duracion_turno": (0, 60),
+            ("players", 2): {"card_deck": (set(), {("cards", 4), ("cards", 3)})},
+            ("players", 3): {"card_deck": (set(), {("cards", 5), ("cards", 6)})},
+            ("games", 1): {
+                "turn_start_time": ("0", "2021-10-10T10:00:00Z"),
+                "started": (False, True),
+                "turn_duration": (0, 60),
             },
         }
 
@@ -68,27 +65,27 @@ class TestDataClasses:
         """
         changes, created, deleted = copy.deepcopy(differences)
         assert created.remove_tables([]) == {
-            ("cartas", 1),
-            ("cartas", 2),
-            ("cartas", 3),
-            ("cartas", 4),
-            ("cartas", 5),
-            ("cartas", 6),
+            ("cards", 1),
+            ("cards", 2),
+            ("cards", 3),
+            ("cards", 4),
+            ("cards", 5),
+            ("cards", 6),
         }
         assert deleted.remove_tables([]) == set()
         assert changes.remove_tables([]) == {
-            ("partidas", 1): {
-                "duracion_turno": (0, 60),
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                "iniciada": (False, True),
+            ("games", 1): {
+                "turn_duration": (0, 60),
+                "turn_start_time": ("0", "2021-10-10T10:00:00Z"),
+                "started": (False, True),
             },
-            ("jugadores", 1): {
-                "nombre": ("Creador", "#field don't exist"),
-                "es_creador": ("#field don't exist", True),
-                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+            ("players", 1): {
+                "name": ("Creator", "#field don't exist"),
+                "is_creator": ("#field don't exist", True),
+                "card_deck": (set(), {("cards", 1), ("cards", 2)}),
             },
-            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
-            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
+            ("players", 2): {"card_deck": (set(), {("cards", 3), ("cards", 4)})},
+            ("players", 3): {"card_deck": (set(), {("cards", 6), ("cards", 5)})},
         }
 
     def test_ignore_fields_changes_multiple(self, differences):
@@ -98,20 +95,20 @@ class TestDataClasses:
         changes, _, _ = copy.deepcopy(differences)
 
         assert changes.ignore_fields_changes(
-            {"partidas": {"iniciada", "duracion_turno"}, "jugadores": {"nombre"}}
+            {"games": {"started", "turn_duration"}, "players": {"name"}}
         ) == {
-            ("partidas", 1): {
-                "duracion_turno": ("#change ignored", "#change ignored"),
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                "iniciada": ("#change ignored", "#change ignored"),
+            ("games", 1): {
+                "turn_duration": ("#change ignored", "#change ignored"),
+                "turn_start_time": ("0", "2021-10-10T10:00:00Z"),
+                "started": ("#change ignored", "#change ignored"),
             },
-            ("jugadores", 1): {
-                "nombre": ("#change ignored", "#change ignored"),
-                "es_creador": ("#field don't exist", True),
-                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+            ("players", 1): {
+                "name": ("#change ignored", "#change ignored"),
+                "is_creator": ("#field don't exist", True),
+                "card_deck": (set(), {("cards", 1), ("cards", 2)}),
             },
-            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
-            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
+            ("players", 2): {"card_deck": (set(), {("cards", 3), ("cards", 4)})},
+            ("players", 3): {"card_deck": (set(), {("cards", 6), ("cards", 5)})},
         }
 
     def test_get_schema_empty_case(self):
@@ -138,11 +135,11 @@ class TestDataClasses:
         Test the get_schema method.
         """
         changes, created, deleted = differences
-        assert created.get_schema() == {"cartas"}
+        assert created.get_schema() == {"cards"}
         assert not deleted.get_schema()
         assert changes.get_schema() == {
-            "partidas": {"iniciada", "duracion_turno", "inicio_turno"},
-            "jugadores": {"nombre", "es_creador", "mazo_cartas"},
+            "games": {"started", "turn_duration", "turn_start_time"},
+            "players": {"name", "is_creator", "card_deck"},
         }
 
     def test_get_inverted_capture(self, differences):
@@ -150,11 +147,11 @@ class TestDataClasses:
         Test the get_inverted_capture method.
         """
         changes, created, deleted = differences
-        assert created.get_inverted_capture() == {"cartas": {1, 2, 3, 4, 5, 6}}
+        assert created.get_inverted_capture() == {"cards": {1, 2, 3, 4, 5, 6}}
         assert not deleted.get_inverted_capture()
         assert changes.get_inverted_capture() == {
-            "partidas": {"duracion_turno": {1}, "inicio_turno": {1}, "iniciada": {1}},
-            "jugadores": {"nombre": {1}, "es_creador": {1}, "mazo_cartas": {1, 2, 3}},
+            "games": {"turn_duration": {1}, "turn_start_time": {1}, "started": {1}},
+            "players": {"name": {1}, "is_creator": {1}, "card_deck": {1, 2, 3}},
         }
 
     def test_get_frequency(self, differences):
@@ -162,20 +159,20 @@ class TestDataClasses:
         Test the get_frequency method.
         """
         changes, created, deleted = differences
-        assert created.get_frequency() == {"cartas": 6}
+        assert created.get_frequency() == {"cards": 6}
         assert not deleted.get_frequency()
         assert changes.get_frequency() == {
-            "partidas": {
+            "games": {
                 "#table frequency": 1,
-                "duracion_turno": 1,
-                "inicio_turno": 1,
-                "iniciada": 1,
+                "turn_duration": 1,
+                "turn_start_time": 1,
+                "started": 1,
             },
-            "jugadores": {
+            "players": {
                 "#table frequency": 3,
-                "nombre": 1,
-                "es_creador": 1,
-                "mazo_cartas": 3,
+                "name": 1,
+                "is_creator": 1,
+                "card_deck": 3,
             },
         }
 
@@ -185,21 +182,21 @@ class TestDataClasses:
         """
         changes, created, deleted = copy.deepcopy(differences)
 
-        assert created.remove_tables(["jugadores"]) == {
-            ("cartas", 3),
-            ("cartas", 6),
-            ("cartas", 5),
-            ("cartas", 2),
-            ("cartas", 1),
-            ("cartas", 4),
+        assert created.remove_tables(["players"]) == {
+            ("cards", 3),
+            ("cards", 6),
+            ("cards", 5),
+            ("cards", 2),
+            ("cards", 1),
+            ("cards", 4),
         }
 
-        assert not deleted.remove_tables(["jugadores"])
-        assert changes.remove_tables(["jugadores"]) == {
-            ("partidas", 1): {
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                "iniciada": (False, True),
-                "duracion_turno": (0, 60),
+        assert not deleted.remove_tables(["players"])
+        assert changes.remove_tables(["players"]) == {
+            ("games", 1): {
+                "turn_start_time": ("0", "2021-10-10T10:00:00Z"),
+                "started": (False, True),
+                "turn_duration": (0, 60),
             }
         }
 
@@ -214,26 +211,26 @@ class TestDataClasses:
         """
         changes, created, deleted = differences
         assert created == {
-            ("cartas", 5),
-            ("cartas", 1),
-            ("cartas", 4),
-            ("cartas", 3),
-            ("cartas", 6),
-            ("cartas", 2),
+            ("cards", 5),
+            ("cards", 1),
+            ("cards", 4),
+            ("cards", 3),
+            ("cards", 6),
+            ("cards", 2),
         }
         assert deleted == set()
         assert changes == {
-            ("jugadores", 1): {
-                "nombre": ("Creador", "#field don't exist"),
-                "es_creador": ("#field don't exist", True),
-                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+            ("players", 1): {
+                "name": ("Creator", "#field don't exist"),
+                "is_creator": ("#field don't exist", True),
+                "card_deck": (set(), {("cards", 1), ("cards", 2)}),
             },
-            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
-            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
-            ("partidas", 1): {
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                "iniciada": (False, True),
-                "duracion_turno": (0, 60),
+            ("players", 2): {"card_deck": (set(), {("cards", 3), ("cards", 4)})},
+            ("players", 3): {"card_deck": (set(), {("cards", 6), ("cards", 5)})},
+            ("games", 1): {
+                "turn_start_time": ("0", "2021-10-10T10:00:00Z"),
+                "started": (False, True),
+                "turn_duration": (0, 60),
             },
         }
 
@@ -274,10 +271,10 @@ class TestDataClasses:
         Test the getitem method.
         """
         changes, _, _ = differences
-        assert changes[("jugadores", 1)] == {
-            "nombre": ("Creador", "#field don't exist"),
-            "es_creador": ("#field don't exist", True),
-            "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+        assert changes[("players", 1)] == {
+            "name": ("Creator", "#field don't exist"),
+            "is_creator": ("#field don't exist", True),
+            "card_deck": (set(), {("cards", 1), ("cards", 2)}),
         }
 
     def test_setitem(self, differences):
@@ -286,11 +283,11 @@ class TestDataClasses:
         """
         changes, _, _ = copy.deepcopy(differences)
         changes[("juego", 1)] = {
-            "nombre": ("Tenis", "Basket"),
+            "name": ("Tenis", "Basket"),
         }
 
         assert changes[("juego", 1)] == {
-            "nombre": ("Tenis", "Basket"),
+            "name": ("Tenis", "Basket"),
         }
 
     def test_contains(self, differences):
@@ -298,48 +295,48 @@ class TestDataClasses:
         Test the contains method.
         """
         changes, created, deleted = differences
-        assert ("cartas", 1) in created
+        assert ("cards", 1) in created
         assert ("papa", 10) not in deleted
-        assert ("partidas", 1) in changes
-        assert ("jugadores", 1) in changes
+        assert ("games", 1) in changes
+        assert ("players", 1) in changes
 
     def test_delitem(self, differences):
         """
         Test the delitem method.
         """
         changes, created, deleted = copy.deepcopy(differences)
-        del changes[("jugadores", 1)]
-        assert ("jugadores", 1) not in changes
+        del changes[("players", 1)]
+        assert ("players", 1) not in changes
         assert changes == {
-            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
-            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
-            ("partidas", 1): {
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                "iniciada": (False, True),
-                "duracion_turno": (0, 60),
+            ("players", 2): {"card_deck": (set(), {("cards", 3), ("cards", 4)})},
+            ("players", 3): {"card_deck": (set(), {("cards", 6), ("cards", 5)})},
+            ("games", 1): {
+                "turn_start_time": ("0", "2021-10-10T10:00:00Z"),
+                "started": (False, True),
+                "turn_duration": (0, 60),
             },
         }
 
     def test_changes_dict(self, differences):
         changes, _, _ = differences
         assert changes.keys() == {
-            ("jugadores", 1),
-            ("jugadores", 2),
-            ("jugadores", 3),
-            ("partidas", 1),
+            ("players", 1),
+            ("players", 2),
+            ("players", 3),
+            ("games", 1),
         }
         assert dict(changes.items()) == {
-            ("jugadores", 1): {
-                "nombre": ("Creador", "#field don't exist"),
-                "es_creador": ("#field don't exist", True),
-                "mazo_cartas": (set(), {("cartas", 1), ("cartas", 2)}),
+            ("players", 1): {
+                "name": ("Creator", "#field don't exist"),
+                "is_creator": ("#field don't exist", True),
+                "card_deck": (set(), {("cards", 1), ("cards", 2)}),
             },
-            ("jugadores", 2): {"mazo_cartas": (set(), {("cartas", 3), ("cartas", 4)})},
-            ("jugadores", 3): {"mazo_cartas": (set(), {("cartas", 6), ("cartas", 5)})},
-            ("partidas", 1): {
-                "inicio_turno": ("0", "2021-10-10T10:00:00Z"),
-                "iniciada": (False, True),
-                "duracion_turno": (0, 60),
+            ("players", 2): {"card_deck": (set(), {("cards", 3), ("cards", 4)})},
+            ("players", 3): {"card_deck": (set(), {("cards", 6), ("cards", 5)})},
+            ("games", 1): {
+                "turn_start_time": ("0", "2021-10-10T10:00:00Z"),
+                "started": (False, True),
+                "turn_duration": (0, 60),
             },
         }
 
@@ -348,23 +345,23 @@ class TestDataClasses:
 
         created |= {("dino", 7)}
         assert created == {
-            ("cartas", 1),
-            ("cartas", 2),
-            ("cartas", 3),
-            ("cartas", 4),
-            ("cartas", 5),
-            ("cartas", 6),
+            ("cards", 1),
+            ("cards", 2),
+            ("cards", 3),
+            ("cards", 4),
+            ("cards", 5),
+            ("cards", 6),
             ("dino", 7),
         }
-        assert created.intersection({("cartas", 1), ("cartas", 2)}) == {
-            ("cartas", 1),
-            ("cartas", 2),
+        assert created.intersection({("cards", 1), ("cards", 2)}) == {
+            ("cards", 1),
+            ("cards", 2),
         }
-        assert created - {("cartas", 1), ("cartas", 2)} == {
-            ("cartas", 3),
-            ("cartas", 4),
-            ("cartas", 5),
-            ("cartas", 6),
+        assert created - {("cards", 1), ("cards", 2)} == {
+            ("cards", 3),
+            ("cards", 4),
+            ("cards", 5),
+            ("cards", 6),
             ("dino", 7),
         }
-        assert deleted & {("cartas", 1), ("cartas", 2)} == set()
+        assert deleted & {("cards", 1), ("cards", 2)} == set()

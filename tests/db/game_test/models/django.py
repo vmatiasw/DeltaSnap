@@ -19,55 +19,55 @@ class Base(models.Model):
 # JUGADOR ------------------------------------------------------
 
 
-class Jugador(Base):
-    nombre: models.CharField = models.CharField(max_length=255, null=False)
-    es_creador: models.BooleanField = models.BooleanField(default=False)
-    partida_id: models.ForeignKey = models.ForeignKey(
-        "Partida", on_delete=models.CASCADE, related_name="jugadores"
+class Player(Base):
+    name: models.CharField = models.CharField(max_length=255, null=False)
+    is_creator: models.BooleanField = models.BooleanField(default=False)
+    game_id: models.ForeignKey = models.ForeignKey(
+        "Game", on_delete=models.CASCADE, related_name="players"
     )
-    orden: models.IntegerField = models.IntegerField(null=True)
+    order: models.IntegerField = models.IntegerField(null=True)
 
     class Meta:
-        db_table = "jugadores"
+        db_table = "players"
         app_label = APP_LABEL
 
     def __str__(self):
-        return self.nombre
+        return self.name
 
 
 # PARTIDA ------------------------------------------------------
 
 
-class Partida(Base):
-    nombre_partida: models.CharField = models.CharField(max_length=255, null=False)
-    nombre_creador: models.CharField = models.CharField(max_length=255, null=False)
-    iniciada: models.BooleanField = models.BooleanField(default=False)
-    inicio_turno: models.CharField = models.CharField(max_length=255, default="0")
-    duracion_turno: models.IntegerField = models.IntegerField(default=0)
+class Game(Base):
+    game_name: models.CharField = models.CharField(max_length=255, null=False)
+    creator_name: models.CharField = models.CharField(max_length=255, null=False)
+    started: models.BooleanField = models.BooleanField(default=False)
+    turn_start_time: models.CharField = models.CharField(max_length=255, default="0")
+    turn_duration: models.IntegerField = models.IntegerField(default=0)
 
     class Meta:
-        db_table = "partidas"
+        db_table = "games"
         app_label = APP_LABEL
 
     def __str__(self):
-        return self.nombre_partida
+        return self.game_name
 
 
 # CARTA ------------------------------------------------------
 
 
-class Carta(Base):
-    carta: models.CharField = models.CharField(
+class Card(Base):
+    card: models.CharField = models.CharField(
         max_length=255, default=lambda: random.choice(SET_DE_CARTAS)
     )
-    revelada: models.BooleanField = models.BooleanField(default=True)
-    jugador_id: models.ForeignKey = models.ForeignKey(
-        Jugador, on_delete=models.SET_NULL, null=True, related_name="mazo_cartas"
+    revealed: models.BooleanField = models.BooleanField(default=True)
+    player_id: models.ForeignKey = models.ForeignKey(
+        Player, on_delete=models.SET_NULL, null=True, related_name="card_deck"
     )
 
     class Meta:
-        db_table = "cartas"
+        db_table = "cards"
         app_label = APP_LABEL
 
     def __str__(self):
-        return self.carta
+        return self.card

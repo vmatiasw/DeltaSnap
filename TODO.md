@@ -1,5 +1,6 @@
 # TODO
 
+- pasar todo a ingles y documentar bien
 - mockear para que pasen los test con sqlalchemy, no cambiar la funcionalidad.
 - mejorar nombres de archivos
 - refactorizar los adaptadores

@@ -4,56 +4,58 @@ from typing import Any, Protocol, Type
 class IRepository(Protocol):
 
     def instance_model(self, model_name: str, **kwargs: Any) -> Any:
-        """Crea una instancia de un modelo de base de datos."""
+        """Creates an instance of a database model."""
         ...
 
     def add(self, instance: Any) -> None:
-        """Añade una instancia a la sesión de la base de datos."""
+        """Adds an instance to the database session."""
         ...
 
     def get(self, model_name: str, id: int) -> Any:
-        """Obtiene un registro de la base de datos dado un modelo y un id."""
+        """Retrieves a record from the database given a model and an ID."""
         ...
 
     def query(self, model: str | Type[Any]) -> Any:
         """
-        Realiza una consulta a la base de datos para un modelo específico.
+        Performs a query on the database for a specific model.
 
         Args:
-            model (str | Type[Any]): El nombre del modelo o la clase del modelo.
+            model (str | Type[Any]): The name or the class of the model to query.
         """
         ...
 
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:
-        """Filtra una consulta de base de datos usando los parámetros proporcionados."""
+        """Filters a database query using the provided parameters."""
         ...
 
     def get_model_by_name(self, model_name: str) -> Any:
-        """Obtiene un modelo de base de datos por su nombre."""
+        """Retrieves a database model by its name."""
         ...
 
     def commit(self) -> None:
-        """Hace commit a la sesión de la base de datos."""
+        """Commits the current database session."""
         ...
 
     def flush(self, objects) -> None:
         """
-        Hace flush a la sesión de la base de datos.
-        Y expira todos los objetos de la sesión.
+        Flushes the database session and expires all objects in the session.
         """
         ...
 
     def append(self, list, instance) -> None:
         """
-        Agrega `instance` a `list`.
+        Appends `instance` to the given `list`.
         """
         ...
         
     def get_list(self, list) -> list:
+        """Returns the list as is."""
         ...
         
     def count(self, list) -> int:
+        """Returns the count of items in the given list."""
         ...
         
     def get_key(self, instance) -> int:
+        """Returns the key (ID) of the given instance."""
         ...

@@ -6,10 +6,7 @@ def setup_db_data(repository: IRepository, game: GameFactory):
     """
     Prepares the database with some data for testing purposes.
     """
-    partida = game.crear_partida()
-    game.unir_jugadores(partida, numero_de_jugadores=2)
+    game.add_players(game.create_game(), player_count=2)
+    game.add_players(game.create_game(), player_count=2)
 
-    partida2 = game.crear_partida()
-    game.unir_jugadores(partida2, numero_de_jugadores=2)
-
-    repository.commit() # FIXME: esta bien que se haga commit aca?
+    repository.commit()  # FIXME: is it okay to commit here?

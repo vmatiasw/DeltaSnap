@@ -9,64 +9,63 @@ class SqlAlchemyRepository:
         self.base = base
 
     def get_model_by_name(self, model_name: str) -> Any:
-        """Obtiene un modelo de base de datos por su nombre."""
+        """Retrieves a database model by its name."""
         for mapper in self.base.registry.mappers:
             if model_name == mapper.class_.__name__:
                 return mapper.class_
 
         raise ValueError(
-            f"El modelo {model_name} no se encuentra definido. \n modelos disponibles: {[mapper.class_.__name__ for mapper in self.base.registry.mappers]}"
+            f"Model {model_name} not defined. \n Available models: {[mapper.class_.__name__ for mapper in self.base.registry.mappers]}"
         )
 
     def instance_model(self, model_name: str, **kwargs: Any) -> Any:
         """
-        Crea una instancia de un modelo de base de datos usando el nombre del modelo
-        y los parámetros proporcionados.
+        Creates an instance of a database model using the model name
+        and the provided parameters.
         """
-        # Suponiendo que 'models' es un diccionario de clases de modelos disponibles
         model_class = self.get_model_by_name(model_name)
         if not model_class:
-            raise ValueError(f"El modelo {model_name} no se encuentra definido.")
+            raise ValueError(f"Model {model_name} not found.")
 
-        # Validar que el modelo tenga un mapeo de clases (es un modelo de base de datos)
+        # Validate if the model is a valid database model (it must have a table mapping)
         if not hasattr(model_class, "__table__"):
-            raise ValueError(f"{model_name} no es un modelo de base de datos válido.")
+            raise ValueError(f"{model_name} is not a valid database model.")
 
-        # Crear la instancia del modelo
+        # Create the model instance
         instance = model_class(**kwargs)
         return instance
 
     def add(self, instance: Any) -> None:
-        """Añade una instancia a la sesión de la base de datos."""
+        """Adds an instance to the database session."""
         current_session.get().add(instance)
 
     def append(self, list, instance: Any) -> None:
-        """Añade una instancia a la sesión de la base de datos."""
+        """Appends an instance to the provided list."""
         list.append(instance)
 
     def commit(self) -> None:
-        """Hace commit a la sesión de la base de datos."""
+        """Commits the database session."""
         current_session.get().commit()
 
-    def flush(self, objects = []) -> None:
+    def flush(self, objects: list = []) -> None:
         """
-        Hace flush a la sesión de la base de datos.
-        Y expira todos los objetos de la sesión.
+        Flushes the database session.
+        Also expires all objects in the session.
         """
         current_session.get().flush()
         current_session.get().expire_all()
 
     def get(self, model_name: str, id: int) -> Any:
-        """Obtiene un registro de la base de datos dado un modelo y un id."""
+        """Retrieves a record from the database given a model and an ID."""
         model = self.get_model_by_name(model_name)
         return current_session.get().get(model, id)
 
     def query(self, model: str | Type[Any]) -> Any:
         """
-        Realiza una consulta a la base de datos para un modelo específico.
+        Executes a query on the database for a specific model.
 
         Args:
-            model (str | Type[Any]): El nombre del modelo o la clase del modelo.
+            model (str | Type[Any]): The name or class of the model.
         """
         if isinstance(model, str):
             model = self.get_model_by_name(model)
@@ -74,14 +73,17 @@ class SqlAlchemyRepository:
         return current_session.get().query(model)
 
     def filter(self, query, *args: Any, **kwargs: Any) -> Any:
-        """Filtra una consulta de base de datos usando los parámetros proporcionados."""
+        """Filters a database query using the provided parameters."""
         return query.filter(*args, **kwargs)
 
     def count(self, list) -> int:
+        """Returns the count of items in the provided list."""
         return len(list)
-    
+
     def get_list(self, list) -> list:
+        """Returns the list of items."""
         return list
-    
+
     def get_key(self, instance) -> int:
+        """Returns the primary key (ID) of the given instance."""
         return instance.id

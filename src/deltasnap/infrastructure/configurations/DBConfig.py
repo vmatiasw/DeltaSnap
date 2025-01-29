@@ -12,7 +12,7 @@ class DBConfig:
     Class for configuring which database or ORM to use, and passing the corresponding dependencies.
     """
 
-    db_source: Literal["sqlalchemy"]  # ORMs and databases supported by DeltaSnap
+    db_source: Literal["sqlalchemy"] | Literal["django"]  # ORMs and databases supported by DeltaSnap
     test_session: Optional[Any] = None
     base: Optional[Any] = None
 

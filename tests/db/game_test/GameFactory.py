@@ -1,8 +1,8 @@
 from typing import Any
 
 MOCK_GMT_TIME_ZT = "2021-10-10T10:00:00Z"
-SEGUNDOS_TEMPORIZADOR_TURNO = 60
-N_CARTAS_FIGURA_TOTALES = 6
+TIMER_SECONDS_PER_TURN = 60
+TOTAL_FACE_CARD_COUNT = 6
 
 
 class GameFactory:
@@ -10,86 +10,80 @@ class GameFactory:
     def __init__(self, repository: Any):
         self.repository = repository
 
-    def crear_partida(self) -> Any:
-        """Crea una partida inicial con un creador y la agrega a la base de datos."""
-        partida = self.repository.instance_model(
-            "Partida",
-            nombre_partida="Partida",
-            nombre_creador="Creador",
-            iniciada=False,
+    def create_game(self) -> Any:
+        """Creates an initial game with a creator and adds it to the database."""
+        game = self.repository.instance_model(
+            "Game",
+            game_name="Game",
+            creator_name="Creator",
+            started=False,
         )
-        partida_id = self.repository.get_key(partida)
-        creador = self.repository.instance_model(
-            "Jugador", nombre="Creador", partida_id=partida_id, es_creador=True, orden=0
+        game_id = self.repository.get_key(game)
+        creator = self.repository.instance_model(
+            "Player", name="Creator", game_id=game_id, is_creator=True, order=0
         )
-        self.repository.append(partida.jugadores, creador)
+        self.repository.append(game.players, creator)
 
-        self.repository.add(creador)
-        self.repository.add(partida)
+        self.repository.add(creator)
+        self.repository.add(game)
         self.repository.flush()
-        return partida
+        return game
 
-    def unir_jugadores(self, partida: Any, numero_de_jugadores: int = 1) -> list[Any]:
-        """Agrega jugadores a una partida existente."""
-        assert partida.iniciada == False, "La partida ya ha sido iniciada"
+    def add_players(self, game: Any, player_count: int = 1) -> list[Any]:
+        """Adds players to an existing game."""
+        assert not game.started, "The game has already started"
 
-        assert (
-            numero_de_jugadores < 4
-        ), "No se pueden unir más de 4 jugadores a la partida"
+        assert player_count < 4, "You cannot add more than 4 players to the game"
 
-        if numero_de_jugadores == 0:
+        if player_count == 0:
             return []
 
-        nuevos_jugadores = []
-        for i in range(numero_de_jugadores):
-            partida_id = self.repository.get_key(partida)
-            nuevo_jugador = self.repository.instance_model(
-                "Jugador",
-                nombre=f"Jugador{i+2}",
-                partida_id=partida_id,
-                es_creador=False,
-                orden=self.repository.count(partida.jugadores),
+        new_players = []
+        for i in range(player_count):
+            game_id = self.repository.get_key(game)
+            new_player = self.repository.instance_model(
+                "Player",
+                name=f"Player{i+2}",
+                game_id=game_id,
+                is_creator=False,
+                order=self.repository.count(game.players),
             )
 
-            self.repository.add(nuevo_jugador)
-            self.repository.append(partida.jugadores, nuevo_jugador)
-            nuevos_jugadores.append(nuevo_jugador)
+            self.repository.add(new_player)
+            self.repository.append(game.players, new_player)
+            new_players.append(new_player)
             self.repository.flush()
 
         self.repository.flush()
-        return nuevos_jugadores
+        return new_players
 
-    def iniciar_partida(self, partida: Any) -> Any:
-        """Inicia una partida, reparte cartas y actualiza el estado de la partida."""
-        assert partida.iniciada == False, "La partida ya ha sido iniciada"
+    def start_game(self, game: Any) -> Any:
+        """Starts the game, deals cards, and updates the game state."""
+        assert not game.started, "The game has already started"
 
-        partida.iniciada = True
-        partida.inicio_turno = MOCK_GMT_TIME_ZT
-        partida.duracion_turno = SEGUNDOS_TEMPORIZADOR_TURNO
+        game.started = True
+        game.turn_start_time = MOCK_GMT_TIME_ZT
+        game.turn_duration = TIMER_SECONDS_PER_TURN
 
-        self.__repartir_cartas(partida, 3, 2)
+        self.__deal_cards(game, 3, 2)
 
-        self.repository.flush([partida])
-        return partida
+        self.repository.flush([game])
+        return game
 
-    def __repartir_cartas(
-        self, partida: Any, n_cartas_reveladas: int, n_cartas_por_jugador: int
-    ):
-        """Reparte las cartas entre los jugadores de una partida."""
-        assert partida.iniciada == True, "La partida no ha sido iniciada"
+    def __deal_cards(self, game: Any, revealed_card_count: int, cards_per_player: int):
+        """Deals the cards among the players of a game."""
+        assert game.started, "The game has not been started"
 
-        jugadores = self.repository.get_list(partida.jugadores)
-        # Crear las cartas de figura
-        for jugador in jugadores:
-            for i in range(
-                n_cartas_por_jugador - self.repository.count(jugador.mazo_cartas)
-            ):
-                jugador_id = self.repository.get_key(jugador)
-                carta = self.repository.instance_model(
-                    "Carta", jugador_id=jugador_id, revelada=(i < n_cartas_reveladas)
+        players = self.repository.get_list(game.players)
+        # Create face cards
+        for player in players:
+            for i in range(cards_per_player - self.repository.count(player.card_deck)):
+                player_id = self.repository.get_key(player)
+                card = self.repository.instance_model(
+                    "Card", player_id=player_id, revealed=(i < revealed_card_count)
                 )
 
-                self.repository.add(carta)
-                self.repository.append(jugador.mazo_cartas, carta)
+                self.repository.add(card)
+                self.repository.append(player.card_deck, card)
 
         self.repository.flush()

@@ -74,11 +74,10 @@ def db_capturer(db_connection: IDBConnection, db_session):
 @pytest.fixture(scope="function")
 def differences(repository: IRepository, db_capturer: DBCapturer, game: GameFactory):
     captura_inicial = db_capturer.capture_all_records()
-    partida = repository.get("Partida", 1)
-    game.iniciar_partida(partida)
+    game.start_game(repository.get("Game", 1))
     captura_final = db_capturer.capture_all_records()
 
-    captura_inicial[("jugadores", 1)].pop("es_creador")
-    captura_final[("jugadores", 1)].pop("nombre")
+    captura_inicial[("players", 1)].pop("is_creator")
+    captura_final[("players", 1)].pop("name")
 
     return DBCapturer.compare_capture(captura_inicial, captura_final)

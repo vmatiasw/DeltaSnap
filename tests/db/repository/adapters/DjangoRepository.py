@@ -12,54 +12,57 @@ class DjangoRepository:
         self.base = base
 
     def instance_model(self, model_name: str, **kwargs: Any) -> Any:
-        """Crea una instancia de un modelo de base de datos."""
+        """Creates an instance of a database model."""
         model_class = self.get_model_by_name(model_name)
         instance = model_class(**kwargs)
         instance.save()
         return instance
 
     def add(self, instance: Any) -> None:
-        """Añade una instancia a la sesión de la base de datos."""
+        """Adds an instance to the database session."""
         instance.save()
 
     def get(self, model_name: str, id: int) -> Any:
-        """Obtiene un registro de la base de datos dado un modelo y un id."""
+        """Retrieves a record from the database given a model and an ID."""
         model_class = self.get_model_by_name(model_name)
         return model_class.objects.get(id=id)
 
     def query(self, model: Type[Any]) -> Any:
-        """Realiza una consulta a la base de datos para un modelo específico."""
+        """Performs a query on the database for a specific model."""
         return model.objects.all()
 
     def filter(self, model: Type[Any], **kwargs: Any) -> Any:
-        """Filtra una consulta de base de datos usando los parámetros proporcionados."""
+        """Filters a database query using the provided parameters."""
         return model.objects.filter(**kwargs)
 
     def get_model_by_name(self, model_name: str) -> Type[Model]:
         """
-        Obtiene un modelo de base de datos por su nombre.
+        Retrieves a database model by its name.
         """
-        model = apps.get_model(APP_LABEL + "." + model_name)
+        model = apps.get_model(f"{APP_LABEL}.{model_name}")
         return model
 
     def commit(self) -> None:
-        """Hace commit a la sesión de la base de datos."""
+        """Commits the database session (no-op in Django ORM)."""
         pass
 
-    def flush(self, objects = []) -> None:
-        """Hace flush a la sesión de la base de datos"""
+    def flush(self, objects: list = []) -> None:
+        """Flushes the database session by saving the provided objects."""
         for obj in objects:
             obj.save()
 
     def append(self, list, instance: Any) -> None:
-        """Añade una instancia a la sesión de la base de datos."""
+        """Adds an instance to a list in the session."""
         list.add(instance)
-        
+
     def count(self, list) -> int:
+        """Returns the count of items in the provided list."""
         return list.count()
-    
+
     def get_list(self, list) -> list:
+        """Returns all items in the provided list."""
         return list.all()
 
     def get_key(self, instance) -> int:
+        """Returns the primary key (ID) of the given instance."""
         return instance
