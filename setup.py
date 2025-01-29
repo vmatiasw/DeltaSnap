@@ -16,7 +16,7 @@ setup(
     },
     test_suite="tests",
     tests_require=["pytest"],
-    description="Library for processing and managing database metadata",
+    description="Library for processing and managing database metadata to support testing and debugging",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Matias Viola",
