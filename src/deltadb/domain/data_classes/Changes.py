@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, Set
 from collections import defaultdict
 
-from deltadb.domain.types import RecordsChanges, info
+from src.deltadb.domain.types import RecordsChanges, info
 
 
 class Changes(dict):
@@ -64,10 +64,10 @@ class Changes(dict):
         :return: A dictionary mapping table names to sets of field names.
         """
         schema: Dict[str, Set[str]] = defaultdict(set)
-        
+
         for (table_name, _), changes_dict in self.items():
             schema[table_name].update(changes_dict.keys())
-            
+
         return dict(schema)
 
     def get_inverted_capture(self) -> Dict[str, Dict[str, Set[str]]]:

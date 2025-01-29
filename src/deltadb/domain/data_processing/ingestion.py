@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import Any, List, Dict
 
-from deltadb.domain.types import Capture
-from deltadb.domain.interfaces.IDBMetadata import IDBMetadata
+from src.deltadb.domain.types import Capture
+from src.deltadb.domain.interfaces.IDBMetadata import IDBMetadata
 
 
 def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:
@@ -111,7 +111,7 @@ def __extract_fields_values(
             f_record_id = db_metadata.get_record_id(f_record)
             f_record_table_name = db_metadata.get_table_name_from_record(f_record)
             fields_values[column_name] = (f_record_table_name, f_record_id)
-        
+
         elif column_is_relationship:
             fields_values[column_name] = set()
             r_records = db_metadata.get_field_related_records(column_name, record)

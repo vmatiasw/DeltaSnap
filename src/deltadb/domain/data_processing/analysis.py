@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from deltadb.domain.types import (
+from src.deltadb.domain.types import (
     Capture,
     CreatedRecords,
     DeletedRecords,
@@ -8,8 +8,8 @@ from deltadb.domain.types import (
     RecordsChanges,
     info,
 )
-from deltadb.domain.data_classes.Changes import Changes
-from deltadb.domain.data_classes.data_sets import Created, Deleted
+from src.deltadb.domain.data_classes.Changes import Changes
+from src.deltadb.domain.data_classes.data_sets import Created, Deleted
 
 
 def compare_capture(

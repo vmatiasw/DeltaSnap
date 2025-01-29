@@ -1,7 +1,9 @@
 from typing import Literal, Optional, Any
 from dataclasses import dataclass
 
-from deltadb.infrastructure.adapters.DBMetadata.manager import _get_db_metadata_adapter
+from src.deltadb.infrastructure.adapters.DBMetadata.manager import (
+    _get_db_metadata_adapter,
+)
 
 
 @dataclass
@@ -10,7 +12,7 @@ class DBConfig:
     Class for configuring which database or ORM to use, and passing the corresponding dependencies.
     """
 
-    db_source: Literal["sqlalchemy"] # ORMs and databases supported by DeltaDB
+    db_source: Literal["sqlalchemy"]  # ORMs and databases supported by DeltaDB
     test_session: Optional[Any] = None
     base: Optional[Any] = None
 

@@ -1,14 +1,21 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="DeltaDB",
-    version="0.1",
-    packages=find_packages(),
-    install_requires=[],
+    name="deltadb",
+    version="0.1.0",
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
+    install_requires=[
+        "sqlalchemy>=1.3",
+        "django>=3.0",
+    ],
+    extras_require={
+        "django": ["Django>=3.0"],
+        "sqlalchemy": ["SQLAlchemy>=1.3"],
+    },
     test_suite="tests",
     tests_require=[
         "pytest",
-        "sqlalchemy",
     ],
     description="Librería para procesar y gestionar metadatos de bases de datos",
     long_description=open("README.md").read(),
@@ -20,6 +27,10 @@ setup(
         "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Topic :: Software Development :: Libraries",
+        "Intended Audience :: Developers",
     ],
     python_requires=">=3.6",
+    keywords="metadata management, database, SQLAlchemy, Django, functional testing, debugging, ORM, database capture, data analysis, data comparison, database records, test automation, test framework, database testing, software testing"
+
 )
