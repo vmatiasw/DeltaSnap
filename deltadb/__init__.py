@@ -23,17 +23,17 @@ __all__ = [
 ]
 
 # Configurations
-from DeltaDB.infrastructure.configurations.DBConfig import DBConfig
+from deltadb.infrastructure.configurations.DBConfig import DBConfig
 
 # Features
-from DeltaDB.presentation.DBCapturer import DBCapturer
+from deltadb.presentation.DBCapturer import DBCapturer
 
 # Classes
-from DeltaDB.domain.data_classes.Changes import Changes
-from DeltaDB.domain.data_classes.data_sets import Deleted, Created
+from deltadb.domain.data_classes.Changes import Changes
+from deltadb.domain.data_classes.data_sets import Deleted, Created
 
 # Types
-from DeltaDB.domain.types import (
+from deltadb.domain.types import (
     RecordId,
     Info,
     Capture,

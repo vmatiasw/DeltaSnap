@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import Any, List, Dict
 
-from DeltaDB.domain.types import Capture
-from DeltaDB.domain.interfaces.IDBMetadata import IDBMetadata
+from deltadb.domain.types import Capture
+from deltadb.domain.interfaces.IDBMetadata import IDBMetadata
 
 
 def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:

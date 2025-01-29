@@ -35,7 +35,7 @@ def __get_sqlalchemy_adapter(db_config):
         ValueError: If `base` is not a subclass of DeclarativeBase or `test_session` is not a Session.
     """
     from sqlalchemy.orm import DeclarativeBase, Session
-    from DeltaDB.infrastructure.adapters.DBMetadata.SQLAlchemyMetadataAdapter import (
+    from deltadb.infrastructure.adapters.DBMetadata.SQLAlchemyMetadataAdapter import (
         SQLAlchemyMetadataAdapter,
     )
 
@@ -53,7 +53,7 @@ def __get_django_adapter(db_config):
     """
     Retrieves the adapter for Django metadata.
     """
-    from DeltaDB.infrastructure.adapters.DBMetadata.DjangoDBMetadata import DjangoDBMetadata
+    from deltadb.infrastructure.adapters.DBMetadata.DjangoDBMetadata import DjangoDBMetadata
     
     return DjangoDBMetadata()
 

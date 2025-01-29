@@ -1,7 +1,7 @@
 from typing import Literal, Optional, Any
 from dataclasses import dataclass
 
-from DeltaDB.infrastructure.adapters.DBMetadata.manager import _get_db_metadata_adapter
+from deltadb.infrastructure.adapters.DBMetadata.manager import _get_db_metadata_adapter
 
 
 @dataclass

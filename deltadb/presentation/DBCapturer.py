@@ -1,15 +1,15 @@
 from typing import List, Any, Tuple
 
-from DeltaDB.infrastructure.configurations.DBConfig import DBConfig
-from DeltaDB.domain.data_processing.ingestion import (
+from deltadb.infrastructure.configurations.DBConfig import DBConfig
+from deltadb.domain.data_processing.ingestion import (
     capture_all_records,
     capture_records,
     capture_related_records,
 )
-from DeltaDB.domain.data_processing.analysis import compare_capture
-from DeltaDB.domain.types import Capture
-from DeltaDB.domain.data_classes.Changes import Changes
-from DeltaDB.domain.data_classes.data_sets import Created, Deleted
+from deltadb.domain.data_processing.analysis import compare_capture
+from deltadb.domain.types import Capture
+from deltadb.domain.data_classes.Changes import Changes
+from deltadb.domain.data_classes.data_sets import Created, Deleted
 
 
 class DBCapturer:

@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, Set, Tuple
 from collections import Counter, defaultdict
 
-from DeltaDB.domain.types import CreatedRecords, DeletedRecords
+from deltadb.domain.types import CreatedRecords, DeletedRecords
 
 
 class BaseDataSet(set):
