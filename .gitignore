@@ -5,4 +5,5 @@ __pycache__/
 *.db
 .pypirc
 /dist
+/build
 src/deltasnap.egg-info
