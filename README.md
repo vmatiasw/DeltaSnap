@@ -40,6 +40,7 @@ def test_start_game(test_session):
     initial_capture = db_capturer.capture_all_records(test_session)
 
     # Logic to test
+    start_game()
 
     final_capture = db_capturer.capture_all_records(test_session)
     changes, created, deleted = db_capturer.compare_capture(initial_capture, final_capture)
