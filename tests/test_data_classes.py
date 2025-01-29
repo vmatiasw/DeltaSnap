@@ -1,7 +1,7 @@
 import copy
 import pytest
 
-from src.deltadb import DBCapturer, Changes, Created, Deleted
+from src.deltasnap import DBCapturer, Changes, Created, Deleted
 from tests.db.game_test.GameFactory import GameFactory
 from tests.db.repository.IRepository import IRepository
 

@@ -1,6 +1,6 @@
 import pytest
 
-from src.deltadb import DBCapturer
+from src.deltasnap import DBCapturer
 from tests.db.repository.IRepository import IRepository
 
 

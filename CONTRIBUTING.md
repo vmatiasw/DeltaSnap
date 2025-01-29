@@ -1,6 +1,6 @@
-# Contributing to DeltaDB
+# Contributing to DeltaSnap
 
-We welcome contributions to the DeltaDB library! Before you begin, please ensure you follow these guidelines:
+We welcome contributions to the DeltaSnap library! Before you begin, please ensure you follow these guidelines:
 
 ## Coding Standards
 
@@ -41,4 +41,4 @@ We welcome contributions to the DeltaDB library! Before you begin, please ensure
     - Once your pull request is submitted, project maintainers will review it. Be prepared to discuss or make changes based on feedback.
     - If everything looks good, the maintainers will merge your pull request into the main repository.
 
-We appreciate your contributions and thank you for helping make DeltaDB better!
+We appreciate your contributions and thank you for helping make DeltaSnap better!

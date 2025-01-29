@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import Any, List, Dict
 
-from src.deltadb.domain.types import Capture
-from src.deltadb.domain.interfaces.IDBMetadata import IDBMetadata
+from src.deltasnap.domain.types import Capture
+from src.deltasnap.domain.interfaces.IDBMetadata import IDBMetadata
 
 
 def capture_related_records(db_metadata: IDBMetadata, records: List[Any]) -> Capture:

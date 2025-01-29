@@ -2,7 +2,7 @@ import pytest
 import os
 import logging
 
-from src.deltadb import DBCapturer, DBConfig
+from src.deltasnap import DBCapturer, DBConfig
 
 from tests.db.connection.IDBConnection import IDBConnection
 from tests.db.repository.IRepository import IRepository

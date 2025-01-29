@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="deltadb",
+    name="deltasnap",
     version="0.1.0",
-    packages=find_packages(where='src'),
-    package_dir={'': 'src'},
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     install_requires=[
         "sqlalchemy>=1.3",
         "django>=3.0",
@@ -31,6 +31,5 @@ setup(
         "Intended Audience :: Developers",
     ],
     python_requires=">=3.6",
-    keywords="metadata management, database, SQLAlchemy, Django, functional testing, debugging, ORM, database capture, data analysis, data comparison, database records, test automation, test framework, database testing, software testing"
-
+    keywords="metadata management, database, SQLAlchemy, Django, functional testing, debugging, ORM, database capture, data analysis, data comparison, database records, test automation, test framework, database testing, software testing",
 )

@@ -1,15 +1,15 @@
 from typing import List, Any, Tuple
 
-from src.deltadb.infrastructure.configurations.DBConfig import DBConfig
-from src.deltadb.domain.data_processing.ingestion import (
+from src.deltasnap.infrastructure.configurations.DBConfig import DBConfig
+from src.deltasnap.domain.data_processing.ingestion import (
     capture_all_records,
     capture_records,
     capture_related_records,
 )
-from src.deltadb.domain.data_processing.analysis import compare_capture
-from src.deltadb.domain.types import Capture
-from src.deltadb.domain.data_classes.Changes import Changes
-from src.deltadb.domain.data_classes.data_sets import Created, Deleted
+from src.deltasnap.domain.data_processing.analysis import compare_capture
+from src.deltasnap.domain.types import Capture
+from src.deltasnap.domain.data_classes.Changes import Changes
+from src.deltasnap.domain.data_classes.data_sets import Created, Deleted
 
 
 class DBCapturer:

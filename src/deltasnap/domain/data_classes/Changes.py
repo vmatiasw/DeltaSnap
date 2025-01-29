@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, Set
 from collections import defaultdict
 
-from src.deltadb.domain.types import RecordsChanges, info
+from src.deltasnap.domain.types import RecordsChanges, info
 
 
 class Changes(dict):

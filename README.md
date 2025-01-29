@@ -1,4 +1,4 @@
-# DeltaDB
+# DeltaSnap
 
 A tool to capture any subset of database records and compare changes between captures. It is mainly used for functional testing and debugging.
 
@@ -7,8 +7,8 @@ A tool to capture any subset of database records and compare changes between cap
 Clone the repository and create a virtual environment:
 
 ```bash
-git clone https://github.com/vmaiasw/DeltaDB.git
-cd deltadb
+git clone https://github.com/vmaiasw/DeltaSnap.git
+cd deltasnap
 python3 -m venv venv
 source venv/bin/activate  # For Linux/MacOS
 pip install -r requirements.txt
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 ## Usage
 
 ```python
-from src.deltadb import capture_all_records, compare_capture
+from src.deltasnap import capture_all_records, compare_capture
 
 def test_start_game(test_session):
     initial_capture = capture_all_records(test_session)

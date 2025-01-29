@@ -1,8 +1,8 @@
 """
-DeltaDB Library - A library for processing database records, capturing data, 
+DeltaSnap Library - A library for processing database records, capturing data, 
 and viewing the differences between them.
 
-This module exposes the core components of the DeltaDB library, including:
+This module exposes the core components of the DeltaSnap library, including:
 - Main configuration (`DBConfig`)
 - Data capturer (`DBCapturer`)
 - Core data types used in the library (e.g., `RecordId`, `Info`, `Capture`)
@@ -23,17 +23,17 @@ __all__ = [
 ]
 
 # Configurations
-from src.deltadb.infrastructure.configurations.DBConfig import DBConfig
+from src.deltasnap.infrastructure.configurations.DBConfig import DBConfig
 
 # Features
-from src.deltadb.presentation.DBCapturer import DBCapturer
+from src.deltasnap.presentation.DBCapturer import DBCapturer
 
 # Classes
-from src.deltadb.domain.data_classes.Changes import Changes
-from src.deltadb.domain.data_classes.data_sets import Deleted, Created
+from src.deltasnap.domain.data_classes.Changes import Changes
+from src.deltasnap.domain.data_classes.data_sets import Deleted, Created
 
 # Types
-from src.deltadb.domain.types import (
+from src.deltasnap.domain.types import (
     RecordId,
     Info,
     Capture,
