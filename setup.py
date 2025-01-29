@@ -16,7 +16,7 @@ setup(
     },
     test_suite="tests",
     tests_require=["pytest"],
-    description="Librería para procesar y gestionar metadatos de bases de datos",
+    description="Library for processing and managing database metadata",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Matias Viola",
